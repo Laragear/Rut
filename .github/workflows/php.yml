@@ -15,9 +15,10 @@ jobs:
         laravel: [8.*]
         dependency-version: [prefer-lowest, prefer-stable]
         include:
-          - laravel: 8.*
+          - laravel: ^8.67
             testbench: ^6.23.0
             doctrine: ^3.1
+            php-parser: ^4.13.1
 
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - ${{ matrix.dependency-version }}
 
@@ -41,8 +42,8 @@ jobs:
 
     - name: Install dependencies
       run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:${{ matrix.doctrine }}" --no-progress --no-update
-          composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress --no-suggest
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:${{ matrix.doctrine }}" "nikic/php-parser:${{ matrix.php-parser }}" --no-progress --no-update
+          composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress
 
     - name: Run Tests
       run: composer run-script test
