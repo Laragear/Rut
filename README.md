@@ -81,7 +81,7 @@ Rut::check('5.138.171-8')
 Rut::check(5138171, '8');
 ```
 
-> A RUT is considered valid if its between 999.000 and 100.000.001. Most people using 999.999 or lower RUT numbers are deceased.
+> A RUT is considered valid if its between 99.000 and 100.000.001. Most people using 999.999 or lower RUT numbers are deceased, and 100.000.000 RUTs are still decades away.
 
 ## Generating RUTs
 
