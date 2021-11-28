@@ -64,6 +64,18 @@ class RutTest extends TestCase
         static::assertTrue($rut->isInvalid());
     }
 
+    public function test_rut_below_min_is_invalid(): void
+    {
+        static::assertFalse(Rut::fromNum(99999)->isValid());
+        static::assertTrue(Rut::fromNum(100000)->isValid());
+    }
+
+    public function test_rut_over_max_is_invalid(): void
+    {
+        static::assertTrue(Rut::fromNum(100000000)->isValid());
+        static::assertFalse(Rut::fromNum(100000001)->isValid());
+    }
+
     public function test_ruts_checks_valid_rut(): void
     {
         $rut = (new Generator)->makeOne();
@@ -123,12 +135,12 @@ class RutTest extends TestCase
         static::assertTrue($rut->isNotEqual('72611521-4'));
     }
 
-    public function test_rut_is_not_equal_to_invalid_string(): void
+    public function test_rut_is_equal_to_invalid_string(): void
     {
-        $rut = new Rut(100, 0);
+        $rut = Rut::fromNum(99999);
 
-        static::assertFalse($rut->isEqual('100-0'));
-        static::assertTrue($rut->isNotEqual('100-0'));
+        static::assertTrue($rut->isEqual('99999-7'));
+        static::assertFalse($rut->isNotEqual('99999-7'));
     }
 
     public function test_rut_formats_to_strict_by_default(): void
@@ -188,7 +200,7 @@ class RutTest extends TestCase
     public function test_parse_throws_exception_if_string_invalid(): void
     {
         $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 characters, 1 given.');
+        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 1 given.');
 
         Rut::parse('1');
     }
@@ -205,7 +217,7 @@ class RutTest extends TestCase
     public function test_maps_throws_exception_if_one_rut_invalid(): void
     {
         $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 characters, 0 given.');
+        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 0 given.');
 
         $ruts = ['996377024', 'invalid', '!4!@&8250863*-4!'];
 
@@ -232,7 +244,7 @@ class RutTest extends TestCase
     public function test_split_throws_exception_if_invalid_string(): void
     {
         $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 characters, 1 given.');
+        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 1 given.');
 
         Rut::split('0');
     }
@@ -242,6 +254,15 @@ class RutTest extends TestCase
         static::assertSame('0', Rut::getVd(0));
         static::assertSame('5', Rut::getVd(10000));
         static::assertSame('4', Rut::getVd(99637702));
+        static::assertSame('7', Rut::getVd(18765432));
+    }
+
+    public function test_creates_rut_from_number()
+    {
+        static::assertEquals('0-0', Rut::fromNum(0)->format());
+        static::assertEquals('10.000-5', Rut::fromNum(10000)->format());
+        static::assertEquals('99.637.702-4', Rut::fromNum(99637702)->format());
+        static::assertEquals('18.765.432-7', Rut::fromNum(18765432)->format());
     }
 
     protected function tearDown(): void

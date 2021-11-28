@@ -57,7 +57,7 @@ class RequestMacrosTest extends TestCase
     public function test_throws_exception_if_input_or_query_null(): void
     {
         $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 characters, 0 given.');
+        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 0 given.');
 
         $request = Request::create('/path', 'POST');
 
@@ -116,16 +116,16 @@ class RequestMacrosTest extends TestCase
         static::assertEmpty($request->ruts());
     }
 
-    public function test_throws_if_one_ruts_is_invalid(): void
+    public function test_throws_if_one_rut_is_invalid(): void
     {
         $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 characters, 4 given.');
+        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 1 given.');
 
         $request = Request::create('/path', 'POST');
 
         $request->request->set(
             'ruts',
-            Generator::make(4)->push(new Rut(100, 'K'))->map->toString()->toArray()
+            Generator::make(4)->push(new Rut(0, ''))->map->toString()->toArray()
         );
 
         $request->ruts();

@@ -70,7 +70,7 @@ class HasRutTest extends TestCase
     public function test_exception_finds_by_rut_invalid_rut(): void
     {
         $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 characters, 0 given.');
+        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 0 given.');
 
         DummyModel::findRut(
             [$this->model->first()->rut, 'invalid-rut']
@@ -116,7 +116,7 @@ class HasRutTest extends TestCase
     public function test_exception_model_finds_rut_or_fails_invalid_rut(): void
     {
         $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 characters, 0 given.');
+        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 0 given.');
 
         DummyModel::findRutOrFail([$this->model->first()->rut, 'invalid-rut']);
     }
@@ -134,7 +134,7 @@ class HasRutTest extends TestCase
     public function test_error_finds_rut_or_new_invalid_rut(): void
     {
         $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 characters, 0 given.');
+        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 0 given.');
 
         DummyModel::findRutOrNew('invalid-rut');
     }
@@ -154,7 +154,7 @@ class HasRutTest extends TestCase
     public function test_error_where_rut_invalid_rut(): void
     {
         $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 characters, 0 given.');
+        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 0 given.');
 
         DummyModel::whereRut('invalid-rut');
     }
@@ -176,7 +176,7 @@ class HasRutTest extends TestCase
     public function test_error_or_where_rut_invalid_rut(): void
     {
         $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 characters, 0 given.');
+        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 0 given.');
 
         DummyModel::orWhereRut('invalid-rut');
     }

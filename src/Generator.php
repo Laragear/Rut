@@ -10,10 +10,11 @@ use function rand;
 
 class Generator
 {
-    protected const DEFAULT_ITERATIONS = 15;
-    protected const BOUNDARY_NONE = [100000, 100000000];
-    protected const BOUNDARY_PEOPLE = [100000, Rut::COMPANY_RUT_BASE];
-    protected const BOUNDARY_COMPANIES = [Rut::COMPANY_RUT_BASE + 1, 100000000];
+    protected const ITERATIONS = 15;
+
+    protected const BOUNDARY_NONE = [Rut::MIN, Rut::MAX];
+    protected const BOUNDARY_PEOPLE = [Rut::MIN, Rut::COMPANY_BASE];
+    protected const BOUNDARY_COMPANIES = [Rut::COMPANY_BASE + 1, Rut::MAX];
 
     /**
      * Create a new Generator instance.
@@ -24,9 +25,9 @@ class Generator
      * @param  bool  $unique
      */
     public function __construct(
-        protected int $iterations = self::DEFAULT_ITERATIONS,
-        protected int $min = 0,
-        protected int $max = 100000000,
+        protected int $iterations = self::ITERATIONS,
+        protected int $min = Rut::MIN,
+        protected int $max = Rut::MAX,
         protected bool $unique = false,
     ) {
         //
@@ -103,7 +104,7 @@ class Generator
      * @param  int  $iterations
      * @return \Illuminate\Support\Collection<\Laragear\Rut\Rut>
      */
-    public function make(int $iterations = self::DEFAULT_ITERATIONS): Collection
+    public function make(int $iterations = self::ITERATIONS): Collection
     {
         return static::generate($iterations, $this->unique, $this->min, $this->max);
     }

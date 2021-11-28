@@ -9,6 +9,7 @@ use Stringable;
 
 use function array_reverse;
 use function json_encode;
+use function max;
 use function number_format;
 use function preg_filter;
 use function str_split;
@@ -19,11 +20,25 @@ use function strtoupper;
 class Rut implements JsonSerializable, Stringable, Jsonable
 {
     /**
+     * The minimum RUT number to be considered valid.
+     *
+     * @var int
+     */
+    public const MIN = 100000;
+
+    /**
+     * The maximum RUT number to be considered valid.
+     *
+     * @var int
+     */
+    public const MAX = 100000000;
+
+    /**
      * Where to draw the line between person and company RUTs.
      *
      * @const int
      */
-    public const COMPANY_RUT_BASE = 50000000;
+    public const COMPANY_BASE = 50000000;
 
     /**
      * The default string format for the RUT.
@@ -67,7 +82,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      */
     public function isPerson(): bool
     {
-        return $this->num < static::COMPANY_RUT_BASE;
+        return $this->num < static::COMPANY_BASE;
     }
 
     /**
@@ -294,7 +309,9 @@ class Rut implements JsonSerializable, Stringable, Jsonable
             }
         }
 
-        return strtoupper($vd) === static::getVd($num);
+        return $num >= static::MIN
+            && $num <= static::MAX
+            && strtoupper($vd) === static::getVd($num);
     }
 
     /**
@@ -309,15 +326,15 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     {
         $string = preg_filter('/(?!\d|k)./i', '', $string) ?? $string;
 
-        $length = strlen($string);
-
-        if ($length > 6) {
-            [$num, $vd] = str_split($string, $length - 1);
-
-            return [(int) $num, $vd];
+        try {
+            [$num, $vd] = str_split($string, max(1, strlen($string) - 1));
+        } catch (\ErrorException) {
+            throw new Exceptions\InvalidRutException(
+                'The given RUT needs at least 7 valid characters, ' . strlen($string) . ' given.'
+            );
         }
 
-        throw new Exceptions\InvalidRutException("The given RUT needs at least 7 characters, $length given.");
+        return [(int) $num, $vd];
     }
 
     /**
@@ -346,5 +363,16 @@ class Rut implements JsonSerializable, Stringable, Jsonable
             10 => 'K',
             default => $digit,
         };
+    }
+
+    /**
+     * Creates a new Rut from a number.
+     *
+     * @param  int  $num
+     * @return static
+     */
+    public static function fromNum(int $num): static
+    {
+        return new static($num, static::getVd($num));
     }
 }
