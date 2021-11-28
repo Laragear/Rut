@@ -11,8 +11,8 @@ use function rand;
 class Generator
 {
     protected const DEFAULT_ITERATIONS = 15;
-    protected const BOUNDARY_NONE = [0, 100000000];
-    protected const BOUNDARY_PEOPLE = [0, Rut::COMPANY_RUT_BASE];
+    protected const BOUNDARY_NONE = [100000, 100000000];
+    protected const BOUNDARY_PEOPLE = [100000, Rut::COMPANY_RUT_BASE];
     protected const BOUNDARY_COMPANIES = [Rut::COMPANY_RUT_BASE + 1, 100000000];
 
     /**
