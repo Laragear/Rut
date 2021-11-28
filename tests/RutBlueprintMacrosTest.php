@@ -27,7 +27,7 @@ class RutBlueprintMacrosTest extends TestCase
         /** @var \Illuminate\Database\Schema\Blueprint $blueprint */
         $blueprint = null;
 
-        $schema->create('test_table', function(Blueprint $table) use (&$blueprint) {
+        $schema->create('test_table', function (Blueprint $table) use (&$blueprint) {
             $table->rut();
             $blueprint = $table;
         });
@@ -44,7 +44,7 @@ class RutBlueprintMacrosTest extends TestCase
         static::assertEquals(1, $blueprint->getColumns()[1]->length);
         static::assertNull($blueprint->getColumns()[1]->nullable);
 
-        $schema->create('test_table_with_index', function(Blueprint $table) {
+        $schema->create('test_table_with_index', function (Blueprint $table) {
             $table->rut()->index();
         });
 
@@ -55,7 +55,7 @@ class RutBlueprintMacrosTest extends TestCase
 
         static::assertArrayHasKey('test_table_with_index_rut_num_index', $indexes);
 
-        $schema->create('test_table_with_primary', function(Blueprint $table) {
+        $schema->create('test_table_with_primary', function (Blueprint $table) {
             $table->rut()->primary();
         });
 
@@ -67,7 +67,7 @@ class RutBlueprintMacrosTest extends TestCase
         static::assertCount(1, $primary->getColumns());
         static::assertContains('rut_num', $primary->getColumns());
 
-        $schema->create('test_table_with_unique', function(Blueprint $table) {
+        $schema->create('test_table_with_unique', function (Blueprint $table) {
             $table->rut()->unique();
         });
 
@@ -88,7 +88,7 @@ class RutBlueprintMacrosTest extends TestCase
         /** @var \Illuminate\Database\Schema\Blueprint $blueprint */
         $blueprint = null;
 
-        $schema->create('test_table', function(Blueprint $table) use (&$blueprint) {
+        $schema->create('test_table', function (Blueprint $table) use (&$blueprint) {
             $table->rutNullable();
             $blueprint = $table;
         });
@@ -105,7 +105,7 @@ class RutBlueprintMacrosTest extends TestCase
         static::assertEquals(1, $blueprint->getColumns()[1]->length);
         static::assertTrue($blueprint->getColumns()[1]->nullable);
 
-        $schema->create('test_table_with_index', function(Blueprint $table) {
+        $schema->create('test_table_with_index', function (Blueprint $table) {
             $table->rut()->index();
         });
 
@@ -116,7 +116,7 @@ class RutBlueprintMacrosTest extends TestCase
 
         static::assertArrayHasKey('test_table_with_index_rut_num_index', $indexes);
 
-        $schema->create('test_table_with_primary', function(Blueprint $table) {
+        $schema->create('test_table_with_primary', function (Blueprint $table) {
             $table->rut()->primary();
         });
 
@@ -128,7 +128,7 @@ class RutBlueprintMacrosTest extends TestCase
         static::assertCount(1, $primary->getColumns());
         static::assertContains('rut_num', $primary->getColumns());
 
-        $schema->create('test_table_with_unique', function(Blueprint $table) {
+        $schema->create('test_table_with_unique', function (Blueprint $table) {
             $table->rut()->unique();
         });
 
