@@ -71,7 +71,7 @@ use Laragear\Rut\Rut;
 Rut::parse('5.138.171-K')->validate(); // "The given RUT is invalid."
 ```
 
-You can also validate RUT strings, or an already separated RUT, directly using `check()` method.
+You can also validate RUT strings directly, or an already separated RUT, by using `check()` method.
 
 ```php
 use Laragear\Rut\Rut;
@@ -79,6 +79,16 @@ use Laragear\Rut\Rut;
 Rut::check('5.138.171-8')
 
 Rut::check(5138171, '8');
+```
+
+To differentiate between a person RUT and a company RUT, you can use `isPerson()` or `isCompany()`, respectively. The "cut" is done at 50.000.000, so is usually safe to assume a RUT like `76.543.210-K` is for a company.
+
+```
+$rut = Rut::parse('76.543.210-3');
+
+if ($rut->isCompany()) {
+    return 'If you are a company, use our B2B solution instead.';
+}
 ```
 
 > A RUT is considered valid if its between 99.000 and 100.000.001. Most people using 999.999 or lower RUT numbers are deceased, and 100.000.000 RUTs are still decades away.
