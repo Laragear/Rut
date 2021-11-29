@@ -4,6 +4,8 @@ namespace Laragear\Rut;
 
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
+use Illuminate\Support\Traits\Macroable;
+use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 use Stringable;
 
@@ -19,6 +21,8 @@ use function strtoupper;
 
 class Rut implements JsonSerializable, Stringable, Jsonable
 {
+    use Macroable;
+
     /**
      * The minimum RUT number to be considered valid.
      *
@@ -90,6 +94,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      *
      * @return bool
      */
+    #[Pure]
     public function isCompany(): bool
     {
         return !$this->isPerson();
@@ -132,14 +137,11 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      *
      * @param  \Laragear\Rut\Rut|int|string  $rut
      * @return bool
+     * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
     public function isEqual(self|int|string $rut): bool
     {
-        try {
-            $rut = static::parse($rut);
-        } catch (Exceptions\InvalidRutException) {
-            return false;
-        }
+        $rut = static::parse($rut);
 
         return $this->num === $rut->num && $this->vd === $rut->vd;
     }
@@ -149,6 +151,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      *
      * @param  \Laragear\Rut\Rut|int|string  $rut
      * @return bool
+     * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
     public function isNotEqual(self|int|string $rut): bool
     {
@@ -161,6 +164,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      * @param  \Laragear\Rut\Format|null  $format
      * @return string
      */
+    #[Pure]
     public function format(Format $format = null): string
     {
         return match ($format ?? static::$format) {
@@ -247,6 +251,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      * @return array
      * @internal
      */
+    #[Pure]
     public function __serialize(): array
     {
         return [$this->toRawString()];
@@ -266,7 +271,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     /**
      * Parse a RUT string or numbers.
      *
-     * @param  static|string|int  $rut
+     * @param  \Laragear\Rut\Rut|string|int|null  $rut
      * @return static
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
@@ -326,15 +331,15 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     {
         $string = preg_filter('/(?!\d|k)./i', '', $string) ?? $string;
 
-        try {
-            [$num, $vd] = str_split($string, max(1, strlen($string) - 1));
-        } catch (\ErrorException) {
+        $rut = str_split($string, max(1, strlen($string) - 1));
+
+        if (!isset($rut[1])) {
             throw new Exceptions\InvalidRutException(
                 'The given RUT needs at least 7 valid characters, ' . strlen($string) . ' given.'
             );
         }
 
-        return [(int) $num, $vd];
+        return [(int) $rut[0], $rut[1]];
     }
 
     /**
@@ -371,6 +376,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      * @param  int  $num
      * @return static
      */
+    #[Pure]
     public static function fromNum(int $num): static
     {
         return new static($num, static::getVd($num));
