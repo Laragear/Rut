@@ -135,12 +135,20 @@ class RutTest extends TestCase
         static::assertTrue($rut->isNotEqual('72611521-4'));
     }
 
-    public function test_rut_is_equal_to_invalid_string(): void
+    public function test_rut_is_equal_to_below_one_hundred_string(): void
     {
         $rut = Rut::fromNum(99999);
 
         static::assertTrue($rut->isEqual('99999-7'));
         static::assertFalse($rut->isNotEqual('99999-7'));
+    }
+
+    public function test_rut_is_not_equal_throws_exception_if_invalid_string(): void
+    {
+        $this->expectException(InvalidRutException::class);
+        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 1 given.');
+
+        static::assertFalse((new Rut(0, 'N'))->isEqual('0-MD'));
     }
 
     public function test_rut_formats_to_strict_by_default(): void
