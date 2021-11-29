@@ -3,6 +3,7 @@
 namespace Laragear\Rut;
 
 use Illuminate\Support\Collection;
+use JetBrains\PhpStorm\Pure;
 use LogicException;
 
 use function max;
@@ -10,10 +11,18 @@ use function rand;
 
 class Generator
 {
+    /**
+     * The default number of iterations.
+     *
+     * @var int
+     */
     protected const ITERATIONS = 15;
 
+    /** @var array Boundaries for all types of RUT */
     protected const BOUNDARY_NONE = [Rut::MIN, Rut::MAX];
+    /** @var array Boundaries for people RUTs */
     protected const BOUNDARY_PEOPLE = [Rut::MIN, Rut::COMPANY_BASE];
+    /** @var array Boundaries for company RUTs */
     protected const BOUNDARY_COMPANIES = [Rut::COMPANY_BASE + 1, Rut::MAX];
 
     /**
@@ -41,6 +50,7 @@ class Generator
      * @param  bool  $unique
      * @return static
      */
+    #[Pure]
     public function unique(bool $unique = true): static
     {
         return new static($this->iterations, $this->min, $this->max, $unique);
@@ -51,6 +61,7 @@ class Generator
      *
      * @return static
      */
+    #[Pure]
     public function asPeople(): static
     {
         return $this->between(...static::BOUNDARY_PEOPLE);
@@ -61,6 +72,7 @@ class Generator
      *
      * @return static
      */
+    #[Pure]
     public function asCompanies(): static
     {
         return $this->between(...static::BOUNDARY_COMPANIES);
@@ -71,6 +83,7 @@ class Generator
      *
      * @return static
      */
+    #[Pure]
     public function asAnything(): static
     {
         return $this->between(...static::BOUNDARY_NONE);
@@ -83,6 +96,7 @@ class Generator
      * @param  int  $max
      * @return static
      */
+    #[Pure]
     public function between(int $min, int $max): static
     {
         return new static($this->iterations, $min, $max, $this->unique);
