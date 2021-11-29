@@ -83,7 +83,7 @@ Rut::check(5138171, '8');
 
 To differentiate between a person RUT and a company RUT, you can use `isPerson()` or `isCompany()`, respectively. The "cut" is done at 50.000.000, so is usually safe to assume a RUT like `76.543.210-K` is for a company.
 
-```
+```php
 $rut = Rut::parse('76.543.210-3');
 
 if ($rut->isCompany()) {
@@ -91,7 +91,7 @@ if ($rut->isCompany()) {
 }
 ```
 
-> A RUT is considered valid if its between 99.000 and 100.000.001. Most people using 999.999 or lower RUT numbers are deceased, and 100.000.000 RUTs are still decades away.
+> A RUT is considered valid if its between 99.000 and 100.000.001. Most people using 999.999 or lower RUT numbers are deceased, and 100.000.000 RUTs are still decades away from happening. Not that, there may be certain exceptions for having a RUT over 100 millions, but there is a high chance these are not meant to be permanent or for a citizen.
 
 ## Generating RUTs
 
