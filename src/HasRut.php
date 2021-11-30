@@ -7,7 +7,7 @@ namespace Laragear\Rut;
  * @method \Illuminate\Database\Eloquent\Collection|static[] findManyRut(\Illuminate\Contracts\Support\Arrayable|iterable|array $ruts, array $columns = [])
  * @method \Illuminate\Database\Eloquent\Collection|static[]|static findRutOrFail(mixed $rut, array $columns = [])
  * @method static findRutOrNew(mixed $rut, array $columns = [])
- * @method \Illuminate\Database\Eloquent\Builder whereRut(int|string|\Laragear\Rut\Rut $rut)
+ * @method \Illuminate\Database\Eloquent\Builder whereRut(int|string|\Laragear\Rut\Rut $rut, string $boolean = 'and')
  * @method \Illuminate\Database\Eloquent\Builder orWhereRut(int|string|\Laragear\Rut\Rut $rut)
  *
  * @property-read \Laragear\Rut\Rut $rut

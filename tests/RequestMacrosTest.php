@@ -4,7 +4,7 @@ namespace Tests;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
-use Laragear\Rut\Exceptions\InvalidRutException;
+use Laragear\Rut\Exceptions\EmptyRutException;
 use Laragear\Rut\Facades\Generator;
 use Laragear\Rut\Rut;
 use Orchestra\Testbench\TestCase;
@@ -56,8 +56,8 @@ class RequestMacrosTest extends TestCase
 
     public function test_throws_exception_if_input_or_query_null(): void
     {
-        $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 0 given.');
+        $this->expectException(EmptyRutException::class);
+        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 0 given.');
 
         $request = Request::create('/path', 'POST');
 
@@ -118,8 +118,8 @@ class RequestMacrosTest extends TestCase
 
     public function test_throws_if_one_rut_is_invalid(): void
     {
-        $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 1 given.');
+        $this->expectException(EmptyRutException::class);
+        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 1 given.');
 
         $request = Request::create('/path', 'POST');
 

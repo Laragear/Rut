@@ -5,7 +5,7 @@ namespace Laragear\Rut\Exceptions;
 use LogicException;
 use Throwable;
 
-class InvalidRutException extends LogicException implements RutException
+class EmptyRutException extends LogicException implements RutException
 {
     /**
      * Construct the exception.
@@ -16,7 +16,7 @@ class InvalidRutException extends LogicException implements RutException
      * @return void
      */
     public function __construct(
-        string $message = 'The given RUT is invalid.',
+        string $message = 'The RUT needs at least 7 valid characters.',
         int $code = 0,
         Throwable $previous = null
     ) {

@@ -309,7 +309,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
         if (null === $vd) {
             try {
                 [$num, $vd] = static::split($num);
-            } catch (Exceptions\InvalidRutException) {
+            } catch (Exceptions\EmptyRutException) {
                 return false;
             }
         }
@@ -325,7 +325,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      * @param  string|null  $string
      * @return array<int, string>
      *
-     * @throws \Laragear\Rut\Exceptions\InvalidRutException
+     * @throws \Laragear\Rut\Exceptions\EmptyRutException
      */
     public static function split(string|null $string): array
     {
@@ -334,8 +334,8 @@ class Rut implements JsonSerializable, Stringable, Jsonable
         $rut = str_split($string, max(1, strlen($string) - 1));
 
         if (!isset($rut[1])) {
-            throw new Exceptions\InvalidRutException(
-                'The given RUT needs at least 7 valid characters, ' . strlen($string) . ' given.'
+            throw new Exceptions\EmptyRutException(
+                'The RUT needs at least 7 valid characters, ' . strlen($string) . ' given.'
             );
         }
 

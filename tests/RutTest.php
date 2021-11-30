@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Laragear\Rut\Exceptions\EmptyRutException;
 use Laragear\Rut\Exceptions\InvalidRutException;
 use Laragear\Rut\Format;
 use Laragear\Rut\Generator;
@@ -145,8 +146,8 @@ class RutTest extends TestCase
 
     public function test_rut_is_not_equal_throws_exception_if_invalid_string(): void
     {
-        $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 1 given.');
+        $this->expectException(EmptyRutException::class);
+        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 1 given.');
 
         static::assertFalse((new Rut(0, 'N'))->isEqual('0-MD'));
     }
@@ -207,8 +208,8 @@ class RutTest extends TestCase
 
     public function test_parse_throws_exception_if_string_invalid(): void
     {
-        $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 1 given.');
+        $this->expectException(EmptyRutException::class);
+        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 1 given.');
 
         Rut::parse('1');
     }
@@ -224,8 +225,8 @@ class RutTest extends TestCase
 
     public function test_maps_throws_exception_if_one_rut_invalid(): void
     {
-        $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 0 given.');
+        $this->expectException(EmptyRutException::class);
+        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 0 given.');
 
         $ruts = ['996377024', 'invalid', '!4!@&8250863*-4!'];
 
@@ -251,8 +252,8 @@ class RutTest extends TestCase
 
     public function test_split_throws_exception_if_invalid_string(): void
     {
-        $this->expectException(InvalidRutException::class);
-        $this->expectExceptionMessage('The given RUT needs at least 7 valid characters, 1 given.');
+        $this->expectException(EmptyRutException::class);
+        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 1 given.');
 
         Rut::split('0');
     }

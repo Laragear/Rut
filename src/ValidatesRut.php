@@ -7,7 +7,6 @@ use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
-use Laragear\Rut\Exceptions\InvalidRutException;
 
 class ValidatesRut
 {
@@ -40,12 +39,10 @@ class ValidatesRut
     {
         foreach (Arr::wrap($value) as $rut) {
             try {
-                $instance = Rut::parse($rut)->validate();
-            } catch (InvalidRutException) {
-                return false;
-            }
-
-            if ($instance->format(Format::Strict) !== $rut) {
+                if (Rut::parse($rut)->validate()->format(Format::Strict) !== $rut) {
+                    return false;
+                }
+            } catch (Exceptions\RutException) {
                 return false;
             }
         }
@@ -73,7 +70,7 @@ class ValidatesRut
 
         try {
             $rut = Rut::parse($value)->validate();
-        } catch (InvalidRutException) {
+        } catch (Exceptions\RutException) {
             return false;
         }
 
@@ -104,7 +101,7 @@ class ValidatesRut
 
         try {
             $rut = Rut::parse($value)->validate();
-        } catch (InvalidRutException) {
+        } catch (Exceptions\RutException) {
             return false;
         }
 
@@ -135,7 +132,7 @@ class ValidatesRut
 
         try {
             $rut = Rut::parse($value)->validate();
-        } catch (InvalidRutException) {
+        } catch (Exceptions\RutException) {
             return false;
         }
 
@@ -173,7 +170,7 @@ class ValidatesRut
 
         try {
             $rut = Rut::parse($value)->validate();
-        } catch (InvalidRutException) {
+        } catch (Exceptions\RutException) {
             return false;
         }
 

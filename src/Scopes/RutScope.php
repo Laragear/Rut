@@ -157,16 +157,12 @@ class RutScope implements Scope
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $builder
      * @param  int|string|\Laragear\Rut\Rut  $rut
-     *
+     * @param  string  $boolean
      * @return \Illuminate\Database\Eloquent\Builder
-     * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
-    public static function whereRut(
-        Builder $builder,
-        Rut|int|string $rut
-    ): Builder
+    public static function whereRut(Builder $builder, Rut|int|string $rut, string $boolean = 'and'): Builder
     {
-        return $builder->where($builder->getModel()->getQualifiedRutNumColumn(), Rut::split($rut)[0]);
+        return $builder->where($builder->getModel()->getQualifiedRutNumColumn(), Rut::split($rut)[0], null, $boolean);
     }
 
     /**
@@ -178,11 +174,8 @@ class RutScope implements Scope
      * @return \Illuminate\Database\Eloquent\Builder
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
-    public static function orWhereRut(
-        Builder $builder,
-        Rut|int|string $rut
-    ): Builder
+    public static function orWhereRut(Builder $builder, Rut|int|string $rut): Builder
     {
-        return $builder->orWhere($builder->getModel()->getQualifiedRutNumColumn(), Rut::split($rut)[0]);
+        return static::whereRut($builder, $rut, 'or');
     }
 }
