@@ -61,6 +61,13 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     public static bool $uppercase = true;
 
     /**
+     * Use a callback to format the Rut instance as JSON.
+     *
+     * @var \Laragear\Rut\Format|null
+     */
+    public static ?Format $jsonFormat = null;
+
+    /**
      * The verification digit of the RUT.
      *
      * @var string
@@ -181,7 +188,9 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      */
     public function jsonSerialize(): string
     {
-        return $this->toString();
+        return static::$jsonFormat
+            ? $this->format(static::$jsonFormat)
+            : $this->toString();
     }
 
     /**

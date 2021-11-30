@@ -68,22 +68,22 @@ class RequestMacrosTest extends TestCase
     {
         $request = Request::create('/path', 'POST');
 
-        $request->request->set('ruts', Generator::make(5)->map->toString()->toArray());
+        $request->request->set('rut', Generator::make(5)->map->toString()->toArray());
 
-        static::assertInstanceOf(Collection::class, $request->ruts());
-        static::assertCount(5, $request->ruts());
-        static::assertInstanceOf(Rut::class, $request->ruts()->first());
+        static::assertInstanceOf(Collection::class, $request->rut());
+        static::assertCount(5, $request->rut());
+        static::assertInstanceOf(Rut::class, $request->rut()->first());
     }
 
     public function test_retrieves_rut_collection_from_query(): void
     {
         $request = Request::create('/path');
 
-        $request->query->set('ruts', Generator::make(5)->map->toString()->toArray());
+        $request->query->set('rut', Generator::make(5)->map->toString()->toArray());
 
-        static::assertInstanceOf(Collection::class, $request->ruts());
-        static::assertCount(5, $request->ruts());
-        static::assertInstanceOf(Rut::class, $request->ruts()->first());
+        static::assertInstanceOf(Collection::class, $request->rut());
+        static::assertCount(5, $request->rut());
+        static::assertInstanceOf(Rut::class, $request->rut()->first());
     }
 
     public function test_retrieves_rut_collection_from_named_input()
@@ -92,9 +92,9 @@ class RequestMacrosTest extends TestCase
 
         $request->request->set('foo', Generator::make(5)->map->toString()->toArray());
 
-        static::assertInstanceOf(Collection::class, $request->ruts('foo'));
-        static::assertCount(5, $request->ruts('foo'));
-        static::assertInstanceOf(Rut::class, $request->ruts('foo')->first());
+        static::assertInstanceOf(Collection::class, $request->rut('foo'));
+        static::assertCount(5, $request->rut('foo'));
+        static::assertInstanceOf(Rut::class, $request->rut('foo')->first());
     }
 
     public function test_retrieves_rut_collection_from_named_query(): void
@@ -103,17 +103,41 @@ class RequestMacrosTest extends TestCase
 
         $request->query->set('foo', Generator::make(5)->map->toString()->toArray());
 
-        static::assertInstanceOf(Collection::class, $request->ruts('foo'));
-        static::assertCount(5, $request->ruts('foo'));
-        static::assertInstanceOf(Rut::class, $request->ruts('foo')->first());
+        static::assertInstanceOf(Collection::class, $request->rut('foo'));
+        static::assertCount(5, $request->rut('foo'));
+        static::assertInstanceOf(Rut::class, $request->rut('foo')->first());
     }
 
-    public function test_empty_collection_if_input_or_query_null(): void
+    public function test_retrieves_rut_collection_from_many_inputs(): void
     {
+        $request = Request::create('/path', 'POST');
+
+        $request->request->set('foo', Generator::makeOne()->format());
+        $request->query->set('bar', Generator::makeOne()->format());
+
+        static::assertInstanceOf(Collection::class, $request->rut(['foo', 'bar']));
+        static::assertCount(2, $request->rut(['foo', 'bar']));
+    }
+
+    public function test_retrieves_rut_collection_from_nested_wildcard_input(): void
+    {
+        $request = Request::create('/path', 'POST');
+
+        $request->request->set('foo', ['bar' => Generator::make(2)->map->format()->toArray()]);
+
+        static::assertInstanceOf(Collection::class, $request->rut('foo.bar.*'));
+        static::assertCount(2, $request->rut('foo.bar.*'));
+    }
+
+    public function test_throws_if_input_or_query_null(): void
+    {
+        $this->expectException(EmptyRutException::class);
+        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 0 given.');
+
         $request = Request::create('/path');
 
-        static::assertInstanceOf(Collection::class, $request->ruts());
-        static::assertEmpty($request->ruts());
+        static::assertInstanceOf(Collection::class, $request->rut());
+        static::assertEmpty($request->rut());
     }
 
     public function test_throws_if_one_rut_is_invalid(): void
@@ -124,10 +148,9 @@ class RequestMacrosTest extends TestCase
         $request = Request::create('/path', 'POST');
 
         $request->request->set(
-            'ruts',
-            Generator::make(4)->push(new Rut(0, ''))->map->toString()->toArray()
+            'rut', Generator::make(4)->push(new Rut(0, ''))->map->toString()->toArray()
         );
 
-        $request->ruts();
+        $request->rut();
     }
 }

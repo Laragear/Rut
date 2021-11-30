@@ -80,6 +80,19 @@ class RutBlueprintMacrosTest extends TestCase
         static::assertArrayHasKey('test_table_with_unique_rut_num_unique', $unique);
     }
 
+    public function test_creates_database_with_named_rut_columns(): void
+    {
+        /** @var \Illuminate\Database\Schema\Builder $schema */
+        $schema = $this->app->make('db')->connection()->getSchemaBuilder();
+
+        $schema->create('test_table', function (Blueprint $table) {
+            $table->rut('foo');
+        });
+
+        static::assertTrue($schema->hasColumn('test_table', 'foo_num'));
+        static::assertTrue($schema->hasColumn('test_table', 'foo_vd'));
+    }
+
     public function test_creates_database_with_rut_nullable_columns(): void
     {
         /** @var \Illuminate\Database\Schema\Builder $schema */
@@ -139,6 +152,19 @@ class RutBlueprintMacrosTest extends TestCase
 
         static::assertCount(1, $unique);
         static::assertArrayHasKey('test_table_with_unique_rut_num_unique', $unique);
+    }
+
+    public function test_creates_database_with_named_rut_nullable_columns(): void
+    {
+        /** @var \Illuminate\Database\Schema\Builder $schema */
+        $schema = $this->app->make('db')->connection()->getSchemaBuilder();
+
+        $schema->create('test_table', function (Blueprint $table) {
+            $table->rutNullable('foo');
+        });
+
+        static::assertTrue($schema->hasColumn('test_table', 'foo_num'));
+        static::assertTrue($schema->hasColumn('test_table', 'foo_vd'));
     }
 
 }

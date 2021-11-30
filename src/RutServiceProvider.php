@@ -12,6 +12,9 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
 
+use function is_iterable;
+use function is_string;
+
 class RutServiceProvider extends ServiceProvider
 {
     /**
@@ -77,20 +80,22 @@ class RutServiceProvider extends ServiceProvider
      */
     protected function macroBlueprint(): void
     {
-        Blueprint::macro('rut', function(): ColumnDefinition {
+        Blueprint::macro('rut', function(string $prefix = 'rut'): ColumnDefinition {
             /** @var \Illuminate\Database\Schema\Blueprint $this */
-            return tap($this->unsignedInteger('rut_num'), function (): void {
-                /** @var \Illuminate\Database\Schema\Blueprint $this */
-                $this->char('rut_vd', 1);
-            });
+            $column = $this->unsignedInteger("{$prefix}_num");
+
+            $this->char("{$prefix}_vd", 1);
+
+            return $column;
         });
 
-        Blueprint::macro('rutNullable', function (): ColumnDefinition {
+        Blueprint::macro('rutNullable', function (string $prefix = 'rut'): ColumnDefinition {
             /** @var \Illuminate\Database\Schema\Blueprint $this */
-            return tap($this->unsignedInteger('rut_num')->nullable(), function (): void {
-                /** @var \Illuminate\Database\Schema\Blueprint $this */
-                $this->char('rut_vd', 1)->nullable();
-            });
+            $column = $this->unsignedInteger("{$prefix}_num")->nullable();
+
+            $this->char("{$prefix}_vd", 1)->nullable();
+
+            return $column;
         });
     }
 
@@ -125,14 +130,14 @@ class RutServiceProvider extends ServiceProvider
      */
     protected function macroRequest(): void
     {
-        Request::macro('rut', function (string $input = 'rut'): Rut {
+        Request::macro('rut', function (iterable|string $input = 'rut'): Rut|Collection {
             /** @var \Illuminate\Http\Request $this */
-            return Rut::parse($this->input($input));
-        });
 
-        Request::macro('ruts', function (array|string $input = 'ruts'): Collection {
-            /** @var \Illuminate\Http\Request $this */
-            return Rut::map($this->collect($input));
+            // Get a collection only if the user is passing multiple keys.
+            $data = is_string($input) ? $this->input($input) : $this->collect($input);
+
+            // If the returned data is iterable, map it, otherwise return a single Rut.
+            return is_iterable($data) ? Rut::map($data) : Rut::parse($data);
         });
     }
 
@@ -146,6 +151,7 @@ class RutServiceProvider extends ServiceProvider
     {
         Rut::$format = $config->get('rut.format', Format::DEFAULT);
         Rut::$uppercase = $config->get('rut.uppercase', true);
+        Rut::$jsonFormat = $config->get('rut.json_format');
 
         $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'lararut');
         $this->publishes([

@@ -422,7 +422,7 @@ If you plan to use the Number as an index, which may speed up queries to look fo
 
 ## Request RUT helper
 
-This package includes the `rut()` and `ruts()` macro helpers for the `Request` instance. These will return a single `Rut`, or a Collection of `Rut`, from a named input, respectively.
+This package includes the `rut()` macro helper for the `Request` instance, which retrieves a single RUT from an input or query.
 
 ```php
 use Illuminate\Http\Request;
@@ -430,17 +430,39 @@ use Illuminate\Http\Request;
 public function show(Request $request)
 {
     $request->validate([
-        'person' => 'required|rut';
-        'people.*' => 'rut'
-    ])
+        'person' => 'required|rut'
+    ]);
     
     $rut = $request->rut('person');
     
-    $ruts = $request->ruts('people');
+    // ...
 }
 ```
 
-This wil save you some lines to manually instance the `Rut` yourself from the request input or query.
+If the input is _iterable_, like an `array` or even a `Collection` instance, you will receive a `Collection` of `Rut` instances.
+
+```php
+$request->validate([
+    'people'   => 'required|array',
+    'people.*' => 'rut'
+]);
+
+$ruts = $request->rut('people');
+```
+
+You can also retrieve multiple keys from the Request, which will also return a `Collection`.
+
+```php
+$request->validate([
+    'mom'        => 'required|rut',
+    'dad'        => 'required|rut',
+    'children'   => 'required|array'
+    'children.*' => 'required|rut'
+]);
+
+$parents = $request->rut(['mom', 'dad']);
+$children = $request->rut('children');
+```
 
 > It's imperative you validate your input before retrieving RUTs. If there is a malformed RUT, an exception will be thrown.
 
@@ -477,7 +499,7 @@ With that, you will have access to convenient RUT queries shorthands:
 
 > These RUT queries work over the RUT Number for convenience, as the RUT Verification Digit should be verified on persistence.
 
-The `rut` property is dynamically created from the RUT Number and RUT Verification Digit columns, which uses a caster underneath.
+The `rut` property is dynamically created from the RUT Number and RUT Verification Digit columns, which uses a [Cast](https://laravel.com/docs/eloquent-mutators#attribute-casting) underneath.
 
 ```php
 echo $user->rut; // "20490006-K"
@@ -528,7 +550,7 @@ return [
 ];
 ```
 
-By default, a RUT is formatted strictly. This config alters how RUTs are formatted as string in your application.
+By default, a RUT is strictly formatted. This config alters how RUTs are formatted as string in your application.
 
 | Formatting | Example | Description
 |---|---|---|
@@ -550,7 +572,7 @@ $rut->format(Format::Basic); // "5138171-8"
 $rut->format(Format::Raw); // "51381718"
 ```
 
-> On JSON, a `Rut` instance is automatically formatted into a string using the default format style.
+For the case of JSON, you can set a custom callback
 
 ### Verification Digit Case
 

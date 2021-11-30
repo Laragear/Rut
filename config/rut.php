@@ -19,6 +19,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Default JSON format
+    |--------------------------------------------------------------------------
+    |
+    | By default, a RUT is cast to a JSON string using the same global format.
+    | can change the style here, which will affect only JSON strings. If the
+    | value of `json_format` is `null` it will mirror the `format` config.
+    |
+    */
+
+    'json_format' => null,
+
+    /*
+    |--------------------------------------------------------------------------
     | Verification Digit case
     |--------------------------------------------------------------------------
     |

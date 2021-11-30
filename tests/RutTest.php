@@ -274,11 +274,24 @@ class RutTest extends TestCase
         static::assertEquals('18.765.432-7', Rut::fromNum(18765432)->format());
     }
 
+    public function test_formats_json_using_different_format(): void
+    {
+        Rut::$jsonFormat = Format::Raw;
+
+        $rut = new Rut(99637702, '4');
+
+        static::assertEquals('99.637.702-4', $rut->toString());
+        static::assertEquals('99.637.702-4', $rut->format());
+        static::assertEquals('"996377024"', $rut->toJson());
+        static::assertEquals('"996377024"', json_encode($rut));
+    }
+
     protected function tearDown(): void
     {
         parent::tearDown();
 
         Rut::$uppercase = true;
         Rut::$format = Format::DEFAULT;
+        Rut::$jsonFormat = null;
     }
 }
