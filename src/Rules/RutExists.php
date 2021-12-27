@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laragear\Rut\Rules;
 
 use Illuminate\Validation\Rules\DatabaseRule;

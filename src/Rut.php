@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laragear\Rut;
 
 use Illuminate\Contracts\Support\Jsonable;
@@ -8,7 +10,6 @@ use Illuminate\Support\Traits\Macroable;
 use JetBrains\PhpStorm\Pure;
 use JsonSerializable;
 use Stringable;
-
 use function array_reverse;
 use function json_encode;
 use function max;
@@ -274,7 +275,9 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      */
     public function __unserialize(array $data): void
     {
-        [$this->num, $this->vd] = str_split($data[0], strlen($data[0]) - 1);
+        [$num, $vd] = str_split($data[0], strlen($data[0]) - 1);
+
+        [$this->num, $this->vd] = [(int) $num, $vd];
     }
 
     /**
@@ -317,7 +320,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
         // If the developer only issued the num, we will understand is the whole RUT.
         if (null === $vd) {
             try {
-                [$num, $vd] = static::split($num);
+                [$num, $vd] = static::split((string) $num);
             } catch (Exceptions\EmptyRutException) {
                 return false;
             }
@@ -325,19 +328,25 @@ class Rut implements JsonSerializable, Stringable, Jsonable
 
         return $num >= static::MIN
             && $num <= static::MAX
-            && strtoupper($vd) === static::getVd($num);
+            && strtoupper((string) $vd) === static::getVd($num);
     }
 
     /**
      * Cleans and splits a RUT string into an array of the number and verification digit.
      *
-     * @param  string|null  $string
+     * @param  static|string|null  $string
      * @return array<int, string>
      *
      * @throws \Laragear\Rut\Exceptions\EmptyRutException
      */
-    public static function split(string|null $string): array
+    public static function split(self|string|null $string): array
     {
+        if ($string instanceof static) {
+            return [$string->num, $string->vd];
+        }
+
+        $string = (string) $string;
+
         $string = preg_filter('/(?!\d|k)./i', '', $string) ?? $string;
 
         $rut = str_split($string, max(1, strlen($string) - 1));
@@ -348,7 +357,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
             );
         }
 
-        return [(int) $rut[0], $rut[1]];
+        return [(int) $rut[0], (string) $rut[1]];
     }
 
     /**
@@ -372,7 +381,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
 
         $digit = 11 - ($sum % 11);
 
-        return match ($digit) {
+        return (string) match ($digit) {
             11 => 0,
             10 => 'K',
             default => $digit,

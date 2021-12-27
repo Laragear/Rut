@@ -3,6 +3,7 @@
 namespace Laragear\Rut\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
+use JetBrains\PhpStorm\Pure;
 use Laragear\Rut\Rut;
 
 class CastRut implements CastsAttributes
@@ -14,9 +15,9 @@ class CastRut implements CastsAttributes
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
-     *
      * @return \Laragear\Rut\Rut
      */
+    #[Pure]
     public function get($model, string $key, $value, array $attributes): Rut
     {
         return new Rut($attributes[$model->getRutNumColumn()], $attributes[$model->getRutVdColumn()]);
@@ -29,8 +30,8 @@ class CastRut implements CastsAttributes
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
-     *
      * @return array
+     *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
     public function set($model, string $key, $value, array $attributes): array

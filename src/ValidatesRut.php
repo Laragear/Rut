@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laragear\Rut;
 
 use Illuminate\Database\Query\Builder;

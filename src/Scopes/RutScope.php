@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laragear\Rut\Scopes;
 
 use Illuminate\Contracts\Support\Arrayable;

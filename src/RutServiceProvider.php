@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laragear\Rut;
 
 use Illuminate\Contracts\Config\Repository;
@@ -11,7 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
-
 use function is_iterable;
 use function is_string;
 

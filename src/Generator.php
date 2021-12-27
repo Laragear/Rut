@@ -1,11 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laragear\Rut;
 
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\Pure;
 use LogicException;
-
 use function max;
 use function rand;
 

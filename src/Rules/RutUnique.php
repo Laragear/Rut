@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Laragear\Rut\Rules;
 
 use Illuminate\Database\Eloquent\Model;
@@ -97,7 +99,7 @@ class RutUnique
             $this->table,
             $this->numColumn,
             $this->vdColumn,
-            $this->ignore ? '"'.addslashes($this->ignore).'"' : 'NULL',
+            $this->ignore ? '"'.addslashes((string)$this->ignore).'"' : 'NULL',
             $this->idColumn,
             $this->formatWheres()
         ), ',');
