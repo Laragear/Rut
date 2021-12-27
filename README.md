@@ -490,12 +490,14 @@ class User extends Authenticatable
 
 With that, you will have access to convenient RUT queries shorthands:
 
-* `findRut()`: Finds a record by the given RUT.
-* `findManyRut()`: Finds many records by the given RUTs.
-* `findRutOrFail()`: Finds a record by the RUT or fails.
-* `findRutOrNew()`: Finds a record by the RUT or creates one.
-* `whereRut()`: Creates a `WHERE` clause with the RUT number equal to the issued one.
-* `orWhereRut()`: Creates a `OR WHERE` clause with the RUT number equal to the issued one.
+| Method name       | Description                                                              |
+|-------------------|--------------------------------------------------------------------------|
+| `findRut()`       | Finds a record by the given RUT.                                         |
+| `findManyRut()`   | Finds many records by the given RUTs.                                    |
+| `findRutOrFail()` | Finds a record by the RUT or fails.                                      |
+| `findRutOrNew()`  | Finds a record by the RUT or creates one.                                |
+| `whereRut()`      | Creates a `WHERE` clause with the RUT number equal to the issued one.    |
+| `orWhereRut()`    | Creates a `OR WHERE` clause with the RUT number equal to the issued one. |
 
 > These RUT queries work over the RUT Number for convenience, as the RUT Verification Digit should be verified on persistence.
 
@@ -552,11 +554,11 @@ return [
 
 By default, a RUT is strictly formatted. This config alters how RUTs are formatted as string in your application.
 
-| Formatting | Example | Description
-|---|---|---|
-| Strict    | `5.138.171-8` | Default option. Serializes with a thousand separator and hyphen.
-| Basic     | `5138171-8`   | No thousand separator, only the hyphen.
-| Raw       | `51381718`    | No thousand separator nor hyphen.
+| Formatting | Example       | Description                                                      |
+|------------|---------------|------------------------------------------------------------------|
+| Strict     | `5.138.171-8` | Default option. Serializes with a thousand separator and hyphen. |
+| Basic      | `5138171-8`   | No thousand separator, only the hyphen.                          |
+| Raw        | `51381718`    | No thousand separator nor hyphen.                                |
 
 You can use `format()` to format the RUT using the default, or using a given Formatting option overriding the global configuration.
 
