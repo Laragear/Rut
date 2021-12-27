@@ -13,10 +13,6 @@ class NumExists extends Exists
      */
     public function __toString()
     {
-        return rtrim(sprintf('num_exists:%s,%s,%s',
-            $this->table,
-            $this->column,
-            $this->formatWheres()
-        ), ',');
+        return 'num_' . parent::__toString();
     }
 }

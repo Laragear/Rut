@@ -13,12 +13,6 @@ class NumUnique extends Unique
      */
     public function __toString()
     {
-        return rtrim(sprintf('num_unique:%s,%s,%s,%s,%s',
-            $this->table,
-            $this->column,
-            $this->ignore ? '"'.addslashes($this->ignore).'"' : 'NULL',
-            $this->idColumn,
-            $this->formatWheres()
-        ), ',');
+        return 'num_' . parent::__toString();
     }
 }
