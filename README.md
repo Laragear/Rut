@@ -91,7 +91,7 @@ if ($rut->isCompany()) {
 }
 ```
 
-> A RUT is considered valid if its between 99.000 and 100.000.001. Most people using 999.999 or lower RUT numbers are deceased, and 100.000.000 RUTs are still decades away from happening. Not that, there may be certain exceptions for having a RUT over 100 millions, but there is a high chance these are not meant to be permanent or for a citizen.
+> A RUT is considered valid if its between 100.000 and 100.000.000, inclusive. Most (if not all) people using 99.999 or lower RUT numbers are deceased, and 100.000.000 RUTs are still decades away from happening. Note that there may be certain exceptions for having a RUT over 100 millions, but there is a high chance these are not meant to be permanent or for citizens.
 
 ## Generating RUTs
 
@@ -127,11 +127,9 @@ $ruts = Generator::unique()->asCompanies()->make(10000000);
 
 ## Validation rules
 
-All validation rules messages are translated. You can add your own translation by publishing the files:
+All validation rules messages are translated. You can add your own translation to these rules by publishing the trafiles:
 
     php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="translations"
-
-> Database rules will normalize the verification _digit_ as uppercase in the database for search queries.
 
 ### `rut`
 
@@ -274,6 +272,8 @@ $validator = Validator::make([
 echo $validator->passes(); // true
 ```
 
+> Database rules will normalize the verification _digit_ as uppercase in the database for search queries.
+
 ### `num_exists` (Database)
 
 This validation rule checks if only the number of the RUT exists, without taking into account the verification digit. This is handy when the Database has an index in the number of the RUT, thus making this verification blazing fast.
@@ -354,6 +354,8 @@ $validator = Validator::make([
 echo $validator->passes(); // false
 ```
 
+> Database rules will normalize the verification _digit_ as uppercase in the database for search queries.
+
 > **[Warning]** **You should never pass any user controlled request input into the ignore method. Instead, you should only pass a system generated unique ID such as an auto-incrementing ID or UUID from an Eloquent model instance. Otherwise, your application will be vulnerable to an SQL injection attack.**
 
 ### `num_unique` (Database)
@@ -418,7 +420,7 @@ Schema::create('company', function (Blueprint $table) {
 
 > The `rutNullable()` method creates both Number and Verification Digit columns as nullable.
 
-If you plan to use the Number as an index, which may speed up queries to look for RUTs, you can just index the Number column by fluently adding `primary()`, `index()` or `unique()` depending on your database needs. This is because it has more performance sense to index only the Number rather than the whole RUT.
+If you plan to use the RUT Number as an index, which may speed up queries to look for RUTs, you can just index the Number column by fluently adding `primary()`, `index()` or `unique()` depending on your database needs. This is because it has more performance sense to index only the Number rather than the whole RUT.
 
 ## Request RUT helper
 
@@ -494,10 +496,13 @@ With that, you will have access to convenient RUT queries shorthands:
 |-------------------|--------------------------------------------------------------------------|
 | `findRut()`       | Finds a record by the given RUT.                                         |
 | `findManyRut()`   | Finds many records by the given RUTs.                                    |
+| `findRutOr()`     | Finds a record by the RUT or returns the callback result.                |
 | `findRutOrFail()` | Finds a record by the RUT or fails.                                      |
 | `findRutOrNew()`  | Finds a record by the RUT or creates one.                                |
 | `whereRut()`      | Creates a `WHERE` clause with the RUT number equal to the issued one.    |
+| `whereNotRut()`   | Creates a `WHERE` clause excluding the given RUT.                        |
 | `orWhereRut()`    | Creates a `OR WHERE` clause with the RUT number equal to the issued one. |
+| `orWhereNotRut()` | Creates a `OR WHERE` clause excluding the given RUT.                     |
 
 > These RUT queries work over the RUT Number for convenience, as the RUT Verification Digit should be verified on persistence.
 
