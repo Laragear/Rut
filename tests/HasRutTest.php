@@ -37,6 +37,15 @@ class HasRutTest extends TestCase
         parent::setUp();
     }
 
+    protected function randomRut(): Rut
+    {
+        do {
+            $rut = Generator::makeOne();
+        } while (DB::table('users')->where('rut_num', $rut->num)->exists());
+
+        return $rut;
+    }
+
     public function test_model_retrieves_rut_instance(): void
     {
         static::assertInstanceOf(Rut::class, $this->model->first()->rut);
@@ -51,12 +60,14 @@ class HasRutTest extends TestCase
         static::assertTrue($model->newQuery()->hasMacro('findRutOrFail'));
         static::assertTrue($model->newQuery()->hasMacro('findRutOrNew'));
         static::assertTrue($model->newQuery()->hasMacro('whereRut'));
+        static::assertTrue($model->newQuery()->hasMacro('whereRutNot'));
         static::assertTrue($model->newQuery()->hasMacro('orWhereRut'));
+        static::assertTrue($model->newQuery()->hasMacro('orWhereRutNot'));
     }
 
     public function test_model_finds_by_rut(): void
     {
-        static::assertEquals(1, DummyModel::findRut($this->model->first()->rut)->getKey());
+        static::assertEquals(1, DummyModel::findRut(DummyModel::query()->first()->rut)->getKey());
         static::assertEquals(3, DummyModel::findRut(new Rut(20490006, 'K'))->getKey());
 
         static::assertCount(
@@ -101,16 +112,22 @@ class HasRutTest extends TestCase
 
     public function test_model_finds_rut_or_fails_returns_exception_not_found(): void
     {
-        do {
-            $rut = Generator::makeOne();
-        } while (DB::table('users')->where('rut_num', $rut->num)->exists());
-
-        $rut = $rut->format(Format::Basic);
+        $rut = $this->randomRut()->format(Format::Basic);
 
         $this->expectException(ModelNotFoundException::class);
         $this->expectExceptionMessage("No query results for model [Tests\DummyModel] $rut");
 
         DummyModel::findRutOrFail($rut);
+    }
+
+    public function test_model_finds_rut_or_fails_returns_exception_not_found_on_many(): void
+    {
+        $rut = $this->randomRut()->format(Format::Basic);
+
+        $this->expectException(ModelNotFoundException::class);
+        $this->expectExceptionMessage("No query results for model [Tests\DummyModel] 20490006K, $rut");
+
+        DummyModel::findRutOrFail(['20490006K', $rut]);
     }
 
     public function test_exception_model_finds_rut_or_fails_invalid_rut(): void
@@ -141,14 +158,19 @@ class HasRutTest extends TestCase
 
     public function test_where_rut(): void
     {
-        do {
-            $rut = Generator::makeOne();
-        } while (DB::table('users')->where('rut_num', $rut->num)->exists());
-
-        $rut = $rut->format(Format::Basic);
+        $rut = $this->randomRut()->format(Format::Basic);
 
         static::assertEquals(1, DummyModel::whereRut($this->model->first()->rut)->first()->getKey());
         static::assertNull(DummyModel::whereRut($rut)->first());
+
+        $result = DummyModel::whereRut([
+            '20490006K',
+            $this->model->first()->rut,
+        ])->get();
+
+        static::assertCount(2, $result);
+        static::assertSame(1, $result->first()->getKey());
+        static::assertSame(3, $result->last()->getKey());
     }
 
     public function test_error_where_rut_invalid_rut(): void
@@ -161,11 +183,7 @@ class HasRutTest extends TestCase
 
     public function test_or_where_rut(): void
     {
-        do {
-            $rut = Generator::makeOne();
-        } while (DB::table('users')->where('rut_num', $rut->num)->exists());
-
-        $rut = $rut->format(Format::Basic);
+        $rut = $this->randomRut()->format(Format::Basic);
 
         $query = DummyModel::where('id', 10)->orWhereRut($this->model->first()->rut);
 
@@ -179,6 +197,99 @@ class HasRutTest extends TestCase
         $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 0 given.');
 
         DummyModel::orWhereRut('invalid-rut');
+    }
+
+    public function test_where_rut_not(): void
+    {
+        static::assertCount(2, DummyModel::whereRutNot('20490006K')->get());
+    }
+
+    public function test_error_where_rut_not_invalid_rut(): void
+    {
+        $this->expectException(EmptyRutException::class);
+        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 0 given.');
+
+        DummyModel::whereRutNot('invalid-rut');
+    }
+
+    public function test_or_where_rut_not(): void
+    {
+        $result = DummyModel::where('id', 1)->orWhereRutNot('20490006K')->get();
+
+        static::assertCount(2, $result);
+        static::assertSame(1, $result->first()->getKey());
+        static::assertSame(2, $result->last()->getKey());
+    }
+
+    public function test_error_or_where_rut_not_invalid_rut(): void
+    {
+
+        $this->expectException(EmptyRutException::class);
+        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 0 given.');
+
+        DummyModel::where('id', 1)->orWhereRutNot('invalid-rut')->get();
+    }
+
+    public function test_where_rut_in(): void
+    {
+        $rut = $this->randomRut();
+
+        static::assertCount(1, DummyModel::whereRutIn([$rut, '20490006K'])->get());
+        static::assertEmpty(DummyModel::whereRutIn([$rut, $this->randomRut()])->get());
+    }
+
+    public function test_error_where_rut_in_invalid_rut(): void
+    {
+        $this->expectException(EmptyRutException::class);
+        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 0 given.');
+
+        DummyModel::whereRutIn(['20490006K', 'invalid-rut'])->get();
+    }
+
+    public function test_or_where_rut_in(): void
+    {
+        $rut = $this->randomRut();
+
+        static::assertCount(1, DummyModel::where('id', 10)->orWhereRutIn([$rut, '20490006K'])->get());
+        static::assertEmpty(DummyModel::where('id', 10)->orWhereRutIn([$rut, $this->randomRut()])->get());
+    }
+
+    public function test_error_or_where_rut_in_invalid_rut(): void
+    {
+        $this->expectException(EmptyRutException::class);
+        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 0 given.');
+
+        static::assertCount(1, DummyModel::where('id', 10)->orWhereRutIn(['invalid-rut', '20490006K'])->get());
+    }
+
+    public function test_where_rut_not_in(): void
+    {
+        $rut = $this->randomRut();
+
+        static::assertCount(2, DummyModel::whereRutNotIn([$rut, '20490006K'])->get());
+        static::assertEmpty(DummyModel::whereRutNotIn([DummyModel::find(1)->rut, DummyModel::find(2)->rut, '20490006K'])->get());
+    }
+
+    public function test_error_where_rut_not_in_invalid_rut(): void
+    {
+        $this->expectException(EmptyRutException::class);
+        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 0 given.');
+
+        DummyModel::whereRutNotIn([$this->randomRut(), 'invalid-rut'])->get();
+    }
+
+    public function test_or_where_rut_not_in(): void
+    {
+        static::assertCount(1, DummyModel::where('id', 1)->orWhereRutNotIn([DummyModel::find(2)->rut, '20490006K'])->get());
+        static::assertEmpty(DummyModel::where('id', 10)->orWhereRutNotIn([DummyModel::find(1)->rut, DummyModel::find(2)->rut, '20490006K'])->get());
+    }
+
+    public function test_error_or_where_rut_not_in_invalid_rut(): void
+    {
+        $this->expectException(EmptyRutException::class);
+        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 0 given.');
+
+        DummyModel::where('id', 1)->orWhereRutNotIn([DummyModel::find(2)->rut, 'invalid-rut'])->get();
     }
 }
 

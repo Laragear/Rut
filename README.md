@@ -492,17 +492,20 @@ class User extends Authenticatable
 
 With that, you will have access to convenient RUT queries shorthands:
 
-| Method name       | Description                                                              |
-|-------------------|--------------------------------------------------------------------------|
-| `findRut()`       | Finds a record by the given RUT.                                         |
-| `findManyRut()`   | Finds many records by the given RUTs.                                    |
-| `findRutOr()`     | Finds a record by the RUT or returns the callback result.                |
-| `findRutOrFail()` | Finds a record by the RUT or fails.                                      |
-| `findRutOrNew()`  | Finds a record by the RUT or creates one.                                |
-| `whereRut()`      | Creates a `WHERE` clause with the RUT number equal to the issued one.    |
-| `whereNotRut()`   | Creates a `WHERE` clause excluding the given RUT.                        |
-| `orWhereRut()`    | Creates a `OR WHERE` clause with the RUT number equal to the issued one. |
-| `orWhereNotRut()` | Creates a `OR WHERE` clause excluding the given RUT.                     |
+| Method name         | Description                                                              |
+|---------------------|--------------------------------------------------------------------------|
+| `findRut()`         | Finds a record by the given RUT.                                         |
+| `findManyRut()`     | Finds many records by the given RUTs.                                    |
+| `findRutOrFail()`   | Finds a record by the RUT or fails.                                      |
+| `findRutOrNew()`    | Finds a record by the RUT or creates one.                                |
+| `whereRut()`        | Creates a `WHERE` clause with the RUT number equal to the issued one.    |
+| `whereRutNot()`     | Creates a `WHERE` clause excluding the given RUT.                        |
+| `orWhereRut()`      | Creates a `OR WHERE` clause with the RUT number equal to the issued one. |
+| `orWhereRutNot()`   | Creates a `OR WHERE` clause excluding the given RUT.                     |
+| `whereRutIn()`      | Creates a `WHERE IN` clause with the given RUTs.                         |
+| `whereRutNotIn()`   | Creates a `WHERE NOT IN` clause excluding the given RUTs.                |
+| `orWhereRutIn()`    | Creates a `OR WHERE IN` clause with the given RUTs.                      |
+| `orWhereRutNotIn()` | Creates a `OR WHERE NOT IN` clause excluding the given RUTs.             |
 
 > These RUT queries work over the RUT Number for convenience, as the RUT Verification Digit should be verified on persistence.
 
