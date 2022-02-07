@@ -6,6 +6,9 @@ namespace Laragear\Rut\Rules;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\DatabaseRule;
+use function addslashes;
+use function rtrim;
+use function sprintf;
 
 class RutUnique
 {
@@ -30,7 +33,7 @@ class RutUnique
      *
      * @var mixed
      */
-    protected $ignore;
+    protected mixed $ignore = null;
 
     /**
      * The name of the ID column.
@@ -60,7 +63,7 @@ class RutUnique
      * @param  string|null  $idColumn
      * @return $this
      */
-    public function ignore($id, $idColumn = null): RutUnique
+    public function ignore(mixed $id, string $idColumn = null): RutUnique
     {
         if ($id instanceof Model) {
             return $this->ignoreModel($id, $idColumn);

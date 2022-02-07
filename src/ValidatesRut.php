@@ -41,7 +41,7 @@ class ValidatesRut
     {
         foreach (Arr::wrap($value) as $rut) {
             try {
-                if (Rut::parse($rut)->validate()->format(Format::Strict) !== $rut) {
+                if (Rut::parse($rut)->validate()->format(Rut::FORMAT_STRICT) !== $rut) {
                     return false;
                 }
             } catch (Exceptions\RutException) {
@@ -124,36 +124,17 @@ class ValidatesRut
      *
      * @return bool
      */
-    public static function validateRutExists(
-        string $attribute,
-        mixed $value,
-        array $parameters,
-        Validator $validator
-    ): bool {
+    public static function validateRutExists(string $attribute, mixed $value, array $parameters, Validator $validator): bool
+    {
         $validator->requireParameterCount(1, $parameters, 'rut_exists');
 
-        try {
-            $rut = Rut::parse($value)->validate();
-        } catch (Exceptions\RutException) {
+        $rut = Rut::parse($value);
+
+        if ($rut->isInvalid()) {
             return false;
         }
 
-        [$parameters, $wheres] = static::parseParameters($parameters, 3, 5);
-
-        // If the parameters doesn't include the columns for the number and verification
-        // digit, we will assume it's the attribute name plus "_num" and "_vd" in the
-        // target table. We will just put these into the parameters array and pass.
-        [$connection, $table] = $validator->parseTable($parameters[0] ?? Str::plural($attribute));
-
-        $num_column = $parameters[1] ?? $attribute.'_num';
-        $vd_column = $parameters[2] ?? $attribute.'_vd';
-
-        $query = DB::connection($connection)
-            ->table($table)
-            ->where($num_column, $rut->num)
-            ->whereRaw("UPPER(\"$vd_column\") = ?", strtoupper($rut->vd));
-
-        return static::addExtraWheres($query, $wheres)->exists();
+        return static::query($attribute, $rut, $parameters, $validator)->exists();
     }
 
     /**
@@ -166,16 +147,30 @@ class ValidatesRut
      *
      * @return bool
      */
-    public static function validateRutUnique(string $attribute, $value, array $parameters, Validator $validator): bool
+    public static function validateRutUnique(string $attribute, mixed $value, array $parameters, Validator $validator): bool
     {
         $validator->requireParameterCount(1, $parameters, 'rut_unique');
 
-        try {
-            $rut = Rut::parse($value)->validate();
-        } catch (Exceptions\RutException) {
+        $rut = Rut::parse($value);
+
+        if ($rut->isInvalid()) {
             return false;
         }
 
+        return static::query($attribute, $rut, $parameters, $validator)->doesntExist();
+    }
+
+    /**
+     * Creates a query to check records existence.
+     *
+     * @param  string  $attribute
+     * @param  \Laragear\Rut\Rut  $rut
+     * @param  array  $parameters
+     * @param  \Illuminate\Validation\Validator  $validator
+     * @return \Illuminate\Database\Query\Builder
+     */
+    protected static function query(string $attribute, Rut $rut, array $parameters, Validator $validator): Builder
+    {
         [$parameters, $wheres] = static::parseParameters($parameters, 3, 5);
 
         [$connection, $table] = $validator->parseTable($parameters[0] ?? Str::plural($attribute));
@@ -195,7 +190,7 @@ class ValidatesRut
             unset($wheres[0], $wheres[1]);
         }
 
-        return static::addExtraWheres($query, $wheres)->doesntExist();
+        return static::addExtraWheres($query, $wheres);
     }
 
     /**

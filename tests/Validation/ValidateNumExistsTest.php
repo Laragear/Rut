@@ -72,7 +72,7 @@ class ValidateNumExistsTest extends TestCase
         } while ($rut === Rut::parse($user->rut_num . $user->rut_vd));
 
         $validator = Validator::make([
-            'rut' => $rut->format(Format::DEFAULT)
+            'rut' => $rut->format(Rut::FORMAT_STRICT)
         ], [
             'rut' => 'num_exists:testing.users,rut_num'
         ]);

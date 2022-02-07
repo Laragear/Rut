@@ -112,7 +112,7 @@ class HasRutTest extends TestCase
 
     public function test_model_finds_rut_or_fails_returns_exception_not_found(): void
     {
-        $rut = $this->randomRut()->format(Format::Basic);
+        $rut = $this->randomRut()->format(Rut::FORMAT_BASIC);
 
         $this->expectException(ModelNotFoundException::class);
         $this->expectExceptionMessage("No query results for model [Tests\DummyModel] $rut");
@@ -122,7 +122,7 @@ class HasRutTest extends TestCase
 
     public function test_model_finds_rut_or_fails_returns_exception_not_found_on_many(): void
     {
-        $rut = $this->randomRut()->format(Format::Basic);
+        $rut = $this->randomRut()->format(Rut::FORMAT_BASIC);
 
         $this->expectException(ModelNotFoundException::class);
         $this->expectExceptionMessage("No query results for model [Tests\DummyModel] 20490006K, $rut");
@@ -158,7 +158,7 @@ class HasRutTest extends TestCase
 
     public function test_where_rut(): void
     {
-        $rut = $this->randomRut()->format(Format::Basic);
+        $rut = $this->randomRut()->format(Rut::FORMAT_BASIC);
 
         static::assertEquals(1, DummyModel::whereRut($this->model->first()->rut)->first()->getKey());
         static::assertNull(DummyModel::whereRut($rut)->first());
@@ -183,7 +183,7 @@ class HasRutTest extends TestCase
 
     public function test_or_where_rut(): void
     {
-        $rut = $this->randomRut()->format(Format::Basic);
+        $rut = $this->randomRut()->format(Rut::FORMAT_BASIC);
 
         $query = DummyModel::where('id', 10)->orWhereRut($this->model->first()->rut);
 

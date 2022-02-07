@@ -13,8 +13,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
-use function is_iterable;
-use function is_string;
 
 class RutServiceProvider extends ServiceProvider
 {
@@ -134,15 +132,15 @@ class RutServiceProvider extends ServiceProvider
         Request::macro('rut', function (iterable|string $input = 'rut'): Rut|Collection {
             /** @var \Illuminate\Http\Request $this */
 
-            if (func_num_args() > 1) {
-                $input = func_get_args();
+            if (\func_num_args() > 1) {
+                $input = \func_get_args();
             }
 
             // Get a collection only if the user is passing multiple keys.
-            $data = is_string($input) ? $this->input($input) : $this->collect($input);
+            $data = \is_string($input) ? $this->input($input) : $this->collect($input);
 
             // If the returned data is iterable, map it, otherwise return a single Rut.
-            return is_iterable($data) ? Rut::map($data) : Rut::parse($data);
+            return \is_iterable($data) ? Rut::map($data) : Rut::parse($data);
         });
     }
 
@@ -154,7 +152,7 @@ class RutServiceProvider extends ServiceProvider
      */
     public function boot(Repository $config): void
     {
-        Rut::$format = $config->get('rut.format', Format::DEFAULT);
+        Rut::$format = $config->get('rut.format', Rut::FORMAT_STRICT);
         Rut::$uppercase = $config->get('rut.uppercase', true);
         Rut::$jsonFormat = $config->get('rut.json_format');
 

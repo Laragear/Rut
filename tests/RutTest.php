@@ -8,7 +8,6 @@ use Laragear\Rut\Format;
 use Laragear\Rut\Generator;
 use Laragear\Rut\Rut;
 use PHPUnit\Framework\TestCase;
-
 use function json_encode;
 use function serialize;
 use function unserialize;
@@ -165,17 +164,17 @@ class RutTest extends TestCase
     {
         $rut = new Rut(53851562, 0);
 
-        static::assertSame('53.851.562-0', $rut->format(Format::DEFAULT));
-        static::assertSame('53.851.562-0', $rut->format(Format::Strict));
-        static::assertSame('53851562-0', $rut->format(Format::Basic));
-        static::assertSame('538515620', $rut->format(Format::Raw));
+        static::assertSame('53.851.562-0', $rut->format());
+        static::assertSame('53.851.562-0', $rut->format(Rut::FORMAT_STRICT));
+        static::assertSame('53851562-0', $rut->format(Rut::FORMAT_BASIC));
+        static::assertSame('538515620', $rut->format(Rut::FORMAT_RAW));
     }
 
     public function test_rut_format_changes_globally(): void
     {
         $rut = new Rut(53851562, 0);
 
-        Rut::$format = Format::Raw;
+        Rut::$format = Rut::FORMAT_RAW;
 
         static::assertSame('538515620', $rut->format());
     }
@@ -276,7 +275,7 @@ class RutTest extends TestCase
 
     public function test_formats_json_using_different_format(): void
     {
-        Rut::$jsonFormat = Format::Raw;
+        Rut::$jsonFormat = Rut::FORMAT_RAW;
 
         $rut = new Rut(99637702, '4');
 
@@ -291,7 +290,7 @@ class RutTest extends TestCase
         parent::tearDown();
 
         Rut::$uppercase = true;
-        Rut::$format = Format::DEFAULT;
+        Rut::$format = RUT::FORMAT_STRICT;
         Rut::$jsonFormat = null;
     }
 }

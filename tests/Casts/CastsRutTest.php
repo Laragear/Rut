@@ -5,7 +5,6 @@ namespace Tests\Casts;
 use Illuminate\Foundation\Auth\User;
 use Laragear\Rut\Casts\CastRut;
 use Laragear\Rut\Facades\Generator;
-use Laragear\Rut\Format;
 use Laragear\Rut\HasRut;
 use Laragear\Rut\Rut;
 use Orchestra\Testbench\TestCase;
@@ -62,7 +61,7 @@ class CastsRutTest extends TestCase
                 'name' => 'John',
                 'email' => 'anything@cmail.com',
                 'password' => '123456',
-                'rut' => $rut->format(Format::Basic),
+                'rut' => $rut->format(Rut::FORMAT_BASIC),
             ]
         )->save();
 

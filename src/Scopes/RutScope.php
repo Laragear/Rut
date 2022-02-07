@@ -15,6 +15,7 @@ use Laragear\Rut\Rut;
 use ReflectionClass;
 use ReflectionMethod;
 use SplFixedArray;
+use function array_map;
 use function count;
 use function get_class;
 use function is_countable;

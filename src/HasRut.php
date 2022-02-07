@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Laragear\Rut;
 
+use function defined;
+
 /**
  * @method static \Illuminate\Database\Eloquent\Collection|static[]|static|null findRut(iterable|int|string|\Illuminate\Contracts\Support\Arrayable|\Laragear\Rut\Rut $rut, array|string $columns = ['*'])
  * @method static \Illuminate\Database\Eloquent\Collection|static[] findManyRut(iterable|\Illuminate\Contracts\Support\Arrayable $ruts, array|string $columns = ['*'])
