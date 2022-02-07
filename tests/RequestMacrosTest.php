@@ -37,6 +37,20 @@ class RequestMacrosTest extends TestCase
         static::assertCount(3, $ruts);
     }
 
+    public function test_throws_exception_when_one_of_multiple_inputs_is_invalid(): void
+    {
+        $this->expectException(EmptyRutException::class);
+        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 0 given.');
+
+        $request = Request::create('/path', 'POST');
+
+        $request->request->set('foo', (Generator::makeOne())->format());
+        $request->request->set('bar', (Generator::makeOne())->format());
+        $request->request->set('baz', 'invalid');
+
+        $request->rut('foo', 'bar', 'baz', 'quz');
+    }
+
     public function test_request_retrieves_rut_from_query(): void
     {
         $request = Request::create('/path');
