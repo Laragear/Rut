@@ -11,7 +11,7 @@ class GeneratorTest extends TestCase
 {
     use RegistersPackage;
 
-    protected readonly Generator $generator;
+    protected Generator $generator;
 
     protected function setUp(): void
     {
