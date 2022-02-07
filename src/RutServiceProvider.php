@@ -134,6 +134,10 @@ class RutServiceProvider extends ServiceProvider
         Request::macro('rut', function (iterable|string $input = 'rut'): Rut|Collection {
             /** @var \Illuminate\Http\Request $this */
 
+            if (func_num_args() > 1) {
+                $input = func_get_args();
+            }
+
             // Get a collection only if the user is passing multiple keys.
             $data = is_string($input) ? $this->input($input) : $this->collect($input);
 

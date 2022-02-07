@@ -23,6 +23,19 @@ class RequestMacrosTest extends TestCase
         static::assertTrue($rut->isEqual($request->rut()));
     }
 
+    public function test_request_retrieves_collection_from_multiple_inputs(): void
+    {
+        $request = Request::create('/path', 'POST');
+
+        $request->request->set('foo', (Generator::makeOne())->format());
+        $request->request->set('bar', (Generator::makeOne())->format());
+        $request->request->set('baz', (Generator::makeOne())->format());
+
+        $ruts = $request->rut('foo', 'bar', 'baz', 'quz');
+
+        static::assertInstanceOf(Collection::class, $ruts);
+        static::assertCount(3, $ruts);
+    }
 
     public function test_request_retrieves_rut_from_query(): void
     {
