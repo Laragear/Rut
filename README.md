@@ -18,8 +18,8 @@ if ($rut->isValid()) {
 
 ## Requirements
 
-- PHP 8.1 or later
-- Laravel 8.x
+- PHP 8.0 or later
+- Laravel 9.x or later
 
 ## Installation
 
@@ -51,7 +51,7 @@ $rut = Rut::parse('5.138.171-8');
 
 You should use the included [Validation Rules](#validation-rules) to validate RUTs in your input.
 
-Otherwise, you  can manually validate a RUT using `isValid()` or `isInvalid()` to check if it's mathematically valid or not, respectively.
+Otherwise, you can manually validate a RUT using `isValid()` or `isInvalid()` to check if it's mathematically valid or not, respectively.
 
 ```php
 use Laragear\Rut\Rut;
@@ -81,6 +81,8 @@ Rut::check('5.138.171-8')
 Rut::check(5138171, '8');
 ```
 
+## Person vs Company RUT
+
 To differentiate between a person RUT and a company RUT, you can use `isPerson()` or `isCompany()`, respectively. The "cut" is done at 50.000.000, so is usually safe to assume a RUT like `76.543.210-K` is for a company.
 
 ```php
@@ -91,7 +93,7 @@ if ($rut->isCompany()) {
 }
 ```
 
-> A RUT is considered valid if its between 100.000 and 100.000.000, inclusive. Most (if not all) people using 99.999 or lower RUT numbers are deceased, and 100.000.000 RUTs are still decades away from happening. Note that there may be certain exceptions for having a RUT over 100 millions, but there is a high chance these are not meant to be permanent or for citizens.
+> This package considers RUT as valid if its between 100.000 and 100.000.000, inclusive. Most (if not all) people using 99.999 or lower RUT numbers are deceased, and 100.000.000 RUTs are still decades away from happening. Note that there may be certain exceptions for having a RUT over 100 millions, but there is a high chance these are not meant to be permanent or for citizens.
 
 ## Generating RUTs
 
@@ -127,13 +129,13 @@ $ruts = Generator::unique()->asCompanies()->make(10000000);
 
 ## Validation rules
 
-All validation rules messages are translated. You can add your own translation to these rules by publishing the trafiles:
+All validation rules messages are translated. You can add your own translation to these rules by publishing the translation files:
 
     php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="translations"
 
 ### `rut`
 
-This checks if the RUT being passed is a valid RUT string. This automatically **cleans the RUT** from anything except numbers and verification digit, and then checks if the resulting RUT is valid.
+This checks if the RUT being passed is a valid RUT string. This automatically **cleans the RUT** from anything except numbers and the verification digit. Only then it checks if the resulting RUT is mathematically valid.
 
 ```php
 <?php
@@ -459,10 +461,10 @@ $request->validate([
     'mom'        => 'required|rut',
     'dad'        => 'required|rut',
     'children'   => 'required|array'
-    'children.*' => 'required|rut'
+    'children.*' => 'required|rut',
 ]);
 
-$parents = $request->rut(['mom', 'dad']);
+$parents = $request->rut('mom', 'dad'); // Or $request->rut(['mom', 'dad']);
 $children = $request->rut('children');
 ```
 
@@ -507,7 +509,7 @@ With that, you will have access to convenient RUT queries shorthands:
 | `orWhereRutIn()`    | Creates a `OR WHERE IN` clause with the given RUTs.                      |
 | `orWhereRutNotIn()` | Creates a `OR WHERE NOT IN` clause excluding the given RUTs.             |
 
-> These RUT queries work over the RUT Number for convenience, as the RUT Verification Digit should be verified on persistence.
+> These RUT queries work over the RUT Number for convenience, as the RUT Verification Digit should be verified only on persistence.
 
 The `rut` property is dynamically created from the RUT Number and RUT Verification Digit columns, which uses a [Cast](https://laravel.com/docs/eloquent-mutators#attribute-casting) underneath.
 
@@ -519,7 +521,7 @@ echo $user->rut; // "20490006-K"
 
 By convention, the trait uses `rut_num` and `rut_vd` as the default columns to retrieve and save the RUT Number and RUT Verification Digit, respectively.
 
-You can easily change it to anything your database is working with:
+You can easily change it to anything your database is working with for the given Model:
 
 ```php
 class User extends Authenticatable
@@ -542,10 +544,10 @@ This package works flawlessly out of the box, but you may want to change how a `
 You will receive a config file like this:
 
 ```php
-use Laragear\Rut\Format;
+use Laragear\Rut\Rut;
 
 return [
-    'format' => Format::DEFAULT,
+    'format' => Rut::FORMAT_STRICT,
     'uppercase' => true,
 ];
 ```
@@ -560,7 +562,7 @@ return [
 ];
 ```
 
-By default, a RUT is strictly formatted. This config alters how RUTs are formatted as string in your application.
+By default, RUTs are _strictly_ formatted. This config alters how RUTs are serialized as string in your application globally.
 
 | Formatting | Example       | Description                                                      |
 |------------|---------------|------------------------------------------------------------------|
@@ -568,21 +570,29 @@ By default, a RUT is strictly formatted. This config alters how RUTs are formatt
 | Basic      | `5138171-8`   | No thousand separator, only the hyphen.                          |
 | Raw        | `51381718`    | No thousand separator nor hyphen.                                |
 
-You can use `format()` to format the RUT using the default, or using a given Formatting option overriding the global configuration.
+You can use `format()` to format the RUT using a different formatting for the given instance. 
 
 ```php
-use Laragear\Rut\Format;
 use Laragear\Rut\Rut;
 
 $rut = Rut::parse('5.138.171-8');
 
 $rut->format(); // "5.138.171-8"
-$rut->format(Format::Strict); // "5.138.171-8"
-$rut->format(Format::Basic); // "5138171-8"
-$rut->format(Format::Raw); // "51381718"
+$rut->format(Rut::FORMAT_STRICT); // "5.138.171-8"
+$rut->format(Rut::FORMAT_BASIC); // "5138171-8"
+$rut->format(Rut::FORMAT_RAW); // "51381718"
 ```
 
-For the case of JSON, you can set a custom callback
+For the case of JSON, RUTs are cast as a string using the default global format. You can use the `$jsonFormat` static property to alter which format to use when serializing into JSON exclusively.
+
+```php
+use Laragear\Rut\Rut;
+
+Rut::$jsonFormat = Rut::FORMAT_RAW;
+
+Rut::parse('5.138.171-8'); // '5.138.171-8'
+Rut::parse('5.138.171-8')->toJson(); // {"5138171-8"}
+```
 
 ### Verification Digit Case
 
@@ -592,21 +602,17 @@ return [
 ];
 ```
 
-Since the Verification Digit can be `K`, it's usually good idea to work with uppercase or lowercase across all the application.
+Since the Verification Digit can be `K`, it's usually good idea to always work with uppercase or lowercase across all the application.
 
-The `Rut` instance by default will use uppercase `K`, but you can change it globally using the `Rut::$uppercase` static property. This will affect all `Rut` instance, and once set, it cannot be changed.
+The `Rut` instance by default will use uppercase `K`, but you can change it globally by setting this to `false`. This will affect all `Rut` instances.
 
 ```php
 use Laragear\Rut\Format;
 use Laragear\Rut\Rut;
 
-Rut::$uppercase = false;
+config()->set('rut.uppercase', false)
 
 $rut = Rut::parse('12351839-K');
 
 $rut->format(); // "12.351.839-k"
 ```
-
-## License
-
-This package is licenced by the [MIT License](LICENSE).
