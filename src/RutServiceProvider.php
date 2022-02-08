@@ -156,9 +156,10 @@ class RutServiceProvider extends ServiceProvider
         Rut::$uppercase = $config->get('rut.uppercase', true);
         Rut::$jsonFormat = $config->get('rut.json_format');
 
-        $this->loadTranslationsFrom(__DIR__ . '/../resources/lang', 'lararut');
-        $this->publishes([
-            __DIR__ . '/../resources/lang' => $this->app->resourcePath('lang/vendor/lararut')
-        ], 'translations');
+        $this->loadTranslationsFrom(__DIR__.'/../lang', 'lararut');
+
+        if ($this->app->runningInConsole()) {
+            $this->publishes([__DIR__ . '/../lang' => $this->app->langPath('vendor/lararut')], 'translations');
+        }
     }
 }
