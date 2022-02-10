@@ -196,7 +196,7 @@ class RutServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishes([static::CONFIG => $this->app->configPath('rut.php')], 'config');
             $this->publishes([static::LANG => $this->app->langPath('vendor/rut')], 'translations');
-            $this->publishes([static::PHPSTORM => $this->app->basePath('.phpstorm.meta.php/rut.php')], 'phpstorm');
+            $this->publishes([static::PHPSTORM => $this->app->basePath('.phpstorm.meta.php/laragear-rut.php')], 'phpstorm');
         }
     }
 }
