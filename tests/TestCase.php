@@ -3,8 +3,9 @@
 namespace Tests;
 
 use Laragear\Rut\RutServiceProvider;
+use Orchestra\Testbench\TestCase as BaseTestCase;
 
-trait RegistersPackage
+abstract class TestCase extends BaseTestCase
 {
     protected function getPackageProviders($app): array
     {

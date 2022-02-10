@@ -7,12 +7,9 @@ use Illuminate\Support\Collection;
 use Laragear\Rut\Exceptions\EmptyRutException;
 use Laragear\Rut\Facades\Generator;
 use Laragear\Rut\Rut;
-use Orchestra\Testbench\TestCase;
 
 class RequestMacrosTest extends TestCase
 {
-    use RegistersPackage;
-
     public function test_request_retrieves_rut_from_input(): void
     {
         $request = Request::create('/path', 'POST');

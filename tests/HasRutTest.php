@@ -5,45 +5,26 @@ namespace Tests;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\User;
-use Illuminate\Support\Facades\DB;
 use Laragear\Rut\Exceptions\EmptyRutException;
 use Laragear\Rut\Facades\Generator;
-use Laragear\Rut\Format;
 use Laragear\Rut\HasRut;
 use Laragear\Rut\Rut;
-use Orchestra\Testbench\TestCase;
 
 class HasRutTest extends TestCase
 {
-    use RegistersPackage;
     use PreparesDatabase;
 
     protected User $model;
 
     protected function setUp(): void
     {
-        $this->afterApplicationCreated(
-            function () {
-                $this->prepareDatabase();
-
-                $this->model = new class extends User {
-                    use HasRut;
-
-                    protected $table = 'users';
-                };
-            }
-        );
-
         parent::setUp();
-    }
 
-    protected function randomRut(): Rut
-    {
-        do {
-            $rut = Generator::makeOne();
-        } while (DB::table('users')->where('rut_num', $rut->num)->exists());
+        $this->model = new class extends User {
+            use HasRut;
 
-        return $rut;
+            protected $table = 'users';
+        };
     }
 
     public function test_model_retrieves_rut_instance(): void

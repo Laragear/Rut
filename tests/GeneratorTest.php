@@ -5,19 +5,16 @@ namespace Tests;
 use Laragear\Rut\Facades\Generator as GeneratorFacade;
 use Laragear\Rut\Generator;
 use LogicException;
-use Orchestra\Testbench\TestCase;
 
 class GeneratorTest extends TestCase
 {
-    use RegistersPackage;
-
     protected Generator $generator;
 
     protected function setUp(): void
     {
         parent::setUp();
 
-        $this->generator ??= app(Generator::class);
+        $this->generator ??= $this->app->make(Generator::class);
     }
 
     public function test_registers_facade(): void

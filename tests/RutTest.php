@@ -4,7 +4,6 @@ namespace Tests;
 
 use Laragear\Rut\Exceptions\EmptyRutException;
 use Laragear\Rut\Exceptions\InvalidRutException;
-use Laragear\Rut\Format;
 use Laragear\Rut\Generator;
 use Laragear\Rut\Rut;
 use PHPUnit\Framework\TestCase;

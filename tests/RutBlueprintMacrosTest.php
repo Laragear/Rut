@@ -4,12 +4,9 @@ namespace Tests;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\ColumnDefinition;
-use Orchestra\Testbench\TestCase;
 
 class RutBlueprintMacrosTest extends TestCase
 {
-    use RegistersPackage;
-
     public function test_helper_returns_rut_number_column(): void
     {
         $blueprint = new Blueprint('test_table');

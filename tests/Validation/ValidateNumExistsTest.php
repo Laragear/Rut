@@ -5,33 +5,18 @@ namespace Tests\Validation;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Validator;
 use InvalidArgumentException;
-use Laragear\Rut\Facades\Generator;
-use Laragear\Rut\Format;
 use Laragear\Rut\Rut;
-use Orchestra\Testbench\TestCase;
 use Tests\PreparesDatabase;
-use Tests\RegistersPackage;
+use Tests\TestCase;
 
 class ValidateNumExistsTest extends TestCase
 {
-    use RegistersPackage,
-        PreparesDatabase;
-
-    protected function setUp(): void
-    {
-        $this->afterApplicationCreated(function () {
-            $this->prepareDatabase();
-        });
-
-        parent::setUp();
-    }
+    use PreparesDatabase;
 
     public function test_num_exists(): void
     {
-        $user = User::inRandomOrder()->first();
-
         $validator = Validator::make([
-            'rut' => Rut::parse($user->rut_num . $user->rut_vd)->format()
+            'rut' => $this->randomRut()->format()
         ], [
             'rut' => 'num_exists:testing.users'
         ]);
@@ -52,10 +37,8 @@ class ValidateNumExistsTest extends TestCase
 
     public function test_num_exists_with_column_guessing(): void
     {
-        $user = User::query()->inRandomOrder()->first();
-
         $validator = Validator::make([
-            'rut' => (new Rut($user->rut_num, $user->rut_vd))->format()
+            'rut' => $this->randomRut()->format()
         ], [
             'rut' => 'num_exists:testing.users'
         ]);
@@ -65,14 +48,8 @@ class ValidateNumExistsTest extends TestCase
 
     public function test_num_exists_fails_when_doesnt_exists(): void
     {
-        $user = User::query()->inRandomOrder()->first();
-
-        do {
-            $rut = Generator::makeOne();
-        } while ($rut === Rut::parse($user->rut_num . $user->rut_vd));
-
         $validator = Validator::make([
-            'rut' => $rut->format(Rut::FORMAT_STRICT)
+            'rut' => $this->uniqueRut()->format(Rut::FORMAT_STRICT)
         ], [
             'rut' => 'num_exists:testing.users,rut_num'
         ]);
@@ -101,10 +78,8 @@ class ValidateNumExistsTest extends TestCase
 
     public function test_num_exists_fails_when_invalid_column(): void
     {
-        $user = User::query()->inRandomOrder()->first();
-
         $validator = Validator::make([
-            'rut' => (new Rut($user->rut_num, $user->rut_vd))->format()
+            'rut' => $this->randomRut()->format()
         ], [
             'rut' => 'num_exists:testing.users,invalid_column'
         ]);
@@ -116,10 +91,8 @@ class ValidateNumExistsTest extends TestCase
     {
         $this->expectException(InvalidArgumentException::class);
 
-        $user = User::query()->inRandomOrder()->first();
-
         $validator = Validator::make([
-            'rut' => Rut::parse($user->rut_num . $user->rut_vd)->format()
+            'rut' => $this->randomRut()->format()
         ], [
             'rut' => 'num_exists'
         ]);

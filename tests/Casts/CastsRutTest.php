@@ -7,29 +7,23 @@ use Laragear\Rut\Casts\CastRut;
 use Laragear\Rut\Facades\Generator;
 use Laragear\Rut\HasRut;
 use Laragear\Rut\Rut;
-use Orchestra\Testbench\TestCase;
 use Tests\PreparesDatabase;
-use Tests\RegistersPackage;
+use Tests\TestCase;
 
 class CastsRutTest extends TestCase
 {
-    use RegistersPackage;
     use PreparesDatabase;
 
     protected User $model;
 
     protected function setUp(): void
     {
-        $this->afterApplicationCreated(function () {
-            $this->prepareDatabase();
-
-            $this->model = new class extends User {
-                use HasRut;
-                protected $table = 'users';
-            };
-        });
-
         parent::setUp();
+
+        $this->model = new class extends User {
+            use HasRut;
+            protected $table = 'users';
+        };
     }
 
     public function test_registers_cast(): void

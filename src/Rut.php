@@ -90,22 +90,15 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     public static ?int $jsonFormat = null;
 
     /**
-     * The verification digit of the RUT.
-     *
-     * @var string
-     */
-    public string $vd;
-
-    /**
      * Create a new Rut instance.
      *
      * @param  int  $num
      * @param  string  $vd
      * @return void
      */
-    public function __construct(public int $num, string $vd)
+    public function __construct(public int $num, public string $vd)
     {
-        $this->vd = static::$uppercase ? strtoupper($vd) : strtolower($vd);
+        $this->vd = static::$uppercase ? strtoupper($this->vd) : strtolower($this->vd);
     }
 
     /**
@@ -355,12 +348,12 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     /**
      * Cleans and splits a RUT string into an array of the number and verification digit.
      *
-     * @param  static|string|null  $string
-     * @return array<int, string>
+     * @param  static|string|int|null  $string
+     * @return array
      *
      * @throws \Laragear\Rut\Exceptions\EmptyRutException
      */
-    public static function split(self|string|null $string): array
+    public static function split(self|string|int|null $string): array
     {
         if ($string instanceof static) {
             return [$string->num, $string->vd];

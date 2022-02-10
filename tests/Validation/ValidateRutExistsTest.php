@@ -4,33 +4,17 @@ namespace Tests\Validation;
 
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Validator;
-use Laragear\Rut\Facades\Generator as RutGenerator;
-use Laragear\Rut\Rut;
-use Orchestra\Testbench\TestCase;
 use Tests\PreparesDatabase;
-use Tests\RegistersPackage;
-
+use Tests\TestCase;
 
 class ValidateRutExistsTest extends TestCase
 {
-    use RegistersPackage,
-        PreparesDatabase;
-
-    protected function setUp(): void
-    {
-        $this->afterApplicationCreated(function () {
-            $this->prepareDatabase();
-        });
-
-        parent::setUp();
-    }
+    use PreparesDatabase;
 
     public function test_rut_exists(): void
     {
-        $user = User::inRandomOrder()->first();
-
         $validator = Validator::make([
-            'rut' => Rut::parse($user->rut_num . $user->rut_vd)->format(),
+            'rut' => $this->randomRut()->format()
         ], [
             'rut' => 'rut_exists:testing.users,rut_num,rut_vd'
         ]);
@@ -40,20 +24,16 @@ class ValidateRutExistsTest extends TestCase
 
     public function test_rut_exists_with_column_guessing(): void
     {
-        $user = User::inRandomOrder()->first();
-
         $validator = Validator::make([
-            'rut' => Rut::parse($user->rut_num . $user->rut_vd)->format()
+            'rut' => $this->randomRut()->format()
         ], [
             'rut' => 'rut_exists:testing.users'
         ]);
 
         static::assertFalse($validator->fails());
 
-        $user = User::inRandomOrder()->first();
-
         $validator = Validator::make([
-            'rut' => Rut::parse($user->rut_num . $user->rut_vd)->format()
+            'rut' => $this->randomRut()->format()
         ], [
             'rut' => 'rut_exists:testing.users,rut_num'
         ]);
@@ -63,14 +43,8 @@ class ValidateRutExistsTest extends TestCase
 
     public function test_rut_exists_fails_when_doesnt_exists(): void
     {
-        $user = User::inRandomOrder()->first();
-
-        do {
-            $rut = RutGenerator::makeOne();
-        } while ($rut === Rut::parse($user->rut_num . $user->rut_vd));
-
         $validator = Validator::make([
-            'rut' => $rut->format(),
+            'rut' => $this->uniqueRut()->format(),
         ], [
             'rut' => 'rut_exists:testing.users,rut_num,rut_vd'
         ]);
@@ -80,14 +54,8 @@ class ValidateRutExistsTest extends TestCase
 
     public function test_returns_message(): void
     {
-        $user = User::inRandomOrder()->first();
-
-        do {
-            $rut = RutGenerator::makeOne();
-        } while ($rut === Rut::parse($user->rut_num . $user->rut_vd));
-
         $validator = Validator::make([
-            'rut' => $rut->format(),
+            'rut' => $this->uniqueRut(),
         ], [
             'rut' => 'rut_exists:testing.users,rut_num,rut_vd'
         ]);

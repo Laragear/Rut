@@ -131,7 +131,9 @@ $ruts = Generator::unique()->asCompanies()->make(10000000);
 
 All validation rules messages are translated. You can add your own translation to these rules by publishing the translation files:
 
-    php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="translations"
+```shell
+php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="translations"
+```
 
 ### `rut`
 
@@ -539,7 +541,9 @@ class User extends Authenticatable
 
 This package works flawlessly out of the box, but you may want to change how a `Rut` is formatted as a string using the global configuration. You can publish it using Artisan:
 
-    php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="config"
+```shell
+php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="config"
+```
 
 You will receive a config file like this:
 
@@ -616,3 +620,17 @@ $rut = Rut::parse('12351839-K');
 
 $rut->format(); // "12.351.839-k"
 ```
+
+## PhpStorm metadata
+
+For PhpStorm users, there is a metadata file to aid in macro autocompletion for this package. You can publish it using the `phpstorm` tag:
+
+```shell
+php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="phpstorm"
+```
+
+Beware of the caveats, as this is a very _green_ implementation by Jetbrains.
+
+- _Go to declaration_ doesn't work, as it will point to the meta file and not the original file.
+- Extended class constructor becomes are empty.
+- May be reported as "duplicate declaration".

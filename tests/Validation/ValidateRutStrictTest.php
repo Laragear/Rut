@@ -3,13 +3,10 @@
 namespace Tests\Validation;
 
 use Illuminate\Support\Facades\Validator;
-use Orchestra\Testbench\TestCase;
-use Tests\RegistersPackage;
+use Tests\TestCase;
 
 class ValidateRutStrictTest extends TestCase
 {
-    use RegistersPackage;
-
     public function test_rut_strict(): void
     {
         $validator = Validator::make([
