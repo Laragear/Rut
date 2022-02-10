@@ -243,9 +243,7 @@ class HasRutTest extends TestCase
 
     public function test_where_rut_not_in(): void
     {
-        $rut = $this->randomRut();
-
-        static::assertCount(2, DummyModel::whereRutNotIn([$rut, '20490006K'])->get());
+        static::assertCount(2, DummyModel::whereRutNotIn([$this->uniqueRut(), '20490006K'])->get());
         static::assertEmpty(DummyModel::whereRutNotIn([DummyModel::find(1)->rut, DummyModel::find(2)->rut, '20490006K'])->get());
     }
 
