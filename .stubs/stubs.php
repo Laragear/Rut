@@ -39,10 +39,10 @@ namespace Illuminate\Http
         /**
          * Returns a RUT or a collection of RUTs from the request.
          *
-         * @param  array|string  ...$input
+         * @param  iterable|string  ...$input
          * @return \Laragear\Rut\Rut|\Illuminate\Support\Collection
          */
-        public function rut(array|string ...$input): Rut|Collection
+        public function rut(iterable|string ...$input): Rut|Collection
         {
             //
         }

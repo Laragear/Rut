@@ -14,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
+use function count;
+use function is_iterable;
 
 class RutServiceProvider extends ServiceProvider
 {
@@ -149,18 +151,18 @@ class RutServiceProvider extends ServiceProvider
      */
     protected function macroRequest(): void
     {
-        Request::macro('rut', function (iterable|string $input = 'rut'): Rut|Collection {
+        Request::macro('rut', function (iterable|string ...$input): Rut|Collection {
             /** @var \Illuminate\Http\Request $this */
 
-            if (\func_num_args() > 1) {
-                $input = \func_get_args();
+            if (empty($input)) {
+                $input[0] = 'rut';
+            } elseif (is_iterable($input[0])) {
+                $input = $input[0];
             }
 
-            // Get a collection only if the user is passing multiple keys.
-            $data = \is_string($input) ? $this->input($input) : $this->collect($input);
+            $data = count($input) === 1 ? $this->input($input[0]) : $this->collect($input);
 
-            // If the returned data is iterable, map it, otherwise return a single Rut.
-            return \is_iterable($data) ? Rut::map($data) : Rut::parse($data);
+            return is_iterable($data) ? Rut::map($data) : Rut::parse($data);
         });
     }
 
