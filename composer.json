@@ -2,18 +2,19 @@
   "name": "laragear/rut",
   "description": "RUT utilities for modern PHP",
   "type": "library",
-  "license": "MIT",
+  "license": "propietary",
+  "minimum-stability": "stable",
+  "prefer-stable": true,
   "authors": [
     {
       "name": "Italo Baeza C.",
-      "email": "DarkGhostHunter@Gmail.com"
+      "email": "DarkGhostHunter@Gmail.com",
+      "homepage": "https://patreon.com/packagesforlaravel"
     }
   ],
   "support": {
     "source": "https://github.com/laragear/rut"
   },
-  "minimum-stability": "dev",
-  "prefer-stable": true,
   "require": {
     "php": "^8.0.2",
     "illuminate/database": "9.*",
@@ -49,9 +50,6 @@
         "Generator": "Laragear\\Rut\\Facades\\Generator"
       }
     }
-  },
-  "suggest": {
-    "laravel/framework": "For your application needs."
   },
   "funding": [
     {
