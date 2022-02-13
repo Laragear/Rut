@@ -2,9 +2,6 @@
 
 namespace Illuminate\Database\Schema
 {
-    /**
-     * @see \Illuminate\Database\Schema\Blueprint
-     */
     class Blueprint
     {
         /**
@@ -13,7 +10,10 @@ namespace Illuminate\Database\Schema
          * @param  string  $prefix
          * @return \Illuminate\Database\Schema\ColumnDefinition
          */
-        public function rut(string $prefix = 'rut'): ColumnDefinition;
+        public function rut(string $prefix = 'rut'): ColumnDefinition
+        {
+            //
+        }
 
         /**
          * Create new compound nullable RUT columns.
@@ -21,7 +21,10 @@ namespace Illuminate\Database\Schema
          * @param  string  $prefix
          * @return \Illuminate\Database\Schema\ColumnDefinition
          */
-        public function rutNullable(string $prefix = 'rut'): ColumnDefinition;
+        public function rutNullable(string $prefix = 'rut'): ColumnDefinition
+        {
+            //
+        }
     }
 }
 
@@ -31,18 +34,18 @@ namespace Illuminate\Http
     use Illuminate\Support\Collection;
     use Laragear\Rut\Rut;
 
-    /**
-     * @see \Illuminate\Http\Request
-     */
     class Request
     {
         /**
          * Returns a RUT or a collection of RUTs from the request.
          *
-         * @param  iterable|string  $input
+         * @param  array|string  ...$input
          * @return \Laragear\Rut\Rut|\Illuminate\Support\Collection
          */
-        public function rut(iterable|string $input = 'rut'): Rut|Collection;
+        public function rut(array|string ...$input): Rut|Collection
+        {
+            //
+        }
     }
 }
 
@@ -55,9 +58,6 @@ namespace Illuminate\Validation
     use Laragear\Rut\Rules\RutExists;
     use Laragear\Rut\Rules\RutUnique;
 
-    /**
-     * @see \Illuminate\Validation\Rule
-     */
     class Rule
     {
         /**
@@ -68,7 +68,10 @@ namespace Illuminate\Validation
          * @param  string  $rutColumn
          * @return \Laragear\Rut\Rules\RutExists
          */
-        public static function rutExists(Model|string $table, $numColumn = 'NULL', $rutColumn = 'NULL'): RutExists;
+        public static function rutExists(Model|string $table, $numColumn = 'NULL', $rutColumn = 'NULL'): RutExists
+        {
+            //
+        }
 
         /**
          * Create a new RUT unique rule.
@@ -78,7 +81,10 @@ namespace Illuminate\Validation
          * @param  string  $rutColumn
          * @return \Laragear\Rut\Rules\RutUnique
          */
-        public static function rutUnique(Model|string $table, $numColumn = 'NULL', $rutColumn = 'NULL'): RutUnique;
+        public static function rutUnique(Model|string $table, $numColumn = 'NULL', $rutColumn = 'NULL'): RutUnique
+        {
+            //
+        }
 
         /**
          * Create a new RUT Number exists rule.
@@ -87,7 +93,10 @@ namespace Illuminate\Validation
          * @param  string  $column
          * @return \Laragear\Rut\Rules\NumExists
          */
-        public static function numExists(Model|string $table, $column = 'NULL'): NumExists;
+        public static function numExists(Model|string $table, $column = 'NULL'): NumExists
+        {
+            //
+        }
 
         /**
          * Create a new RUT Number unique rule.
@@ -96,6 +105,9 @@ namespace Illuminate\Validation
          * @param  string  $column
          * @return \Laragear\Rut\Rules\NumUnique
          */
-        public static function numUnique(Model|string $table, $column = 'NULL'): NumUnique;
+        public static function numUnique(Model|string $table, $column = 'NULL'): NumUnique
+        {
+            //
+        }
     }
 }

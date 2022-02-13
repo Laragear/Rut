@@ -69,7 +69,7 @@ class ServiceProviderTest extends TestCase
     public function test_publishes_phpstorm_meta(): void
     {
         static::assertSame(
-            [RutServiceProvider::PHPSTORM => $this->app->basePath('.phpstorm.meta.php/laragear-rut.php')],
+            [RutServiceProvider::STUBS => $this->app->basePath('.stubs/rut.php')],
             ServiceProvider::pathsToPublish(RutServiceProvider::class, 'phpstorm')
         );
     }

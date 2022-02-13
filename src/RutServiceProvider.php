@@ -17,6 +17,10 @@ use Illuminate\Validation\Rule;
 
 class RutServiceProvider extends ServiceProvider
 {
+    public const CONFIG = __DIR__.'/../config/rut.php';
+    public const LANG = __DIR__.'/../lang';
+    public const STUBS = __DIR__.'/../.stubs/stubs.php';
+
     /**
      * Rules to register into the validator.
      *
@@ -30,27 +34,6 @@ class RutServiceProvider extends ServiceProvider
         ['num_exists', 'validateNumExists', 'rut::validation.exists'],
         ['num_unique', 'validateNumUnique', 'rut::validation.unique'],
     ];
-
-    /**
-     * Location of the localization directory.
-     *
-     * @var string
-     */
-    public const LANG = __DIR__.'/../lang';
-
-    /**
-     * Location of the config file.
-     *
-     * @var string
-     */
-    public const CONFIG = __DIR__.'/../config/rut.php';
-
-    /**
-     * Location of the PhpStorm meta file.
-     *
-     * @var string
-     */
-    const PHPSTORM = __DIR__ . '/../.phpstorm.meta.php';
 
     /**
      * Register the application services.
@@ -196,7 +179,7 @@ class RutServiceProvider extends ServiceProvider
         if ($this->app->runningInConsole()) {
             $this->publishes([static::CONFIG => $this->app->configPath('rut.php')], 'config');
             $this->publishes([static::LANG => $this->app->langPath('vendor/rut')], 'translations');
-            $this->publishes([static::PHPSTORM => $this->app->basePath('.phpstorm.meta.php/laragear-rut.php')], 'phpstorm');
+            $this->publishes([static::STUBS => $this->app->basePath('.stubs/rut.php')], 'phpstorm');
         }
     }
 }

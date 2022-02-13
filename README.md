@@ -1,7 +1,3 @@
-![Loïc Mermilliod - Unsplash (UL) #H6KJ2D0LphU](https://images.unsplash.com/photo-1490782300182-697b80ad4293?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=1280&h=400&q=80)
-
-[![Latest Stable Version](https://poser.pugx.org/laragear/rut/v/stable)](https://packagist.org/packages/laragear/rut) [![License](https://poser.pugx.org/laragear/rut/license)](https://packagist.org/packages/laragear/rut) ![](https://img.shields.io/packagist/php-v/laragear/rut.svg) ![](https://github.com/Laragear/Rut/workflows/PHP%20Composer/badge.svg) [![Coverage Status](https://coveralls.io/repos/github/Laragear/Rut/badge.svg?branch=master)](https://coveralls.io/github/Laragear/Rut?branch=master) [![Laravel Octane Compatible](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://github.com/laravel/octane)
-
 # Rut
 
 Tools to parse, validate and generate Chilean RUT in Laravel.
@@ -621,16 +617,16 @@ $rut = Rut::parse('12351839-K');
 $rut->format(); // "12.351.839-k"
 ```
 
-## PhpStorm metadata
+## PhpStorm stubs
 
-For PhpStorm users, there is a metadata file to aid in macro autocompletion for this package. You can publish it using the `phpstorm` tag:
+For users of PhpStorm, there is a stub file to aid in macro autocompletion for this package. You can publish it using the `phpstorm` tag:
 
 ```shell
 php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="phpstorm"
 ```
 
-Beware of the caveats, as this is a very _green_ implementation by Jetbrains.
+The file gets published into the `.stubs` folder of your project. You should point your [PhpStorm to these stubs](https://www.jetbrains.com/help/phpstorm/php.html#advanced-settings-area).
 
-- _Go to declaration_ doesn't work, as it will point to the meta file and not the original file.
-- Extended class constructor becomes are empty.
-- May be reported as "duplicate declaration".
+## Security
+
+If you discover any security related issues, please email darkghosthunter@gmail.com instead of using the issue tracker.
