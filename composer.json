@@ -1,72 +1,72 @@
 {
-  "name": "laragear/rut",
-  "description": "Tools to parse, validate and generate Chilean RUT in Laravel.",
-  "type": "library",
-  "license": "propietary",
-  "minimum-stability": "stable",
-  "prefer-stable": true,
-  "authors": [
-    {
-      "name": "Italo Baeza C.",
-      "email": "DarkGhostHunter@Gmail.com",
-      "homepage": "https://patreon.com/packagesforlaravel"
-    }
-  ],
-  "support": {
-    "source": "https://github.com/laragear/rut",
-    "issues": "https://github.com/laragear/rut/issues"
-  },
-  "require": {
-    "php": "^8.0.2",
-    "illuminate/database": "9.*",
-    "illuminate/validation": "9.*",
-    "illuminate/support": "9.*"
-  },
-  "require-dev": {
-    "orchestra/testbench": "7.*",
-    "phpunit/phpunit": "^9.5",
-    "mockery/mockery": "^1.5",
-    "doctrine/dbal": "^3.3"
-  },
-  "autoload": {
-    "psr-4": {
-      "Laragear\\Rut\\": "src"
-    }
-  },
-  "autoload-dev": {
-    "psr-4": {
-      "Tests\\": "tests"
-    }
-  },
-  "scripts": {
-    "test": "vendor/bin/phpunit --coverage-clover build/logs/clover.xml",
-    "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
-  },
-  "config": {
-    "sort-packages": true
-  },
-  "extra": {
-    "laravel": {
-      "providers": [
-        "Laragear\\Rut\\RutServiceProvider"
-      ],
-      "aliases": {
-        "Generator": "Laragear\\Rut\\Facades\\Generator"
-      }
-    }
-  },
-  "funding": [
-    {
-      "type": "Patreon",
-      "url": "https://patreon.com/PackagesForLaravel"
+    "name": "laragear/rut",
+    "description": "Tools to parse, validate and generate Chilean RUT in Laravel.",
+    "type": "library",
+    "license": "propietary",
+    "minimum-stability": "stable",
+    "prefer-stable": true,
+    "authors": [
+        {
+            "name": "Italo Baeza C.",
+            "email": "DarkGhostHunter@Gmail.com",
+            "homepage": "https://patreon.com/packagesforlaravel"
+        }
+    ],
+    "support": {
+        "source": "https://github.com/laragear/rut",
+        "issues": "https://github.com/laragear/rut/issues"
     },
-    {
-      "type": "Ko-Fi",
-      "url": "https://ko-fi.com/DarkGhostHunter"
+    "require": {
+        "php": "^8.0.2",
+        "illuminate/database": "9.*",
+        "illuminate/validation": "9.*",
+        "illuminate/support": "9.*"
     },
-    {
-      "type": "Paypal",
-      "url": "https://paypal.me/darkghosthunter"
-    }
-  ]
+    "require-dev": {
+        "orchestra/testbench": "7.*",
+        "phpunit/phpunit": "^9.5",
+        "mockery/mockery": "^1.5",
+        "doctrine/dbal": "^3.3"
+    },
+    "autoload": {
+        "psr-4": {
+            "Laragear\\Rut\\": "src"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Tests\\": "tests"
+        }
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit --coverage-clover build/logs/clover.xml",
+        "test-coverage": "vendor/bin/phpunit --coverage-html coverage"
+    },
+    "config": {
+        "sort-packages": true
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Laragear\\Rut\\RutServiceProvider"
+            ],
+            "aliases": {
+                "Generator": "Laragear\\Rut\\Facades\\Generator"
+            }
+        }
+    },
+    "funding": [
+        {
+            "type": "Patreon",
+            "url": "https://patreon.com/PackagesForLaravel"
+        },
+        {
+            "type": "Ko-Fi",
+            "url": "https://ko-fi.com/DarkGhostHunter"
+        },
+        {
+            "type": "Paypal",
+            "url": "https://paypal.me/darkghosthunter"
+        }
+    ]
 }
