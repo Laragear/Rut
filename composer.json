@@ -1,6 +1,6 @@
 {
   "name": "laragear/rut",
-  "description": "RUT utilities for modern PHP",
+  "description": "Tools to parse, validate and generate Chilean RUT in Laravel.",
   "type": "library",
   "license": "propietary",
   "minimum-stability": "stable",
@@ -13,7 +13,8 @@
     }
   ],
   "support": {
-    "source": "https://github.com/laragear/rut"
+    "source": "https://github.com/laragear/rut",
+    "issues": "https://github.com/laragear/rut/issues"
   },
   "require": {
     "php": "^8.0.2",
@@ -52,6 +53,10 @@
     }
   },
   "funding": [
+    {
+      "type": "Patreon",
+      "url": "https://patreon.com/PackagesForLaravel"
+    },
     {
       "type": "Ko-Fi",
       "url": "https://ko-fi.com/DarkGhostHunter"

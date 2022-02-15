@@ -17,7 +17,6 @@ jobs:
         include:
           - laravel: 9.*
             testbench: 7.*
-            doctrine: ^3.3
 
     name: PHP ${{ matrix.php }} - Laravel ${{ matrix.laravel }} - ${{ matrix.dependency-version }}
 
@@ -41,7 +40,7 @@ jobs:
 
       - name: Install dependencies
         run: |
-          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" "doctrine/dbal:${{ matrix.doctrine }}" --no-progress --no-update
+          composer require "laravel/framework:${{ matrix.laravel }}" "orchestra/testbench:${{ matrix.testbench }}" --no-progress --no-update
           composer update --${{ matrix.dependency-version }} --prefer-dist --no-progress
       - name: Run Tests
         run: composer run-script test
