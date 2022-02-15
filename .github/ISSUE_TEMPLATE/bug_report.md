@@ -1,7 +1,7 @@
 ---
 name: Bug report
 about: Submit an error
-title: "[X.x] What does happens that is considered an error or bug?"
+title: "[X.x] What does happen that is considered an error or bug?"
 labels: bug
 assignees: DarkGhostHunter
 
@@ -20,16 +20,21 @@ assignees: DarkGhostHunter
 A clear and concise description of what the bug is.
 
 ## Reproduction
-Paste the code if need as a Test or a repository where this can be reproduced, like this:
+Point a repository where this can be reproduced, or just paste the code to assert in a test, like this:
 
-```
-$test = Laragear::make()->break();
+```php
+public function test_this_breaks(): void
+{
+    $test = Laragear::make()->break();
+    
+    static::assertFalse($test);
+}
 ```
 
 ## Expected behavior
 A clear and concise description of what you expected to happen.
 
-**Stack Trace**
-Having the stack trace helps dealing with what triggered what. You may redact sensible information.
+## Stack Trace
+Having the stack trace helps to deal with _what triggered what_. You may hide sensible information.
 
-The better the description of the bug has, the faster it can be resolved.
+**The better the description of the bug has, the faster it can be resolved.**
