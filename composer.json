@@ -5,6 +5,11 @@
     "license": "propietary",
     "minimum-stability": "stable",
     "prefer-stable": true,
+    "keywords": [
+        "laravel",
+        "rut",
+        "chile"
+    ],
     "authors": [
         {
             "name": "Italo Baeza C.",
