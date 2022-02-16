@@ -15,7 +15,7 @@ class ValidateRutUniqueTest extends TestCase
         $validator = Validator::make([
             'rut' => $this->uniqueRut()->format(),
         ], [
-            'rut' => 'rut_unique:testing.users,rut_num,rut_vd'
+            'rut' => 'rut_unique:testing.users,rut_num,rut_vd',
         ]);
 
         static::assertFalse($validator->fails());
@@ -26,7 +26,7 @@ class ValidateRutUniqueTest extends TestCase
         $validator = Validator::make([
             'rut' => $this->uniqueRut()->format(),
         ], [
-            'rut' => 'rut_unique:testing.users'
+            'rut' => 'rut_unique:testing.users',
         ]);
 
         static::assertFalse($validator->fails());
@@ -35,9 +35,9 @@ class ValidateRutUniqueTest extends TestCase
     public function test_unique_fails_when_not_unique(): void
     {
         $validator = Validator::make([
-            'rut' => $this->randomRut()->format()
+            'rut' => $this->randomRut()->format(),
         ], [
-            'rut' => 'rut_unique:testing.users,rut_num,rut_vd'
+            'rut' => 'rut_unique:testing.users,rut_num,rut_vd',
         ]);
 
         static::assertTrue($validator->fails());
@@ -46,9 +46,9 @@ class ValidateRutUniqueTest extends TestCase
     public function test_returns_message(): void
     {
         $validator = Validator::make([
-            'rut' => $this->randomRut()->format()
+            'rut' => $this->randomRut()->format(),
         ], [
-            'rut' => 'rut_unique:testing.users,rut_num,rut_vd'
+            'rut' => 'rut_unique:testing.users,rut_num,rut_vd',
         ]);
 
         static::assertEquals('The rut has already been taken.', $validator->getMessageBag()->first('rut'));
@@ -59,10 +59,9 @@ class ValidateRutUniqueTest extends TestCase
         $validator = Validator::make([
             'rut' => '18.765.432-1',
         ], [
-            'rut' => 'rut_unique:testing.users,rut_num,rut_vd'
+            'rut' => 'rut_unique:testing.users,rut_num,rut_vd',
         ]);
 
         static::assertTrue($validator->fails());
     }
-
 }

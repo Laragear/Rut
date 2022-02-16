@@ -15,7 +15,7 @@ class ValidateNumUniqueTest extends TestCase
         $validator = Validator::make([
             'rut' => $this->uniqueRut()->format(),
         ], [
-            'rut' => 'num_unique:testing.users,rut_num'
+            'rut' => 'num_unique:testing.users,rut_num',
         ]);
 
         static::assertFalse($validator->fails());
@@ -24,9 +24,9 @@ class ValidateNumUniqueTest extends TestCase
     public function test_returns_message(): void
     {
         $validator = Validator::make([
-            'rut' => $this->randomRut()->format()
+            'rut' => $this->randomRut()->format(),
         ], [
-            'rut' => 'num_unique:testing.users,rut_num'
+            'rut' => 'num_unique:testing.users,rut_num',
         ]);
 
         static::assertEquals('The rut has already been taken.', $validator->getMessageBag()->first('rut'));
@@ -37,7 +37,7 @@ class ValidateNumUniqueTest extends TestCase
         $validator = Validator::make([
             'rut' => $this->uniqueRut()->format(),
         ], [
-            'rut' => 'num_unique:testing.users'
+            'rut' => 'num_unique:testing.users',
         ]);
 
         static::assertFalse($validator->fails());
@@ -46,9 +46,9 @@ class ValidateNumUniqueTest extends TestCase
     public function test_unique_fails_when_not_unique(): void
     {
         $validator = Validator::make([
-            'rut' => $this->randomRut()->format()
+            'rut' => $this->randomRut()->format(),
         ], [
-            'rut' => 'num_unique:testing.users,rut_num'
+            'rut' => 'num_unique:testing.users,rut_num',
         ]);
 
         static::assertTrue($validator->fails());
@@ -59,10 +59,9 @@ class ValidateNumUniqueTest extends TestCase
         $validator = Validator::make([
             'rut' => '18.765.432-1',
         ], [
-            'rut' => 'num_unique:testing.users,rut_num'
+            'rut' => 'num_unique:testing.users,rut_num',
         ]);
 
         static::assertTrue($validator->fails());
     }
-
 }
