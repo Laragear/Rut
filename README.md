@@ -1,4 +1,5 @@
 # Rut
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/laragear/rut.svg)](https://packagist.org/packages/laragear/rut) [![Latest stable test run](https://github.com/Laragear/Rut/workflows/Tests/badge.svg)](https://github.com/Laragear/Rut/actions) [![Codecov coverage](https://codecov.io/gh/Laragear/Rut/branch/1.x/graph/badge.svg?token=TOKEN)](https://codecov.io/gh/Laragear/Rut) [![Maintainability](https://api.codeclimate.com/v1/badges/64241e25adb0f55d7ba1/maintainability)](https://codeclimate.com/github/Laragear/Rut/maintainability) [![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/9.x/octane#introduction)
 
 Tools to parse, validate and generate Chilean RUT in Laravel.
 
