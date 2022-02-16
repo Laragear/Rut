@@ -13,14 +13,14 @@ class RutExists
     use DatabaseRule;
 
     /**
-     * Column of the RUT number
+     * Column of the RUT number.
      *
      * @var string
      */
     protected string $numColumn;
 
     /**
-     * Column of the RUT verification digit
+     * Column of the RUT verification digit.
      *
      * @var string
      */
@@ -29,9 +29,9 @@ class RutExists
     /**
      * Create a new rule instance.
      *
-     * @param string $table
-     * @param string $numColumn
-     * @param string $vdColumn
+     * @param  string  $table
+     * @param  string  $numColumn
+     * @param  string  $vdColumn
      */
     public function __construct(string $table, string $numColumn = 'NULL', string $vdColumn = 'NULL')
     {

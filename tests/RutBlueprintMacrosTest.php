@@ -163,5 +163,4 @@ class RutBlueprintMacrosTest extends TestCase
         static::assertTrue($schema->hasColumn('test_table', 'foo_num'));
         static::assertTrue($schema->hasColumn('test_table', 'foo_vd'));
     }
-
 }

@@ -13,6 +13,6 @@ class NumExists extends Exists
      */
     public function __toString()
     {
-        return 'num_' . parent::__toString();
+        return 'num_'.parent::__toString();
     }
 }

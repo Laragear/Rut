@@ -16,9 +16,9 @@ class ValidateNumExistsTest extends TestCase
     public function test_num_exists(): void
     {
         $validator = Validator::make([
-            'rut' => $this->randomRut()->format()
+            'rut' => $this->randomRut()->format(),
         ], [
-            'rut' => 'num_exists:testing.users'
+            'rut' => 'num_exists:testing.users',
         ]);
 
         static::assertFalse($validator->fails());
@@ -27,9 +27,9 @@ class ValidateNumExistsTest extends TestCase
     public function test_returns_message(): void
     {
         $validator = Validator::make([
-            'rut' => 'invalid_rut'
+            'rut' => 'invalid_rut',
         ], [
-            'rut' => 'num_exists:testing.users'
+            'rut' => 'num_exists:testing.users',
         ]);
 
         static::assertEquals('The rut must be a valid RUT.', $validator->getMessageBag()->first('rut'));
@@ -38,9 +38,9 @@ class ValidateNumExistsTest extends TestCase
     public function test_num_exists_with_column_guessing(): void
     {
         $validator = Validator::make([
-            'rut' => $this->randomRut()->format()
+            'rut' => $this->randomRut()->format(),
         ], [
-            'rut' => 'num_exists:testing.users'
+            'rut' => 'num_exists:testing.users',
         ]);
 
         static::assertFalse($validator->fails());
@@ -49,9 +49,9 @@ class ValidateNumExistsTest extends TestCase
     public function test_num_exists_fails_when_doesnt_exists(): void
     {
         $validator = Validator::make([
-            'rut' => $this->uniqueRut()->format(Rut::FORMAT_STRICT)
+            'rut' => $this->uniqueRut()->format(Rut::FORMAT_STRICT),
         ], [
-            'rut' => 'num_exists:testing.users,rut_num'
+            'rut' => 'num_exists:testing.users,rut_num',
         ]);
 
         static::assertTrue($validator->fails());
@@ -68,9 +68,9 @@ class ValidateNumExistsTest extends TestCase
         ])->save();
 
         $validator = Validator::make([
-            'rut' => '18.765.432-1'
+            'rut' => '18.765.432-1',
         ], [
-            'rut' => 'num_exists:testing.users,rut_num'
+            'rut' => 'num_exists:testing.users,rut_num',
         ]);
 
         static::assertTrue($validator->fails());
@@ -79,9 +79,9 @@ class ValidateNumExistsTest extends TestCase
     public function test_num_exists_fails_when_invalid_column(): void
     {
         $validator = Validator::make([
-            'rut' => $this->randomRut()->format()
+            'rut' => $this->randomRut()->format(),
         ], [
-            'rut' => 'num_exists:testing.users,invalid_column'
+            'rut' => 'num_exists:testing.users,invalid_column',
         ]);
 
         static::assertTrue($validator->fails());
@@ -92,9 +92,9 @@ class ValidateNumExistsTest extends TestCase
         $this->expectException(InvalidArgumentException::class);
 
         $validator = Validator::make([
-            'rut' => $this->randomRut()->format()
+            'rut' => $this->randomRut()->format(),
         ], [
-            'rut' => 'num_exists'
+            'rut' => 'num_exists',
         ]);
 
         static::assertTrue($validator->fails());
