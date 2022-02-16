@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laragear\Rut;
 
+use function count;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Validation\Factory;
@@ -14,7 +15,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
-use function count;
 use function is_iterable;
 
 class RutServiceProvider extends ServiceProvider
@@ -83,13 +83,13 @@ class RutServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the RUT helper for the blueprint
+     * Register the RUT helper for the blueprint.
      *
      * @return void
      */
     protected function macroBlueprint(): void
     {
-        Blueprint::macro('rut', function(string $prefix = 'rut'): ColumnDefinition {
+        Blueprint::macro('rut', function (string $prefix = 'rut'): ColumnDefinition {
             /** @var \Illuminate\Database\Schema\Blueprint $this */
             $column = $this->unsignedInteger("{$prefix}_num");
 
@@ -109,7 +109,7 @@ class RutServiceProvider extends ServiceProvider
     }
 
     /**
-     * Register the macro for the Rule class
+     * Register the macro for the Rule class.
      *
      * @return void
      */
@@ -153,7 +153,6 @@ class RutServiceProvider extends ServiceProvider
     {
         Request::macro('rut', function (iterable|string ...$input): Rut|Collection {
             /** @var \Illuminate\Http\Request $this */
-
             if (empty($input)) {
                 $input[0] = 'rut';
             } elseif (is_iterable($input[0])) {

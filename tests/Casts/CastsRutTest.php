@@ -20,7 +20,8 @@ class CastsRutTest extends TestCase
     {
         parent::setUp();
 
-        $this->model = new class extends User {
+        $this->model = new class extends User
+        {
             use HasRut;
             protected $table = 'users';
         };

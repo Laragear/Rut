@@ -17,9 +17,9 @@ class ValidateRuleRutExistsTest extends TestCase
     public function test_validation_rule_rut_exists(): void
     {
         $validator = Validator::make([
-            'rut' => $this->randomRut()->format()
+            'rut' => $this->randomRut()->format(),
         ], [
-            'rut' => Rule::rutExists('testing.users', 'rut_num', 'rut_vd')
+            'rut' => Rule::rutExists('testing.users', 'rut_num', 'rut_vd'),
         ]);
 
         static::assertFalse($validator->fails());
@@ -28,9 +28,9 @@ class ValidateRuleRutExistsTest extends TestCase
     public function test_validation_rule_rut_exists_with_column_guessing(): void
     {
         $validator = Validator::make([
-            'rut' => $this->randomRut()->format()
+            'rut' => $this->randomRut()->format(),
         ], [
-            'rut' => Rule::rutExists('testing.users')
+            'rut' => Rule::rutExists('testing.users'),
         ]);
 
         static::assertFalse($validator->fails());
@@ -41,10 +41,10 @@ class ValidateRuleRutExistsTest extends TestCase
         $user = User::inRandomOrder()->first();
 
         $validator = Validator::make([
-            'rut' => Rut::parse($user->rut_num.$user->rut_vd)->format()
+            'rut' => Rut::parse($user->rut_num.$user->rut_vd)->format(),
         ], [
             'rut' => Rule::rutExists('testing.users', 'rut_num', 'rut_vd')
-                ->where('name', $user->name)
+                ->where('name', $user->name),
         ]);
 
         static::assertFalse($validator->fails());
@@ -55,9 +55,9 @@ class ValidateRuleRutExistsTest extends TestCase
         $this->expectException(ArgumentCountError::class);
 
         $validator = Validator::make([
-            'rut' => $this->randomRut()->format()
+            'rut' => $this->randomRut()->format(),
         ], [
-            'rut' => Rule::rutExists()
+            'rut' => Rule::rutExists(),
         ]);
 
         static::assertFalse($validator->fails());
@@ -74,9 +74,9 @@ class ValidateRuleRutExistsTest extends TestCase
         ])->save();
 
         $validator = Validator::make([
-            'rut' => '18.765.432-1'
+            'rut' => '18.765.432-1',
         ], [
-            'rut' => Rule::rutExists('testing.users', 'rut_num', 'rut_vd')
+            'rut' => Rule::rutExists('testing.users', 'rut_num', 'rut_vd'),
         ]);
 
         static::assertTrue($validator->fails());
@@ -94,9 +94,9 @@ class ValidateRuleRutExistsTest extends TestCase
         ])->save();
 
         $validator = Validator::make([
-            'rut' => '18.765.432-1'
+            'rut' => '18.765.432-1',
         ], [
-            'rut' => Rule::rutExists('testing.users', 'rut_num', 'rut_vd')
+            'rut' => Rule::rutExists('testing.users', 'rut_num', 'rut_vd'),
         ]);
 
         static::assertTrue($validator->fails());
@@ -105,9 +105,9 @@ class ValidateRuleRutExistsTest extends TestCase
     public function test_validation_rule_rut_exists_fail_when_rut_doesnt_exists(): void
     {
         $validator = Validator::make([
-            'rut' => $this->uniqueRut()->format()
+            'rut' => $this->uniqueRut()->format(),
         ], [
-            'rut' => Rule::rutExists('testing.users', 'rut_num', 'rut_vd')
+            'rut' => Rule::rutExists('testing.users', 'rut_num', 'rut_vd'),
         ]);
 
         static::assertTrue($validator->fails());
@@ -116,9 +116,9 @@ class ValidateRuleRutExistsTest extends TestCase
     public function test_validation_rule_rut_exists_fail_when_invalid_column(): void
     {
         $validator = Validator::make([
-            'rut' => $this->randomRut()->format()
+            'rut' => $this->randomRut()->format(),
         ], [
-            'rut' => Rule::rutExists('testing.users', 'absent_num', 'absent_vd')
+            'rut' => Rule::rutExists('testing.users', 'absent_num', 'absent_vd'),
         ]);
 
         static::assertTrue($validator->fails());

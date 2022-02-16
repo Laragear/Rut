@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Laragear\Rut\Rules;
 
+use function addslashes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\DatabaseRule;
-use function addslashes;
 use function rtrim;
 use function sprintf;
 
@@ -15,14 +15,14 @@ class RutUnique
     use DatabaseRule;
 
     /**
-     * Column of the RUT number
+     * Column of the RUT number.
      *
      * @var string
      */
     protected string $numColumn;
 
     /**
-     * Column of the VD number
+     * Column of the VD number.
      *
      * @var string
      */
@@ -45,9 +45,9 @@ class RutUnique
     /**
      * Create a new rule instance.
      *
-     * @param string $table
-     * @param string $numColumn
-     * @param string $vdColumn
+     * @param  string  $table
+     * @param  string  $numColumn
+     * @param  string  $vdColumn
      */
     public function __construct(string $table, string $numColumn, string $vdColumn)
     {
@@ -90,7 +90,6 @@ class RutUnique
         return $this;
     }
 
-
     /**
      * Convert the rule to a validation string.
      *
@@ -102,7 +101,7 @@ class RutUnique
             $this->table,
             $this->numColumn,
             $this->vdColumn,
-            $this->ignore ? '"'.addslashes((string)$this->ignore).'"' : 'NULL',
+            $this->ignore ? '"'.addslashes((string) $this->ignore).'"' : 'NULL',
             $this->idColumn,
             $this->formatWheres()
         ), ',');

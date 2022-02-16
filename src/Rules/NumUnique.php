@@ -13,6 +13,6 @@ class NumUnique extends Unique
      */
     public function __toString()
     {
-        return 'num_' . parent::__toString();
+        return 'num_'.parent::__toString();
     }
 }

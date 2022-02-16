@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Laragear\Rut\Scopes;
 
+use function array_map;
+use function count;
+use function get_class;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -11,15 +14,12 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Collection as BaseCollection;
+use function is_countable;
+use function is_iterable;
 use Laragear\Rut\Rut;
 use ReflectionClass;
 use ReflectionMethod;
 use SplFixedArray;
-use function array_map;
-use function count;
-use function get_class;
-use function is_countable;
-use function is_iterable;
 
 class RutScope implements Scope
 {
@@ -35,7 +35,6 @@ class RutScope implements Scope
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $builder
      * @param  \Illuminate\Database\Eloquent\Model  $model
-     *
      * @return void
      */
     public function apply(Builder $builder, Model $model): void
@@ -79,8 +78,8 @@ class RutScope implements Scope
      * @param  \Illuminate\Database\Eloquent\Builder  $builder
      * @param  iterable|int|string|\Illuminate\Contracts\Support\Arrayable|\Laragear\Rut\Rut  $rut
      * @param  array|string  $columns
-     *
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|null
+     *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
     public static function findRut(Builder $builder, iterable|int|string|Arrayable|Rut $rut, string|array $columns = ['*']): Model|Collection|null
@@ -98,8 +97,8 @@ class RutScope implements Scope
      * @param  \Illuminate\Database\Eloquent\Builder  $builder
      * @param  iterable|\Illuminate\Contracts\Support\Arrayable  $ruts
      * @param  array|string  $columns
-     *
      * @return \Illuminate\Database\Eloquent\Collection
+     *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
     public static function findManyRut(Builder $builder, iterable|Arrayable $ruts, array|string $columns = ['*']): Collection
@@ -113,8 +112,8 @@ class RutScope implements Scope
      * @param  \Illuminate\Database\Eloquent\Builder  $builder
      * @param  iterable|int|string|\Illuminate\Contracts\Support\Arrayable|\Laragear\Rut\Rut  $rut
      * @param  array|string  $columns
-     *
      * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection
+     *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
     public static function findRutOrFail(Builder $builder, iterable|int|string|Arrayable|Rut $rut, array|string $columns = ['*']): Model|Collection
@@ -141,6 +140,7 @@ class RutScope implements Scope
      * @param  iterable|int|string|\Illuminate\Contracts\Support\Arrayable|\Laragear\Rut\Rut  $rut
      * @param  array|string  $columns
      * @return \Illuminate\Database\Eloquent\Model
+     *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
     public static function findRutOrNew(Builder $builder, iterable|int|string|Arrayable|Rut $rut, array|string $columns = ['*']): Model
@@ -174,6 +174,7 @@ class RutScope implements Scope
      * @param  \Illuminate\Database\Eloquent\Builder  $builder
      * @param  iterable|int|string|\Illuminate\Contracts\Support\Arrayable|\Laragear\Rut\Rut  $rut
      * @return \Illuminate\Database\Eloquent\Builder
+     *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
     public static function orWhereRut(Builder $builder, iterable|int|string|Arrayable|Rut $rut): Builder
@@ -199,8 +200,8 @@ class RutScope implements Scope
      *
      * @param  \Illuminate\Database\Eloquent\Builder  $builder
      * @param  iterable|int|string|\Illuminate\Contracts\Support\Arrayable|\Laragear\Rut\Rut  $rut
-     *
      * @return \Illuminate\Database\Eloquent\Builder
+     *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
     public static function orWhereRutNot(Builder $builder, iterable|int|string|Arrayable|Rut $rut): Builder
