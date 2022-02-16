@@ -633,6 +633,15 @@ php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="p
 
 The file gets published into the `.stubs` folder of your project. You should point your [PhpStorm to these stubs](https://www.jetbrains.com/help/phpstorm/php.html#advanced-settings-area).
 
+## Laravel Octane compatibility
+
+- There are no singletons using a stale application instance.
+- There are no singletons using a stale config instance.
+- There are no singletons using a stale request instance.
+- `Rut` static properties are only written once at boot time from config.
+
+There should be no problems using this package with Laravel Octane.
+
 ## Security
 
 If you discover any security related issues, please email darkghosthunter@gmail.com instead of using the issue tracker.
