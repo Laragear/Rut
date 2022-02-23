@@ -18,8 +18,8 @@
         }
     ],
     "support": {
-        "source": "https://github.com/laragear/rut",
-        "issues": "https://github.com/laragear/rut/issues"
+        "source": "https://github.com/Laragear/Rut",
+        "issues": "https://github.com/Laragear/Rut/issues"
     },
     "require": {
         "php": "^8.0.2",
