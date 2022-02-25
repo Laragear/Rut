@@ -28,6 +28,7 @@ trait HasRut
      * Initialize the HasRut trait.
      *
      * @return void
+     *
      * @internal
      */
     public function initializeHasRut(): void
@@ -39,6 +40,7 @@ trait HasRut
      * Boot the HasRut trait.
      *
      * @return void
+     *
      * @internal
      */
     public static function bootHasRut(): void

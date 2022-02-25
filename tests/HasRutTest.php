@@ -20,7 +20,7 @@ class HasRutTest extends TestCase
     {
         parent::setUp();
 
-        $this->model = new class extends User {
+        $this->model = new class() extends User {
             use HasRut;
 
             protected $table = 'users';
@@ -204,7 +204,6 @@ class HasRutTest extends TestCase
 
     public function test_error_or_where_rut_not_invalid_rut(): void
     {
-
         $this->expectException(EmptyRutException::class);
         $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 0 given.');
 

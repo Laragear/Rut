@@ -17,9 +17,9 @@ class ValidateRuleNumUniqueTest extends TestCase
     public function test_validation_rule_num_unique(): void
     {
         $validator = Validator::make([
-            'rut' => $this->uniqueRut()->format()
+            'rut' => $this->uniqueRut()->format(),
         ], [
-            'rut' => Rule::numUnique('testing.users', 'rut_num')
+            'rut' => Rule::numUnique('testing.users', 'rut_num'),
         ]);
 
         static::assertFalse($validator->fails());
@@ -30,10 +30,10 @@ class ValidateRuleNumUniqueTest extends TestCase
         $user = User::inRandomOrder()->first();
 
         $validator = Validator::make([
-            'rut' => Rut::parse($user->rut_num.$user->rut_vd)->format()
+            'rut' => Rut::parse($user->rut_num.$user->rut_vd)->format(),
         ], [
             'rut' => Rule::numUnique('testing.users', 'rut_num')
-                ->ignore($user->getKey())
+                ->ignore($user->getKey()),
         ]);
 
         static::assertFalse($validator->fails());
@@ -44,10 +44,10 @@ class ValidateRuleNumUniqueTest extends TestCase
         $user = User::inRandomOrder()->first();
 
         $validator = Validator::make([
-            'rut' => Rut::parse($user->rut_num.$user->rut_vd)->format()
+            'rut' => Rut::parse($user->rut_num.$user->rut_vd)->format(),
         ], [
             'rut' => Rule::numUnique('testing.users', 'rut_num')
-                ->ignoreModel($user)
+                ->ignoreModel($user),
         ]);
 
         static::assertFalse($validator->fails());
@@ -56,10 +56,10 @@ class ValidateRuleNumUniqueTest extends TestCase
     public function test_validation_rule_num_unique_where(): void
     {
         $validator = Validator::make([
-            'rut' => $this->randomRut()->format()
+            'rut' => $this->randomRut()->format(),
         ], [
             'rut' => Rule::numUnique('testing.users', 'rut_num')
-                ->where('name', 'Anything that is not John')
+                ->where('name', 'Anything that is not John'),
         ]);
 
         static::assertFalse($validator->fails());
@@ -67,10 +67,10 @@ class ValidateRuleNumUniqueTest extends TestCase
         $user = User::inRandomOrder()->first();
 
         $validator = Validator::make([
-            'rut' => Rut::parse($user->rut_num.$user->rut_vd)->format()
+            'rut' => Rut::parse($user->rut_num.$user->rut_vd)->format(),
         ], [
             'rut' => Rule::numUnique('testing.users', 'rut_num')
-                ->where('name', $user->name)
+                ->where('name', $user->name),
         ]);
 
         static::assertTrue($validator->fails());
@@ -81,10 +81,10 @@ class ValidateRuleNumUniqueTest extends TestCase
         $user = User::inRandomOrder()->first();
 
         $validator = Validator::make([
-            'rut' => Rut::parse($user->rut_num.$user->rut_vd)->format()
+            'rut' => Rut::parse($user->rut_num.$user->rut_vd)->format(),
         ], [
             'rut' => Rule::numUnique('testing.users', 'rut_num')
-                ->where('name', $user->name)
+                ->where('name', $user->name),
         ]);
 
         static::assertEquals('The rut has already been taken.', $validator->getMessageBag()->first('rut'));
@@ -95,9 +95,9 @@ class ValidateRuleNumUniqueTest extends TestCase
         $this->expectException(ArgumentCountError::class);
 
         $validator = Validator::make([
-            'rut' => $this->randomRut()->format()
+            'rut' => $this->randomRut()->format(),
         ], [
-            'rut' => Rule::numUnique()
+            'rut' => Rule::numUnique(),
         ]);
 
         static::assertFalse($validator->fails());

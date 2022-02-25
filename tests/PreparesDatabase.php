@@ -23,30 +23,30 @@ trait PreparesDatabase
             });
 
         User::make()->forceFill([
-            'id' => 1,
-            'name' => 'John',
-            'email' => 'john.doe@email.com',
+            'id'       => 1,
+            'name'     => 'John',
+            'email'    => 'john.doe@email.com',
             'password' => '123456',
-            'rut_num' => ($rut = Generator::makeOne())->num,
-            'rut_vd' => strtoupper($rut->vd),
+            'rut_num'  => ($rut = Generator::makeOne())->num,
+            'rut_vd'   => strtoupper($rut->vd),
         ])->save();
 
         User::make()->forceFill([
-            'id' => 2,
-            'name' => 'Michael',
-            'email' => 'michael.doe@email.com',
+            'id'       => 2,
+            'name'     => 'Michael',
+            'email'    => 'michael.doe@email.com',
             'password' => '123456',
-            'rut_num' => ($rut = Generator::makeOne())->num,
-            'rut_vd' => strtoupper($rut->vd),
+            'rut_num'  => ($rut = Generator::makeOne())->num,
+            'rut_vd'   => strtoupper($rut->vd),
         ])->save();
 
         User::make()->forceFill([
-            'id' => 3,
-            'name' => 'Carmen',
-            'email' => 'carmen.doe@email.com',
+            'id'       => 3,
+            'name'     => 'Carmen',
+            'email'    => 'carmen.doe@email.com',
             'password' => '123456',
-            'rut_num' => 20490006,
-            'rut_vd' => strtoupper('k'),
+            'rut_num'  => 20490006,
+            'rut_vd'   => strtoupper('k'),
         ])->save();
     }
 

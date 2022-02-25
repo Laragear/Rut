@@ -2,12 +2,12 @@
 
 namespace Tests;
 
+use function json_encode;
 use Laragear\Rut\Exceptions\EmptyRutException;
 use Laragear\Rut\Exceptions\InvalidRutException;
 use Laragear\Rut\Generator;
 use Laragear\Rut\Rut;
 use PHPUnit\Framework\TestCase;
-use function json_encode;
 use function serialize;
 use function unserialize;
 
@@ -77,7 +77,7 @@ class RutTest extends TestCase
 
     public function test_ruts_checks_valid_rut(): void
     {
-        $rut = (new Generator)->makeOne();
+        $rut = (new Generator())->makeOne();
 
         static::assertTrue($rut->isValid());
         static::assertFalse($rut->isInvalid());
@@ -95,7 +95,7 @@ class RutTest extends TestCase
 
     public function test_rut_validation_doesnt_throw_exception_if_valid(): void
     {
-        $rut = (new Generator)->makeOne();
+        $rut = (new Generator())->makeOne();
 
         $rut->validate();
 

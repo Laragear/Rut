@@ -11,10 +11,11 @@ class CastRut implements CastsAttributes
     /**
      * Transform the attribute from the underlying model values.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|\Laragear\Rut\HasRut  $model
-     * @param  string  $key
-     * @param  mixed  $value
-     * @param  array  $attributes
+     * @param \Illuminate\Database\Eloquent\Model|\Laragear\Rut\HasRut $model
+     * @param string                                                   $key
+     * @param mixed                                                    $value
+     * @param array                                                    $attributes
+     *
      * @return \Laragear\Rut\Rut
      */
     #[Pure]
@@ -26,13 +27,14 @@ class CastRut implements CastsAttributes
     /**
      * Transform the attribute to its underlying model values.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|\Laragear\Rut\HasRut  $model
-     * @param  string  $key
-     * @param  mixed  $value
-     * @param  array  $attributes
-     * @return array
+     * @param \Illuminate\Database\Eloquent\Model|\Laragear\Rut\HasRut $model
+     * @param string                                                   $key
+     * @param mixed                                                    $value
+     * @param array                                                    $attributes
      *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
+     *
+     * @return array
      */
     public function set($model, string $key, $value, array $attributes): array
     {

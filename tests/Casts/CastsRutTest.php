@@ -20,7 +20,7 @@ class CastsRutTest extends TestCase
     {
         parent::setUp();
 
-        $this->model = new class extends User {
+        $this->model = new class() extends User {
             use HasRut;
             protected $table = 'users';
         };
@@ -52,10 +52,10 @@ class CastsRutTest extends TestCase
 
         $this->model->make()->forceFill(
             [
-                'name' => 'John',
-                'email' => 'anything@cmail.com',
+                'name'     => 'John',
+                'email'    => 'anything@cmail.com',
                 'password' => '123456',
-                'rut' => $rut->format(Rut::FORMAT_BASIC),
+                'rut'      => $rut->format(Rut::FORMAT_BASIC),
             ]
         )->save();
 
