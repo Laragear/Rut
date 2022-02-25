@@ -66,4 +66,25 @@ class CastsRutTest extends TestCase
         static::assertEquals($rut->num, $user->rut_num);
         static::assertEquals($rut->vd, $user->rut_vd);
     }
+
+    public function test_casts_rut_as_nullable(): void
+    {
+        $user = $this->model->find(1);
+
+        $user->setRawAttributes([
+            'rut_num' => null,
+            'rut_vd' => null,
+        ]);
+
+        static::assertNull($user->rut);
+    }
+
+    public function test_sets_as_nullable(): void
+    {
+        $user = $this->model->find(1);
+
+        $user->rut = null;
+
+        static::assertNull($user->rut);
+    }
 }

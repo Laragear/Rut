@@ -15,12 +15,16 @@ class CastRut implements CastsAttributes
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
-     * @return \Laragear\Rut\Rut
+     * @return \Laragear\Rut\Rut|null
      */
     #[Pure]
-    public function get($model, string $key, $value, array $attributes): Rut
+    public function get($model, string $key, $value, array $attributes): ?Rut
     {
-        return new Rut($attributes[$model->getRutNumColumn()], $attributes[$model->getRutVdColumn()]);
+        if (isset($attributes[$model->getRutNumColumn()], $attributes[$model->getRutVdColumn()])) {
+            return new Rut($attributes[$model->getRutNumColumn()], $attributes[$model->getRutVdColumn()]);
+        }
+
+        return null;
     }
 
     /**
@@ -30,12 +34,18 @@ class CastRut implements CastsAttributes
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
-     * @return array
+     * @return array|null
      *
-     * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
-    public function set($model, string $key, $value, array $attributes): array
+    public function set($model, string $key, $value, array $attributes): ?array
     {
+        if (null === $value) {
+            return [
+                $model->getRutNumColumn() => null,
+                $model->getRutVdColumn()  => null,
+            ];
+        }
+
         $value = Rut::parse($value);
 
         return [
