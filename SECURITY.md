@@ -2,10 +2,15 @@
 
 ## Supported Versions
 
-Laragear packages will always be supported, as far as possible, by the author, for the latest version of Laravel and PHP.
+Laragear packages support for security updates only last for the latest published major version.
 
-Do not expect security updates for outdated versions of Laravel and PHP.
+| Version | Supported          |
+| ------- | ------------------ |
+| 5.1.x   | :white_check_mark: |
+| 5.0.x   | :white_check_mark: |
+| 4.0.x   | :x:                |
+| < 4.0   | :x:                |
 
 ## Reporting a Vulnerability
 
-If you discover any security related issues, please email darkghosthunter@gmail.com instead of using the issue tracker.
+If you discover any security related issues, please email [darkghosthunter@gmail.com](mailto:darkghosthunter@gmail.com) instead of using the issue tracker.
