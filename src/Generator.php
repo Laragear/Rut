@@ -29,10 +29,10 @@ class Generator
     /**
      * Create a new Generator instance.
      *
-     * @param  int  $iterations
-     * @param  int  $min
-     * @param  int  $max
-     * @param  bool  $unique
+     * @param int  $iterations
+     * @param int  $min
+     * @param int  $max
+     * @param bool $unique
      */
     public function __construct(
         protected int $iterations = self::ITERATIONS,
@@ -48,7 +48,8 @@ class Generator
      *
      * This can be performance detrimental on some scenarios or large iterations.
      *
-     * @param  bool  $unique
+     * @param bool $unique
+     *
      * @return static
      */
     #[Pure]
@@ -93,8 +94,9 @@ class Generator
     /**
      * Sets the boundaries for numbers for the RUTs.
      *
-     * @param  int  $min
-     * @param  int  $max
+     * @param int $min
+     * @param int $max
+     *
      * @return static
      */
     #[Pure]
@@ -116,7 +118,8 @@ class Generator
     /**
      * Makes one or many random RUT.
      *
-     * @param  int  $iterations
+     * @param int $iterations
+     *
      * @return \Illuminate\Support\Collection<\Laragear\Rut\Rut>
      */
     public function make(int $iterations = self::ITERATIONS): Collection
@@ -127,10 +130,11 @@ class Generator
     /**
      * Generates many random RUT.
      *
-     * @param  int  $iterations
-     * @param  bool  $unique
-     * @param  int  $min
-     * @param  int  $max
+     * @param int  $iterations
+     * @param bool $unique
+     * @param int  $min
+     * @param int  $max
+     *
      * @return \Illuminate\Support\Collection<\Laragear\Rut\Rut>
      */
     protected static function generate(int $iterations, bool $unique, int $min, int $max): Collection
@@ -163,9 +167,10 @@ class Generator
     /**
      * Check if the possible iterations for the generator exceed the boundaries.
      *
-     * @param  int  $iterations
-     * @param  int  $min
-     * @param  int  $max
+     * @param int $iterations
+     * @param int $min
+     * @param int $max
+     *
      * @return void
      */
     protected static function validateIterationsUnderBoundaries(int $iterations, int $min, int $max): void

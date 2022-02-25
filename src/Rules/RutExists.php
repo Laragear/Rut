@@ -13,14 +13,14 @@ class RutExists
     use DatabaseRule;
 
     /**
-     * Column of the RUT number
+     * Column of the RUT number.
      *
      * @var string
      */
     protected string $numColumn;
 
     /**
-     * Column of the RUT verification digit
+     * Column of the RUT verification digit.
      *
      * @var string
      */
@@ -47,7 +47,8 @@ class RutExists
      */
     public function __toString()
     {
-        return rtrim(sprintf('rut_exists:%s,%s,%s,%s',
+        return rtrim(sprintf(
+            'rut_exists:%s,%s,%s,%s',
             $this->table,
             $this->numColumn,
             $this->vdColumn,

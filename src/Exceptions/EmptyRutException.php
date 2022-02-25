@@ -10,9 +10,10 @@ class EmptyRutException extends LogicException implements RutException
     /**
      * Construct the exception.
      *
-     * @param  string  $message
-     * @param  int  $code
-     * @param  null|Throwable  $previous
+     * @param string         $message
+     * @param int            $code
+     * @param null|Throwable $previous
+     *
      * @return void
      */
     public function __construct(

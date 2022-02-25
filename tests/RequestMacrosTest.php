@@ -172,7 +172,8 @@ class RequestMacrosTest extends TestCase
         $request = Request::create('/path', 'POST');
 
         $request->request->set(
-            'rut', Generator::make(4)->push(new Rut(0, ''))->map->toString()->toArray()
+            'rut',
+            Generator::make(4)->push(new Rut(0, ''))->map->toString()->toArray()
         );
 
         $request->rut();

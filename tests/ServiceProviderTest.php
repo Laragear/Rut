@@ -77,8 +77,8 @@ class ServiceProviderTest extends TestCase
     protected function useCustomRutDefaults($app)
     {
         $app->make('config')->set([
-            'rut.format' => 10,
-            'rut.uppercase' => false,
+            'rut.format'      => 10,
+            'rut.uppercase'   => false,
             'rut.json_format' => 20,
         ]);
     }
