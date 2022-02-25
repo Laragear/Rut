@@ -96,7 +96,7 @@ class CastsRutTest extends TestCase
         $user = $this->model->find(1);
 
         $user->setRawAttributes([
-            'rut_num' => null
+            'rut_num' => null,
         ]);
 
         static::assertNull($user->rut);
@@ -104,7 +104,7 @@ class CastsRutTest extends TestCase
         $user = $this->model->find(1);
 
         $user->setRawAttributes([
-            'rut_vd' => null
+            'rut_vd' => null,
         ]);
 
         static::assertNull($user->rut);
@@ -126,7 +126,7 @@ class CastsRutTest extends TestCase
 
         $user->setRawAttributes([
             'rut_num' => 0,
-            'rut_vd' => ''
+            'rut_vd' => '',
         ]);
 
         static::assertInstanceOf(Rut::class, $user->rut);
