@@ -4,6 +4,7 @@ namespace Tests\Casts;
 
 use Illuminate\Foundation\Auth\User;
 use Laragear\Rut\Casts\CastRut;
+use Laragear\Rut\Exceptions\EmptyRutException;
 use Laragear\Rut\Facades\Generator;
 use Laragear\Rut\HasRut;
 use Laragear\Rut\Rut;
@@ -77,6 +78,60 @@ class CastsRutTest extends TestCase
         ]);
 
         static::assertNull($user->rut);
+    }
+
+    public function test_sets_rut_using_instance(): void
+    {
+        $user = $this->model->find(1);
+
+        $user->rut = new Rut(0, '');
+
+        static::assertInstanceOf(Rut::class, $user->rut);
+        static::assertSame(0, $user->rut->num);
+        static::assertSame('', $user->rut->vd);
+    }
+
+    public function test_gets_null_if_one_rut_column_value_is_null(): void
+    {
+        $user = $this->model->find(1);
+
+        $user->setRawAttributes([
+            'rut_num' => null
+        ]);
+
+        static::assertNull($user->rut);
+
+        $user = $this->model->find(1);
+
+        $user->setRawAttributes([
+            'rut_vd' => null
+        ]);
+
+        static::assertNull($user->rut);
+    }
+
+    public function test_throws_when_setting_value_not_enough_data(): void
+    {
+        $this->expectException(EmptyRutException::class);
+        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 1 given.');
+
+        $user = $this->model->find(1);
+
+        $user->rut = 0;
+    }
+
+    public function test_doesnt_throws_when_getting_value_not_enough_data(): void
+    {
+        $user = $this->model->find(1);
+
+        $user->setRawAttributes([
+            'rut_num' => 0,
+            'rut_vd' => ''
+        ]);
+
+        static::assertInstanceOf(Rut::class, $user->rut);
+        static::assertSame(0, $user->rut->num);
+        static::assertSame('', $user->rut->vd);
     }
 
     public function test_sets_as_nullable(): void
