@@ -35,7 +35,6 @@ class CastRut implements CastsAttributes
      * @param  mixed  $value
      * @param  array  $attributes
      * @return array|null
-     *
      */
     public function set($model, string $key, $value, array $attributes): ?array
     {
