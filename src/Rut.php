@@ -368,7 +368,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
 
         $string = (string) $string;
 
-        $string = preg_filter('/(?![0-9|k|K])./', '', $string) ?? $string;
+        $string = preg_filter('/[^\dkK]/', '', $string) ?? $string;
 
         $rut = str_split($string, max(1, strlen($string) - 1));
 
