@@ -83,6 +83,6 @@ body:
       description: Patreon supporters get priority review, fixing and responses. Are you not? [Become one!](https://patreon.com/packagesforlaravel)
       options:
         - Yes, with my username
-        - No, don't give this issue any priority
+        - No, don't give priority to this
     validations:
       required: true
