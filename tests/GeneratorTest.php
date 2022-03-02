@@ -53,7 +53,7 @@ class GeneratorTest extends TestCase
     {
         $rut = $this->generator->asPeople()->makeOne();
 
-        static::assertGreaterThanOrEqual(1000000, $rut->num);
+        static::assertGreaterThanOrEqual(100000, $rut->num);
         static::assertLessThanOrEqual(50000000, $rut->num);
     }
 
