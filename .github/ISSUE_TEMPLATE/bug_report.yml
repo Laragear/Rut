@@ -1,0 +1,90 @@
+name: Bug Report
+description: File a bug report
+title: "[X.x] What does happen that is considered an error or bug?"
+labels: ["bug"]
+assignees:
+  - DarkGhostHunter
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time to fill out this bug report!
+  - type: input
+    id: version-php-os
+    attributes:
+      label: PHP & Platform
+      desription: Exact PHP and Platform (OS) versions using this package.
+      placeholder: 8.1.2 - Ubuntu 22.04 x64
+    validations:
+      required: true
+  - type: input
+    id: version-laravel
+    attributes:
+      label: Laravel verion
+      desription: Exact Laravel version using this package.
+      placeholder: 9.2.3
+    validations:
+      required: true
+  - type: checkboxes
+    id: requeriments
+    attributes:
+      label: Have you done this?
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+      options:
+        - label: I am willing to share my stack trace and logs
+          required: true
+        - label: I can reproduce this bug in isolation (vanilla Laravel install)
+          required: true
+        - label: I can suggest a workaround as a Pull Request
+          required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Write a clear and concise description of what the bug is
+      placeholder: When I did that it happens this, which shouldn not happen.
+    validations:
+      required: true
+  - type: textarea
+    id: expectation
+    attributes:
+      label: Expectation
+      description: Write what you expect to (correctly) happen.
+      placeholder: When I did 
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction
+      description: Point a repository where this can be reproduced, or just paste the code to assert in a test.
+      placeholder: |
+        ```php
+        public function test_this_breaks(): void
+        {
+            $test = Laragear::make()->break();
+            
+            static::assertFalse($test);
+        }
+        ```
+        or
+        ```shell
+        git clone https://github.com/my-name/my-bug-report
+        ```
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Stack trace & logs
+      description: If you have a stack trace, you can copy it here. This is automatically formatted into code, no need for backticks.
+      placeholder: Having the stack trace helps to deal with _what triggered what_. You may hide sensible information.
+      render: shell
+  - type: checkboxes
+    id: terms
+    attributes:
+      label: Code of Conduct
+      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+      options:
+        - label: I agree to follow this project's Code of Conduct
+          required: true
