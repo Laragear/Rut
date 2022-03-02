@@ -10,8 +10,6 @@ body:
       value: |
         Thanks for taking the time to fill out this bug report!
         The more detailed this bug report is, the faster it can be reviewed and fixed.
-    validations:
-      required: true
   - type: input
     id: version-php-os
     attributes:
@@ -76,6 +74,8 @@ body:
       description: If you have a stack trace, you can copy it here. You may hide sensible information.
       placeholder: This is automatically formatted into code, no need for backticks.
       render: shell
+    validations:
+      required: false
   - type: dropdown
     id: supporter
     attributes:
