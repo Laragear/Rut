@@ -8,7 +8,8 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report! The more detailed this bug report is, the faster it can be reviewed and fixed.
+        Thanks for taking the time to fill out this bug report!
+        The more detailed this bug report is, the faster it can be reviewed and fixed.
     validations:
       required: true
   - type: input
