@@ -84,5 +84,5 @@ body:
       options:
         - Yes, with this very username
         - No
-      validations:
-        required: true
+    validations:
+      required: true
