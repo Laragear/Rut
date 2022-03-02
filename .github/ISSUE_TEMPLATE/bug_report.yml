@@ -8,7 +8,9 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this bug report!
+        Thanks for taking the time to fill out this bug report! The more detailed this bug report is, the faster it can be reviewed and fixed.
+    validations:
+      required: true
   - type: input
     id: version-php-os
     attributes:
@@ -29,7 +31,6 @@ body:
     id: requeriments
     attributes:
       label: Have you done this?
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
       options:
         - label: I am willing to share my stack trace and logs
           required: true
@@ -38,53 +39,49 @@ body:
         - label: I can suggest a workaround as a Pull Request
           required: false
   - type: textarea
-    id: description
-    attributes:
-      label: Description
-      description: Write a clear and concise description of what the bug is
-      placeholder: When I did that it happens this, which shouldn not happen.
-    validations:
-      required: true
-  - type: textarea
     id: expectation
     attributes:
       label: Expectation
       description: Write what you expect to (correctly) happen.
-      placeholder: When I did 
+      placeholder: When I do this, I expect to this to happen.
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: Write what (incorrectly) happens instead.
+      placeholder: Instead, when I do this, I receive that.
     validations:
       required: true
   - type: textarea
     id: reproduction
     attributes:
       label: Reproduction
-      description: Point a repository where this can be reproduced, or just paste the code to assert in a test.
+      description: Paste the code to assert in a test, or just comment with the repository with the bug.
+      render: php
       placeholder: |
-        ```php
-        public function test_this_breaks(): void
-        {
-            $test = Laragear::make()->break();
-            
-            static::assertFalse($test);
-        }
-        ```
-        or
-        ```shell
-        git clone https://github.com/my-name/my-bug-report
-        ```
+        $test = Laragear::make()->break();
+        
+        static::assertFalse($test);
+        
+        // or comment with "https://github.com/my-name/my-bug-report"
     validations:
       required: true
   - type: textarea
     id: logs
     attributes:
       label: Stack trace & logs
-      description: If you have a stack trace, you can copy it here. This is automatically formatted into code, no need for backticks.
-      placeholder: Having the stack trace helps to deal with _what triggered what_. You may hide sensible information.
+      description: If you have a stack trace, you can copy it here. You may hide sensible information.
+      placeholder: This is automatically formatted into code, no need for backticks.
       render: shell
-  - type: checkboxes
-    id: terms
+  - type: dropdown
+    id: supporter
     attributes:
-      label: Code of Conduct
-      description: By submitting this issue, you agree to follow our [Code of Conduct](https://example.com)
+      label: Are you a Patreon supporter?
+      description: Patreon supporters get priority review, fixing and responses.
       options:
-        - label: I agree to follow this project's Code of Conduct
-          required: true
+        - Yes, with this very username
+        - No
+      validations:
+        required: true
