@@ -80,9 +80,9 @@ body:
     id: supporter
     attributes:
       label: Are you a Patreon supporter?
-      description: Patreon supporters get priority review, fixing and responses.
+      description: Patreon supporters get priority review, fixing and responses. Are you not? [Become one!](https://patreon.com/packagesforlaravel)
       options:
-        - Yes, with this very username
-        - No
+        - Yes, with my username
+        - No, don't give this issue any priority
     validations:
       required: true
