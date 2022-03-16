@@ -3,6 +3,7 @@
 namespace Tests\Validation;
 
 use Illuminate\Support\Facades\Validator;
+use Laragear\Rut\Rut;
 use Tests\TestCase;
 
 class ValidateRutTest extends TestCase
@@ -83,6 +84,28 @@ class ValidateRutTest extends TestCase
     {
         $validator = Validator::make([
             'rut' => ['14328145-0', '143281450', '19.743.721-9', '1974WD!37ASDASD219.', ''],
+        ], [
+            'rut' => 'rut',
+        ]);
+
+        static::assertTrue($validator->fails());
+    }
+
+    public function test_rut_passes_if_instance_of_valid_rut(): void
+    {
+        $validator = Validator::make([
+            'rut' => Rut::parse(143281450),
+        ], [
+            'rut' => 'rut',
+        ]);
+
+        static::assertFalse($validator->fails());
+    }
+
+    public function test_rut_fails_if_instance_of_invalid_rut(): void
+    {
+        $validator = Validator::make([
+            'rut' => Rut::parse(143281452),
         ], [
             'rut' => 'rut',
         ]);
