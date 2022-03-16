@@ -540,6 +540,49 @@ class User extends Authenticatable
 }
 ```
 
+#### Appending a RUT
+
+By default, a model with RUT columns will serialize these like any other column. This may be desired for some frontend frameworks, but sometimes this is undesired as the RUT may be considered as a whole string.
+
+```json
+{
+    "id": 1,
+    "rut_num": 16887941,
+    "rut_vd": "5",
+    "name": "Taylor",
+    "email": "taylor@laravel.com"
+}
+```
+
+To avoid returning the RUT columns on serialization, you can hide them automatically in exchange for appending the `rut` key to the model. This is also useful for [Livewire real-time validation](https://laravel-livewire.com/docs/2.x/input-validation#real-time-validation).
+
+Simply make `shouldAppendRut()` in the model to return `true`.
+
+```php
+/**
+ * If the `rut` key should be appended, and hide the underlying RUT columns.
+ *
+ * @return bool
+ */
+public function shouldAppendRut(): bool
+{
+    return true;
+}
+```
+
+This will effectively render the RUT as a string, following [the default formatting](#formatting-a-rut).
+
+```json
+{
+    "id": 1,
+    "rut": "16.887.941-5",
+    "name": "Taylor",
+    "email": "taylor@laravel.com"
+}
+```
+
+> RUT append will be enabled by default on the next major version.
+
 ## Configuration
 
 This package works flawlessly out of the box, but you may want to change how a `Rut` is formatted as a string using the global configuration. You can publish it using Artisan:
@@ -597,8 +640,8 @@ use Laragear\Rut\Rut;
 
 Rut::$jsonFormat = Rut::FORMAT_RAW;
 
-Rut::parse('5.138.171-8'); // '5.138.171-8'
-Rut::parse('5.138.171-8')->toJson(); // {"5138171-8"}
+Rut::parse('5.138.171-8'); // "5.138.171-8"
+Rut::parse('5.138.171-8')->toJson(); // "5138171-8"
 ```
 
 ### Verification Digit Case
