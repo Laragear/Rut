@@ -22,7 +22,11 @@ class ValidatesRut
     public static function validateRut(string $attribute, mixed $value): bool
     {
         foreach (Arr::wrap($value) as $rut) {
-            if (Rut::parse($rut)->isInvalid()) {
+            try {
+                if (Rut::parse($rut)->isInvalid()) {
+                    return false;
+                }
+            } catch (Exceptions\RutException) {
                 return false;
             }
         }
