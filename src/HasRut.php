@@ -25,6 +25,18 @@ use function defined;
 trait HasRut
 {
     /**
+     * Boot the HasRut trait.
+     *
+     * @return void
+     *
+     * @internal
+     */
+    public static function bootHasRut(): void
+    {
+        static::addGlobalScope(new Scopes\RutScope());
+    }
+
+    /**
      * Initialize the HasRut trait.
      *
      * @return void
@@ -49,18 +61,6 @@ trait HasRut
     public function shouldAppendRut(): bool
     {
         return false;
-    }
-
-    /**
-     * Boot the HasRut trait.
-     *
-     * @return void
-     *
-     * @internal
-     */
-    public static function bootHasRut(): void
-    {
-        static::addGlobalScope(new Scopes\RutScope());
     }
 
     /**
