@@ -34,7 +34,23 @@ trait HasRut
     public function initializeHasRut(): void
     {
         $this->mergeCasts(['rut' => Casts\CastRut::class]);
+
+        if ($this->shouldAppendRut()) {
+            $this->append('rut');
+            $this->makeHidden($this->getRutNumColumn(), $this->getRutVdColumn());
+        }
     }
+
+    /**
+     * If the `rut` key should be appended, and hide the underlying RUT columns.
+     *
+     * @return bool
+     */
+    public function shouldAppendRut(): bool
+    {
+        return false;
+    }
+
 
     /**
      * Boot the HasRut trait.

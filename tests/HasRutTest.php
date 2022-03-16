@@ -268,6 +268,17 @@ class HasRutTest extends TestCase
 
         DummyModel::where('id', 1)->orWhereRutNotIn([DummyModel::find(2)->rut, 'invalid-rut'])->get();
     }
+
+    public function test_appends_rut_and_hides_columns_if_enabled(): void
+    {
+        $model = DummyModelAppendingRut::make()->forceFill(['rut' => $rut = Generator::makeOne()]);
+
+        static::assertArrayHasKey('rut', $model->toArray());
+        static::assertArrayNotHasKey('rut_num', $model->toArray());
+        static::assertArrayNotHasKey('rut_vd', $model->toArray());
+
+        static::assertEquals($rut, $model->toArray()['rut']);
+    }
 }
 
 class DummyModel extends Model
@@ -275,4 +286,16 @@ class DummyModel extends Model
     use HasRut;
 
     protected $table = 'users';
+}
+
+class DummyModelAppendingRut extends Model
+{
+    use HasRut;
+
+    protected $table = 'users';
+
+    public function shouldAppendRut(): bool
+    {
+        return true;
+    }
 }
