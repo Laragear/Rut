@@ -51,7 +51,6 @@ trait HasRut
         return false;
     }
 
-
     /**
      * Boot the HasRut trait.
      *
