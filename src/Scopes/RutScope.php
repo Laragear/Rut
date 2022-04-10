@@ -17,6 +17,7 @@ use function is_countable;
 use function is_iterable;
 use Laragear\Rut\Rut;
 use ReflectionClass;
+use ReflectionMethod as Method;
 use SplFixedArray;
 
 class RutScope implements Scope
