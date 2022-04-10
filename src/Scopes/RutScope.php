@@ -62,7 +62,7 @@ class RutScope implements Scope
     protected function filterMethods(): BaseCollection
     {
         return BaseCollection::make((new ReflectionClass($this))->getMethods(Method::IS_PUBLIC | Method::IS_STATIC))
-            ->filter(static function (Method $method): string {
+            ->filter(static function (Method $method): bool {
                 return $method->isPublic() && $method->isStatic();
             })
             ->map(static function (Method $method): string {
