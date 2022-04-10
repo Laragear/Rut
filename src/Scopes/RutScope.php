@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Laragear\Rut\Scopes;
 
-use function array_map;
 use function count;
 use function get_class;
 use Illuminate\Contracts\Support\Arrayable;
@@ -18,7 +17,6 @@ use function is_countable;
 use function is_iterable;
 use Laragear\Rut\Rut;
 use ReflectionClass;
-use ReflectionMethod;
 use SplFixedArray;
 
 class RutScope implements Scope
