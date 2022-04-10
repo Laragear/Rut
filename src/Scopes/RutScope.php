@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Laragear\Rut\Scopes;
 
-use function array_map;
 use function count;
 use function get_class;
 use Illuminate\Contracts\Support\Arrayable;
@@ -18,7 +17,7 @@ use function is_countable;
 use function is_iterable;
 use Laragear\Rut\Rut;
 use ReflectionClass;
-use ReflectionMethod;
+use ReflectionMethod as Method;
 use SplFixedArray;
 
 class RutScope implements Scope
@@ -50,26 +49,25 @@ class RutScope implements Scope
      */
     public function extend(Builder $builder): void
     {
-        foreach (static::getMacros() as $macro) {
-            $builder->macro($macro, [__CLASS__, $macro]);
+        foreach (static::$methods ??= SplFixedArray::fromArray($this->filterMethods()->toArray()) as $method) {
+            $builder->macro($method, [static::class, $method]);
         }
     }
 
     /**
-     * Returns all the macros for the current scope.
+     * Filters the methods of this Scope by those static and public.
      *
-     * @return \SplFixedArray<int, string>
+     * @return \Illuminate\Support\Collection
      */
-    protected static function getMacros(): iterable
+    protected function filterMethods(): BaseCollection
     {
-        return static::$methods ??= SplFixedArray::fromArray(
-            array_map(
-                static function (ReflectionMethod $method): string {
-                    return $method->name;
-                },
-                (new ReflectionClass(__CLASS__))->getMethods(ReflectionMethod::IS_STATIC | ReflectionMethod::IS_PUBLIC),
-            )
-        );
+        return BaseCollection::make((new ReflectionClass($this))->getMethods(Method::IS_PUBLIC | Method::IS_STATIC))
+            ->filter(static function (Method $method): bool {
+                return $method->isPublic() && $method->isStatic();
+            })
+            ->map(static function (Method $method): string {
+                return $method->getName();
+            });
     }
 
     /**
