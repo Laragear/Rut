@@ -50,7 +50,7 @@ class RutScope implements Scope
     public function extend(Builder $builder): void
     {
         foreach (static::$methods ??= SplFixedArray::fromArray($this->filterMethods()->toArray()) as $method) {
-            $query->macro($method, [static::class, $method]);
+            $builder->macro($method, [static::class, $method]);
         }
     }
 
