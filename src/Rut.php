@@ -373,7 +373,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
                 $i = 2;
             }
             $sum += $v * $i;
-            ++$i;
+            $i++;
         }
 
         $digit = 11 - ($sum % 11);
