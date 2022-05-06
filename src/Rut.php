@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Laragear\Rut;
 
 use function array_reverse;
+use Closure;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
@@ -23,27 +24,6 @@ use function strtoupper;
 class Rut implements JsonSerializable, Stringable, Jsonable
 {
     use Macroable;
-
-    /**
-     * Sets RUT representation with only the characters.
-     *
-     * @example "187654321"
-     */
-    public const FORMAT_RAW = 0;
-
-    /**
-     * Sets RUT representation with basic format.
-     *
-     * @example "18765432-1"
-     */
-    public const FORMAT_BASIC = 1;
-
-    /**
-     * Sets RUT representation properly formatted.
-     *
-     * @example "18.765.432-1"
-     */
-    public const FORMAT_STRICT = 2;
 
     /**
      * The minimum RUT number to be considered valid.
@@ -69,27 +49,23 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     /**
      * The default string format for the RUT.
      *
-     * @var int
-     *
-     * @internal
+     * @var \Laragear\Rut\Format
      */
-    public static int $format = self::FORMAT_STRICT;
+    public static Format $format = Format::STRICT;
 
     /**
      * Determine if all RUT should be uppercase at instancing.
      *
      * @var bool
-     *
-     * @internal
      */
     public static bool $uppercase = true;
 
     /**
      * Use a callback to format the Rut instance as JSON.
      *
-     * @var int|null
+     * @var \Closure|\Laragear\Rut\Format|null
      */
-    public static ?int $jsonFormat = null;
+    public static Closure|Format|null $jsonFormat = null;
 
     /**
      * Create a new Rut instance.
@@ -187,15 +163,15 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     /**
      * Formats the RUT into a given style.
      *
-     * @param  int|null  $format
+     * @param  \Laragear\Rut\Format|null  $format
      * @return string
      */
     #[Pure]
-    public function format(int $format = null): string
+    public function format(Format $format = null): string
     {
         return match ($format ?? static::$format) {
-            static::FORMAT_STRICT => $this->toStrictString(),
-            static::FORMAT_BASIC => $this->toBasicString(),
+            Format::Strict => $this->toStrictString(),
+            Format::Simple => $this->toSimpleString(),
             default => $this->toRawString(),
         };
     }
@@ -203,13 +179,13 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     /**
      * Specify data which should be serialized to JSON.
      *
-     * @return string
+     * @return array|string
      */
-    public function jsonSerialize(): string
+    public function jsonSerialize(): array|string
     {
-        return static::$jsonFormat !== null
-            ? $this->format(static::$jsonFormat)
-            : $this->toString();
+        return static::$jsonFormat instanceof Closure
+            ? (static::$jsonFormat)($this)
+            : $this->toString(static::$jsonFormat);
     }
 
     /**
@@ -237,7 +213,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      *
      * @return string
      */
-    protected function toBasicString(): string
+    protected function toSimpleString(): string
     {
         return "$this->num-$this->vd";
     }
@@ -259,7 +235,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      */
     public function toString(): string
     {
-        return $this->format(static::$format);
+        return $this->format();
     }
 
     /**
@@ -397,7 +373,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
                 $i = 2;
             }
             $sum += $v * $i;
-            $i++;
+            ++$i;
         }
 
         $digit = 11 - ($sum % 11);

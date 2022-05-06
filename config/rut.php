@@ -1,7 +1,5 @@
 <?php
 
-use Laragear\Rut\Rut;
-
 return [
 
     /*
@@ -15,7 +13,7 @@ return [
     |
     */
 
-    'format' => Rut::FORMAT_STRICT,
+    'format' => \Laragear\Rut\Format::Strict,
 
     /*
     |--------------------------------------------------------------------------
@@ -25,6 +23,8 @@ return [
     | By default, a RUT is cast to a JSON string using the same global format.
     | can change the style here, which will affect only JSON strings. If the
     | value of `json_format` is `null` it will mirror the `format` config.
+    |
+    | Alternatively, you can set a custom Closure in `Rut::$jsonFormat`.
     |
     */
 

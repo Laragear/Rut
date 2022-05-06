@@ -30,7 +30,6 @@ namespace Illuminate\Database\Schema
 
 namespace Illuminate\Http
 {
-
     use Illuminate\Support\Collection;
     use Laragear\Rut\Rut;
 

@@ -54,13 +54,13 @@ trait HasRut
     }
 
     /**
-     * If the `rut` key should be appended, and hide the underlying RUT columns.
+     * If the `rut` key should be appended, while hidding the underlying RUT columns.
      *
      * @return bool
      */
     public function shouldAppendRut(): bool
     {
-        return false;
+        return true;
     }
 
     /**

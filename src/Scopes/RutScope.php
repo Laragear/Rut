@@ -57,7 +57,7 @@ class RutScope implements Scope
     /**
      * Filters the methods of this Scope by those static and public.
      *
-     * @return \Illuminate\Support\Collection
+     * @return \Illuminate\Support\Collection<int, string>
      */
     protected function filterMethods(): BaseCollection
     {

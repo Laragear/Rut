@@ -173,7 +173,7 @@ class RutServiceProvider extends ServiceProvider
      */
     public function boot(Repository $config): void
     {
-        Rut::$format = $config->get('rut.format', Rut::FORMAT_STRICT);
+        Rut::$format = $config->get('rut.format', Format::Strict);
         Rut::$uppercase = $config->get('rut.uppercase', true);
         Rut::$jsonFormat = $config->get('rut.json_format');
 

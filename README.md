@@ -21,7 +21,7 @@ Your support allows me to keep this package free, up-to-date and maintainable. A
 
 ## Requirements
 
-- PHP 8.0 or later
+- PHP 8.1 or later
 - Laravel 9.x or later
 
 ## Installation
@@ -96,7 +96,7 @@ if ($rut->isCompany()) {
 }
 ```
 
-> This package considers RUT as valid if its between 100.000 and 100.000.000, inclusive. Most (if not all) people using 99.999 or lower RUT numbers are deceased, and 100.000.000 RUTs are still decades away from happening. Note that there may be certain exceptions for having a RUT over 100 millions, but there is a high chance these are not meant to be permanent or for citizens.
+> This package considers RUT as valid when between 100.000 and 100.000.000, inclusive. Most (if not all) people using 99.999 or lower RUT numbers are deceased, and 100.000.000 RUTs are still decades away from happening. Note that there may be certain exceptions for having a RUT over 100 millions, but there is a high chance these are not meant to be permanent or for citizens.
 
 ## Generating RUTs
 
@@ -540,9 +540,34 @@ class User extends Authenticatable
 }
 ```
 
-#### Appending a RUT
+#### RUT Appended and columns hidden
 
-By default, a model with RUT columns will serialize these like any other column. This may be desired for some frontend frameworks, but sometimes this is undesired as the RUT may be considered as a whole string.
+By default, the `rut` property is appended following [the default formatting](#formatting-a-rut), and the underlying columns containing the RUT information are hidden. This enables compatibility with [Livewire real-time validation](https://laravel-livewire.com/docs/2.x/input-validation#real-time-validation).
+
+```json
+{
+    "id": 1,
+    "rut": "16.887.941-5",
+    "name": "Taylor",
+    "email": "taylor@laravel.com"
+}
+```
+
+To show the underlying RUT columns instead of the RUT string, simply make `shouldAppendRut()` in the model to return `false`.
+
+```php
+/**
+ * If the `rut` key should be appended, and hide the underlying RUT columns.
+ *
+ * @return bool
+ */
+public function shouldAppendRut(): bool
+{
+    return false;
+}
+```
+
+This will effectively return both columns as normal properties .
 
 ```json
 {
@@ -554,34 +579,16 @@ By default, a model with RUT columns will serialize these like any other column.
 }
 ```
 
-To avoid returning the RUT columns on serialization, you can hide them automatically in exchange for appending the `rut` key to the model. This is also useful for [Livewire real-time validation](https://laravel-livewire.com/docs/2.x/input-validation#real-time-validation).
-
-Simply make `shouldAppendRut()` in the model to return `true`.
+If you need to make both `rut` and the columns visible, you may override the `shouldAppendRut()` method and return `false`.
 
 ```php
-/**
- * If the `rut` key should be appended, and hide the underlying RUT columns.
- *
- * @return bool
- */
 public function shouldAppendRut(): bool
 {
-    return true;
+   $this->append('rut');
+
+   return false;
 }
 ```
-
-This will effectively render the RUT as a string, following [the default formatting](#formatting-a-rut).
-
-```json
-{
-    "id": 1,
-    "rut": "16.887.941-5",
-    "name": "Taylor",
-    "email": "taylor@laravel.com"
-}
-```
-
-> RUT append will be enabled by default on the next major version.
 
 ## Configuration
 
@@ -594,21 +601,20 @@ php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="c
 You will receive a config file like this:
 
 ```php
-use Laragear\Rut\Rut;
-
 return [
-    'format' => Rut::FORMAT_STRICT,
+    'format' => \Laragear\Rut\Format::Strict,
+    'json_format' => null,
     'uppercase' => true,
 ];
 ```
 
-### Formatting a RUT
+### Default RUT Format
 
 ```php
 use Laragear\Rut\Format;
 
 return [
-    'format' => Format::DEFAULT,
+    'format' => \Laragear\Rut\Format::Strict,
 ];
 ```
 
@@ -617,31 +623,49 @@ By default, RUTs are _strictly_ formatted. This config alters how RUTs are seria
 | Formatting | Example       | Description                                                      |
 |------------|---------------|------------------------------------------------------------------|
 | Strict     | `5.138.171-8` | Default option. Serializes with a thousand separator and hyphen. |
-| Basic      | `5138171-8`   | No thousand separator, only the hyphen.                          |
+| Simple     | `5138171-8`   | No thousand separator, only the hyphen.                          |
 | Raw        | `51381718`    | No thousand separator nor hyphen.                                |
 
-You can use `format()` to format the RUT using a different formatting for the given instance. 
+You can use `format()` to format the RUT using a different formatting for the given instance by using the `Format` enum.
 
 ```php
 use Laragear\Rut\Rut;
+use Laragear\Rut\Format;
 
 $rut = Rut::parse('5.138.171-8');
 
-$rut->format(); // "5.138.171-8"
-$rut->format(Rut::FORMAT_STRICT); // "5.138.171-8"
-$rut->format(Rut::FORMAT_BASIC); // "5138171-8"
-$rut->format(Rut::FORMAT_RAW); // "51381718"
+$rut->format();               // "5.138.171-8"
+$rut->format(Format::Strict); // "5.138.171-8"
+$rut->format(Format::Simple); // "5138171-8"
+$rut->format(Format::Raw);    // "51381718"
 ```
 
-For the case of JSON, RUTs are cast as a string using the default global format. You can use the `$jsonFormat` static property to alter which format to use when serializing into JSON exclusively.
+### JSON format
+
+```php
+return [
+    'json_format' => \Laragear\Rut\Format::Raw,
+];
+```
+
+For the case of JSON, RUTs are cast as a string using the default global format when this is `null`. You can set any format to use when serializing into JSON exclusively.
+
+```php
+use Laragear\Rut\Rut;
+use Laragear\Rut\Format;
+
+Rut::parse('5.138.171-8');           // "5.138.171-8"
+Rut::parse('5.138.171-8')->toJson(); // "51381718"
+```
+
+Alternatively, you can override the configuration by using a callback to create your own JSON from the RUT. The callback accepts the `Rut` instance, and it should return an `array` or a `string` to be serialized into JSON.
 
 ```php
 use Laragear\Rut\Rut;
 
-Rut::$jsonFormat = Rut::FORMAT_RAW;
-
-Rut::parse('5.138.171-8'); // "5.138.171-8"
-Rut::parse('5.138.171-8')->toJson(); // "5138171-8"
+Rut::$jsonFormat = function (Rut $rut) {
+    return ['num' => $rut->num, 'vd' => $rut->vd];
+}
 ```
 
 ### Verification Digit Case
@@ -652,9 +676,9 @@ return [
 ];
 ```
 
-Since the Verification Digit can be `K`, it's usually good idea to always work with uppercase or lowercase across all the application.
+Since the Verification Digit can be either a single digit or the letter `K`, it's usually good idea to keep the case consistent; to always work with uppercase or lowercase across all the application.
 
-The `Rut` instance by default will use uppercase `K`, but you can change it globally by setting this to `false`. This will affect all `Rut` instances.
+The `Rut` instance by default will use uppercase `K`, but you can change it to lowercase globally by setting this to `false`. This will affect all `Rut` instances.
 
 ```php
 use Laragear\Rut\Format;

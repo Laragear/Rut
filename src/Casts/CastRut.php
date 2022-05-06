@@ -20,6 +20,7 @@ class CastRut implements CastsAttributes
     #[Pure]
     public function get($model, string $key, $value, array $attributes): ?Rut
     {
+        // Only return a Rut instance when both number and verification digit are filled.
         if (isset($attributes[$model->getRutNumColumn()], $attributes[$model->getRutVdColumn()])) {
             return new Rut($attributes[$model->getRutNumColumn()], $attributes[$model->getRutVdColumn()]);
         }
@@ -32,7 +33,7 @@ class CastRut implements CastsAttributes
      *
      * @param  \Illuminate\Database\Eloquent\Model|\Laragear\Rut\HasRut  $model
      * @param  string  $key
-     * @param  mixed  $value
+     * @param  \Laragear\Rut\Rut|string|int|null  $value
      * @param  array  $attributes
      * @return array|null
      */
@@ -45,6 +46,7 @@ class CastRut implements CastsAttributes
             ];
         }
 
+        // By this point the string should be already validated.
         $value = Rut::parse($value);
 
         return [
