@@ -1,5 +1,10 @@
 # Rut
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/laragear/rut.svg)](https://packagist.org/packages/laragear/rut) [![Latest stable test run](https://github.com/Laragear/Rut/workflows/Tests/badge.svg)](https://github.com/Laragear/Rut/actions) [![Codecov coverage](https://codecov.io/gh/Laragear/Rut/branch/1.x/graph/badge.svg?token=5COE8X0JMJ)](https://codecov.io/gh/Laragear/Rut) [![Maintainability](https://api.codeclimate.com/v1/badges/677b55bbf19bda17e0f5/maintainability)](https://codeclimate.com/github/Laragear/Rut/maintainability) [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Laragear_Rut&metric=alert_status)](https://sonarcloud.io/dashboard?id=Laragear_Rut) [![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/9.x/octane#introduction)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/laragear/rut.svg)](https://packagist.org/packages/laragear/rut)
+[![Latest stable test run](https://github.com/Laragear/Rut/workflows/Tests/badge.svg)](https://github.com/Laragear/Rut/actions)
+[![Codecov coverage](https://codecov.io/gh/Laragear/Rut/branch/1.x/graph/badge.svg?token=5COE8X0JMJ)](https://codecov.io/gh/Laragear/Rut)
+[![Maintainability](https://api.codeclimate.com/v1/badges/677b55bbf19bda17e0f5/maintainability)](https://codeclimate.com/github/Laragear/Rut/maintainability)
+[![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Laragear_Rut&metric=alert_status)](https://sonarcloud.io/dashboard?id=Laragear_Rut)
+[![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/9.x/octane#introduction)
 
 Tools to parse, validate and generate Chilean RUT in Laravel.
 
@@ -542,7 +547,7 @@ class User extends Authenticatable
 
 #### RUT Appended and columns hidden
 
-By default, the `rut` property is appended following [the default formatting](#formatting-a-rut), and the underlying columns containing the RUT information are hidden. This enables compatibility with [Livewire real-time validation](https://laravel-livewire.com/docs/2.x/input-validation#real-time-validation).
+By default, the `rut` property is appended following [the default formatting](#default-rut-format), and the underlying columns containing the RUT information are hidden. This enables compatibility with [Livewire real-time validation](https://laravel-livewire.com/docs/2.x/input-validation#real-time-validation).
 
 ```json
 {
@@ -602,7 +607,7 @@ You will receive a config file like this:
 
 ```php
 return [
-    'format' => \Laragear\Rut\Format::Strict,
+    'format' => \Laragear\Rut\RutFormat::Strict,
     'json_format' => null,
     'uppercase' => true,
 ];
@@ -611,40 +616,42 @@ return [
 ### Default RUT Format
 
 ```php
-use Laragear\Rut\Format;
+use Laragear\Rut\RutFormat;
 
 return [
-    'format' => \Laragear\Rut\Format::Strict,
+    'format' => RutFormat::Strict,
 ];
 ```
 
 By default, RUTs are _strictly_ formatted. This config alters how RUTs are serialized as string in your application globally.
 
-| Formatting | Example       | Description                                                      |
-|------------|---------------|------------------------------------------------------------------|
-| Strict     | `5.138.171-8` | Default option. Serializes with a thousand separator and hyphen. |
-| Simple     | `5138171-8`   | No thousand separator, only the hyphen.                          |
-| Raw        | `51381718`    | No thousand separator nor hyphen.                                |
+| Formatting | Enum                | Example       | Description                                                      |
+|------------|---------------------|---------------|------------------------------------------------------------------|
+| Strict     | `RutFormat::Strict` | `5.138.171-8` | Default option. Serializes with a thousand separator and hyphen. |
+| Basic      | `RutFormat::Basic`  | `5138171-8`   | No thousand separator, only the hyphen.                          |
+| Raw        | `RutFormat::Raw`    | `51381718`    | No thousand separator nor hyphen.                                |
 
-You can use `format()` to format the RUT using a different formatting for the given instance by using the `Format` enum.
+You can use `format()` to format the RUT using a different formatting for the given instance by using the `RutFormat` enum.
 
 ```php
 use Laragear\Rut\Rut;
-use Laragear\Rut\Format;
+use Laragear\Rut\RutFormat;
 
 $rut = Rut::parse('5.138.171-8');
 
-$rut->format();               // "5.138.171-8"
-$rut->format(Format::Strict); // "5.138.171-8"
-$rut->format(Format::Simple); // "5138171-8"
-$rut->format(Format::Raw);    // "51381718"
+$rut->format();                  // "5.138.171-8"
+$rut->format(RutFormat::Strict); // "5.138.171-8"
+$rut->format(RutFormat::Basic);  // "5138171-8"
+$rut->format(RutFormat::Raw);    // "51381718"
 ```
 
 ### JSON format
 
 ```php
+use Laragear\Rut\RutFormat;
+
 return [
-    'json_format' => \Laragear\Rut\Format::Raw,
+    'json_format' => RutFormat::Raw,
 ];
 ```
 
@@ -652,7 +659,7 @@ For the case of JSON, RUTs are cast as a string using the default global format 
 
 ```php
 use Laragear\Rut\Rut;
-use Laragear\Rut\Format;
+use Laragear\Rut\RutFormat;
 
 Rut::parse('5.138.171-8');           // "5.138.171-8"
 Rut::parse('5.138.171-8')->toJson(); // "51381718"
@@ -681,7 +688,7 @@ Since the Verification Digit can be either a single digit or the letter `K`, it'
 The `Rut` instance by default will use uppercase `K`, but you can change it to lowercase globally by setting this to `false`. This will affect all `Rut` instances.
 
 ```php
-use Laragear\Rut\Format;
+use Laragear\Rut\RutFormat;
 use Laragear\Rut\Rut;
 
 config()->set('rut.uppercase', false)
@@ -689,6 +696,7 @@ config()->set('rut.uppercase', false)
 $rut = Rut::parse('12351839-K');
 
 $rut->format(); // "12.351.839-k"
+$rut->toJson(); // "12.351.839-k"
 ```
 
 ## PhpStorm stubs

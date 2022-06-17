@@ -54,7 +54,7 @@ trait HasRut
     }
 
     /**
-     * If the `rut` key should be appended, while hidding the underlying RUT columns.
+     * If the `rut` key should be appended, while hiding the underlying RUT columns.
      *
      * @return bool
      */
@@ -74,7 +74,7 @@ trait HasRut
     }
 
     /**
-     * Get the name of the "rut verificarion digit" column.
+     * Get the name of the "rut verification digit" column.
      *
      * @return string
      */

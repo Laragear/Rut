@@ -9,6 +9,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
 use Laragear\Rut\Generator;
 use Laragear\Rut\Rut;
+use Laragear\Rut\RutFormat;
 use Laragear\Rut\RutServiceProvider;
 
 class ServiceProviderTest extends TestCase
@@ -77,9 +78,9 @@ class ServiceProviderTest extends TestCase
     protected function useCustomRutDefaults($app)
     {
         $app->make('config')->set([
-            'rut.format' => 10,
+            'rut.format' => RutFormat::Raw,
             'rut.uppercase' => false,
-            'rut.json_format' => 20,
+            'rut.json_format' => RutFormat::Basic,
         ]);
     }
 
@@ -89,8 +90,8 @@ class ServiceProviderTest extends TestCase
     public function test_boots_rut_defaults(): void
     {
         static::assertFalse(Rut::$uppercase);
-        static::assertSame(10, Rut::$format);
-        static::assertSame(20, Rut::$jsonFormat);
+        static::assertSame(RutFormat::Raw, Rut::$format);
+        static::assertSame(RutFormat::Basic, Rut::$jsonFormat);
     }
 
     protected function tearDown(): void

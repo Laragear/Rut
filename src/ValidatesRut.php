@@ -45,7 +45,7 @@ class ValidatesRut
     {
         foreach (Arr::wrap($value) as $rut) {
             try {
-                if (Rut::parse($rut)->validate()->format(Rut::FORMAT_STRICT) !== $rut) {
+                if (Rut::parse($rut)->validate()->format(RutFormat::Strict) !== $rut) {
                     return false;
                 }
             } catch (Exceptions\RutException) {

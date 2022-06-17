@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Laragear\Rut;
 
-use function count;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Validation\Factory;
@@ -15,8 +14,12 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
+use function count;
 use function is_iterable;
 
+/**
+ * @internal
+ */
 class RutServiceProvider extends ServiceProvider
 {
     public const CONFIG = __DIR__.'/../config/rut.php';
@@ -173,14 +176,31 @@ class RutServiceProvider extends ServiceProvider
      */
     public function boot(Repository $config): void
     {
-        Rut::$format = $config->get('rut.format', Format::Strict);
+        Rut::$format = $this->normalizeFormat($config->get('rut.format', RutFormat::DEFAULT));
         Rut::$uppercase = $config->get('rut.uppercase', true);
-        Rut::$jsonFormat = $config->get('rut.json_format');
+        Rut::$jsonFormat = $this->normalizeFormat($config->get('rut.json_format'));
 
         if ($this->app->runningInConsole()) {
             $this->publishes([static::CONFIG => $this->app->configPath('rut.php')], 'config');
             $this->publishes([static::LANG => $this->app->langPath('vendor/rut')], 'translations');
             $this->publishes([static::STUBS => $this->app->basePath('.stubs/rut.php')], 'phpstorm');
         }
+    }
+
+    /**
+     * Normalize an int into an Enum.
+     *
+     * @param  \Laragear\Rut\RutFormat|int|null  $format
+     * @return \Laragear\Rut\RutFormat|null
+     * @deprecated This helper will be removed in the next version as there will no need to use it.
+     */
+    protected function normalizeFormat(RutFormat|int|null $format): ?RutFormat
+    {
+        return match ($format) {
+            0 => RutFormat::Raw,
+            1 => RutFormat::Basic,
+            2 => RutFormat::Strict,
+            default => $format
+        };
     }
 }

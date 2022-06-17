@@ -1,5 +1,7 @@
 <?php
 
+use Laragear\Rut\RutFormat;
+
 return [
 
     /*
@@ -13,7 +15,7 @@ return [
     |
     */
 
-    'format' => \Laragear\Rut\Format::Strict,
+    'format' => RutFormat::Strict,
 
     /*
     |--------------------------------------------------------------------------

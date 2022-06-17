@@ -22,7 +22,7 @@
         "issues": "https://github.com/Laragear/Rut/issues"
     },
     "require": {
-        "php": "^8.0.2",
+        "php": "^8.1",
         "illuminate/database": "9.*",
         "illuminate/validation": "9.*",
         "illuminate/support": "9.*"
