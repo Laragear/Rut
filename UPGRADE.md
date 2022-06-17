@@ -30,7 +30,7 @@ return [
 ]
 ```
 
-## Eloquent Model Append
+### Eloquent Model Append
 
 By default, the Model appends the `rut` property on serialization, and hides `rut_num` and `rut_vd` columns. The name of these columns may change depending on the Model RUT configuration. This behavior can be reverted by overriding `shouldAppendRut()` to return `false`.
 
