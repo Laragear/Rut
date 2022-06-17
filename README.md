@@ -59,40 +59,6 @@ use Laragear\Rut\Rut;
 $rut = Rut::parse('5.138.171-8');
 ```
 
-## Validating a RUT
-
-You should use the included [Validation Rules](#validation-rules) to validate RUTs in your input.
-
-Otherwise, you can manually validate a RUT using `isValid()` or `isInvalid()` to check if it's mathematically valid or not, respectively.
-
-```php
-use Laragear\Rut\Rut;
-
-$rut = Rut::parse('5.138.171-8');
-
-if ($rut->isValid()) {
-    return "The Rut is valid!";
-}
-```
-
-Using the `validate()` method will throw a `InvalidRutException` if it's invalid.
-
-```php
-use Laragear\Rut\Rut;
-
-Rut::parse('5.138.171-K')->validate(); // "The given RUT is invalid."
-```
-
-You can also validate RUT strings directly, or an already separated RUT, by using `check()` method.
-
-```php
-use Laragear\Rut\Rut;
-
-Rut::check('5.138.171-8')
-
-Rut::check(5138171, '8');
-```
-
 ## Person vs Company RUT
 
 To differentiate between a person RUT and a company RUT, you can use `isPerson()` or `isCompany()`, respectively. The "cut" is done at 50.000.000, so is usually safe to assume a RUT like `76.543.210-K` is for a company.
@@ -139,15 +105,79 @@ use Laragear\Rut\Facades\Generator;
 $ruts = Generator::unique()->asCompanies()->make(10000000);
 ```
 
+## Serialization
+
+By default, all `Rut` instances are serialized into text using a _strict_ format. You can serialize a `Rut` instance differently using one of the three formats available:
+
+| Formatting | Enum                | Example       | Description                                                      |
+|------------|---------------------|---------------|------------------------------------------------------------------|
+| Strict     | `RutFormat::Strict` | `5.138.171-8` | Default option. Serializes with a thousand separator and hyphen. |
+| Basic      | `RutFormat::Basic`  | `5138171-8`   | No thousand separator, only the hyphen.                          |
+| Raw        | `RutFormat::Raw`    | `51381718`    | No thousand separator nor hyphen.                                |
+
+You can use `format()` with any `RutFormat` enum as argument to serialize the RUT into text.
+
+```php
+use Laragear\Rut\Rut;
+use Laragear\Rut\RutFormat;
+
+$rut = Rut::parse('5.138.171-8');
+
+$rut->format();                  // "5.138.171-8"
+$rut->format(RutFormat::Strict); // "5.138.171-8"
+$rut->format(RutFormat::Basic);  // "5138171-8"
+$rut->format(RutFormat::Raw);    // "51381718"
+```
+
+You may [change this globally in the configuration](#default-rut-format).
+
+## Validating a RUT
+
+You should use the included [Validation Rules](#validation-rules) to validate RUTs in your input.
+
+Otherwise, you can manually validate a RUT using `isValid()` or `isInvalid()` to check if it's mathematically valid or not, respectively.
+
+```php
+use Laragear\Rut\Rut;
+
+$rut = Rut::parse('5.138.171-8');
+
+if ($rut->isValid()) {
+    return "The Rut is valid!";
+}
+```
+
+Using the `validate()` method will throw a `InvalidRutException` if it's invalid.
+
+```php
+use Laragear\Rut\Rut;
+
+Rut::parse('5.138.171-K')->validate(); // InvalidRutException: "The given RUT is invalid."
+```
+
+You can also validate RUT strings directly, or an already separated RUT, by using `check()` method.
+
+```php
+use Laragear\Rut\Rut;
+
+if (Rut::check('5.138.171-8')) {
+    return "This RUT is valid!";
+}
+
+if (Rut::check(5138171, '8')) {
+    return "This RUT is also valid!";
+}
+```
+
 ## Validation rules
 
-All validation rules messages are translated. You can add your own translation to these rules by publishing the translation files:
+All validation rules messages can be translated. You can add your own translation to these rules by publishing the translation files:
 
 ```shell
 php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="translations"
 ```
 
-### `rut`
+### `rut` rule
 
 This checks if the RUT being passed is a valid RUT string. This automatically **cleans the RUT** from anything except numbers and the verification digit. Only then it checks if the resulting RUT is mathematically valid.
 
@@ -199,7 +229,7 @@ $validator = Validator::make([
 echo $validator->passes(); // true
 ```
 
-### `rut_strict`
+### `rut_strict` rule
 
 This works the same as `rut`, but it will validate RUTs that are also using the Strict RUT format: with a thousand separator and a hyphen before the Validation Digit.
 
@@ -243,11 +273,13 @@ $validator = Validator::make([
 echo $validator->paases(); // false
 ```
 
-### `rut_exists` (Database)
+### `rut_exists` database rule
 
 Instead of using Laravel's [exists](https://laravel.com/docs/master/validation#rule-exists), you can use `rut_exists` in case your database has separated columns for the RUT Number and Verification Digit.
 
 For this to work you need to set the table to look for, the *RUT number* column and *RUT verification digit* column, otherwise the rule will *guess* the column names by the attribute key and appending `_num` and `_vd`, respectively.
+
+This rule automatically validates the RUT before doing the query.
 
 ```php
 <?php
@@ -290,7 +322,7 @@ echo $validator->passes(); // true
 
 > Database rules will normalize the verification _digit_ as uppercase in the database for search queries.
 
-### `num_exists` (Database)
+### `num_exists` database rule
 
 This validation rule checks if only the number of the RUT exists, without taking into account the verification digit. This is handy when the Database has an index in the number of the RUT, thus making this verification blazing fast.
 
@@ -330,7 +362,7 @@ $validator = Validator::make([
 echo $validator->passes(); // false
 ```
 
-### `rut_unique` (Database)
+### `rut_unique` database rule
 
 This works the same as the `rut_exists` rule, but instead of checking if the RUT exists in the Database, it will detect if it doesn't. This rule works just like the [Laravel's `unique` rule works](https://laravel.com/docs/validation#rule-unique).
 
@@ -374,7 +406,7 @@ echo $validator->passes(); // false
 
 > **[Warning]** **You should never pass any user controlled request input into the ignore method. Instead, you should only pass a system generated unique ID such as an auto-incrementing ID or UUID from an Eloquent model instance. Otherwise, your application will be vulnerable to an SQL injection attack.**
 
-### `num_unique` (Database)
+### `num_unique` database rule
 
 This rule will check only if the **number** of the RUT doesn't exists already in the database, which is useful for Databases with an index solely on the number of the RUT. This rule also matches the [Laravel's `unique` rule works](https://laravel.com/docs/validation#rule-unique).
 
@@ -414,6 +446,8 @@ $validator = Validator::make([
 echo $validator->passes(); // false
 ```
 
+> Database rules will normalize the verification _digit_ in the database for search queries.
+
 > **[Warning]** **You should never pass any user controlled request input into the ignore method. Instead, you should only pass a system generated unique ID such as an auto-incrementing ID or UUID from an Eloquent model instance. Otherwise, your application will be vulnerable to an SQL injection attack.**
 
 ## Database Blueprint helper
@@ -422,21 +456,38 @@ If you're creating your database from the ground up, you don't need to manually 
 
 ```php
 Schema::create('users', function (Blueprint $table) {
+    // $table->unsignedInteger('rut_num');
+    // $table->char('rut_vd', 1);
+    
     $table->rut();
     
     // ...
 });
 
 Schema::create('company', function (Blueprint $table) {
+    // $table->unsignedInteger('rut_num')->nullable();
+    // $table->char('rut_vd', 1)->nullable();
+    
     $table->rutNullable();
     
     // ...
 });
 ```
 
-> The `rutNullable()` method creates both Number and Verification Digit columns as nullable.
+> The `rutNullable()` method creates **both** Number and Verification Digit columns as nullable.
 
 If you plan to use the RUT Number as an index, which may speed up queries to look for RUTs, you can just index the Number column by fluently adding `primary()`, `index()` or `unique()` depending on your database needs. This is because it has more performance sense to index only the Number rather than the whole RUT.
+
+```php
+Schema::create('users', function (Blueprint $table) {
+    // $table->unsignedInteger('rut_num')->primary();
+    // $table->char('rut_vd', 1);
+
+    $table->rut()->primary();
+    
+    // ...
+});
+```
 
 ## Request RUT helper
 
@@ -525,6 +576,14 @@ With that, you will have access to convenient RUT queries shorthands:
 
 > These RUT queries work over the RUT Number for convenience, as the RUT Verification Digit should be verified only on persistence.
 
+These scopes can be used in your queries easily:
+
+```php
+use App\Models\User;
+
+$user = User::whereRut('20490006-K')->where('is_active', true)->find();
+```
+
 The `rut` property is dynamically created from the RUT Number and RUT Verification Digit columns, which uses a [Cast](https://laravel.com/docs/eloquent-mutators#attribute-casting) underneath.
 
 ```php
@@ -551,14 +610,14 @@ class User extends Authenticatable
 
 #### RUT Appended and columns hidden
 
-By default, the `rut` property is appended following [the default formatting](#default-rut-format), and the underlying columns containing the RUT information are hidden. This enables compatibility with [Livewire real-time validation](https://laravel-livewire.com/docs/2.x/input-validation#real-time-validation).
+By default, the `rut` property is appended, and the underlying columns containing the RUT information are hidden. This enables compatibility with [Livewire real-time validation](https://laravel-livewire.com/docs/2.x/input-validation#real-time-validation).
 
 ```json
 {
     "id": 1,
-    "rut": "16.887.941-5",
     "name": "Taylor",
-    "email": "taylor@laravel.com"
+    "email": "taylor@laravel.com",
+    "rut": "16.887.941-5"
 }
 ```
 
@@ -576,19 +635,19 @@ public function shouldAppendRut(): bool
 }
 ```
 
-This will effectively return both columns as normal properties .
+This will effectively return both columns as normal properties.
 
 ```json
 {
     "id": 1,
-    "rut_num": 16887941,
-    "rut_vd": "5",
     "name": "Taylor",
-    "email": "taylor@laravel.com"
+    "email": "taylor@laravel.com",
+    "rut_num": 16887941,
+    "rut_vd": "5"
 }
 ```
 
-If you need to make both `rut` and the columns visible, you may override the `shouldAppendRut()` method and return `false`.
+If you need to make the `rut` key and the underlying columns visible, you may override the `shouldAppendRut()` method and return `false`.
 
 ```php
 public function shouldAppendRut(): bool
@@ -607,11 +666,13 @@ This package works flawlessly out of the box, but you may want to change how a `
 php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="config"
 ```
 
-You will receive a config file like this:
+You will receive the `config/rut.php` config file like this:
 
 ```php
+use Laragear\Rut\RutFormat;
+
 return [
-    'format' => \Laragear\Rut\RutFormat::Strict,
+    'format' => RutFormat::Strict,
     'json_format' => null,
     'uppercase' => true,
 ];
@@ -623,31 +684,11 @@ return [
 use Laragear\Rut\RutFormat;
 
 return [
-    'format' => RutFormat::Strict,
+    'format' => RutFormat::DEFUALT,
 ];
 ```
 
 By default, RUTs are _strictly_ formatted. This config alters how RUTs are serialized as string in your application globally.
-
-| Formatting | Enum                | Example       | Description                                                      |
-|------------|---------------------|---------------|------------------------------------------------------------------|
-| Strict     | `RutFormat::Strict` | `5.138.171-8` | Default option. Serializes with a thousand separator and hyphen. |
-| Basic      | `RutFormat::Basic`  | `5138171-8`   | No thousand separator, only the hyphen.                          |
-| Raw        | `RutFormat::Raw`    | `51381718`    | No thousand separator nor hyphen.                                |
-
-You can use `format()` to format the RUT using a different formatting for the given instance by using the `RutFormat` enum.
-
-```php
-use Laragear\Rut\Rut;
-use Laragear\Rut\RutFormat;
-
-$rut = Rut::parse('5.138.171-8');
-
-$rut->format();                  // "5.138.171-8"
-$rut->format(RutFormat::Strict); // "5.138.171-8"
-$rut->format(RutFormat::Basic);  // "5138171-8"
-$rut->format(RutFormat::Raw);    // "51381718"
-```
 
 ### JSON format
 
@@ -655,21 +696,23 @@ $rut->format(RutFormat::Raw);    // "51381718"
 use Laragear\Rut\RutFormat;
 
 return [
-    'json_format' => RutFormat::Raw,
+    'json_format' => null,
 ];
 ```
 
-For the case of JSON, RUTs are cast as a string using the default global format when this is `null`. You can set any format to use when serializing into JSON exclusively.
+For the case of JSON, RUT are cast as a string using the global format when this is `null`. You can set any format to use when serializing into JSON exclusively.
 
 ```php
 use Laragear\Rut\Rut;
 use Laragear\Rut\RutFormat;
 
-Rut::parse('5.138.171-8');           // "5.138.171-8"
+config()->set('rut.format_json', RutFormat::Raw)
+
+Rut::parse('5.138.171-8')->format(); // "5.138.171-8"
 Rut::parse('5.138.171-8')->toJson(); // "51381718"
 ```
 
-Alternatively, you can override the configuration by using a callback to create your own JSON from the RUT. The callback accepts the `Rut` instance, and it should return an `array` or a `string` to be serialized into JSON.
+Alternatively, you can override the configuration by using a callback to create your own JSON format. The callback accepts the `Rut` instance, and it should return an `array` or a `string` to be serialized into JSON. A good place to put this logic is in the `boot()` method of your `AppServiceProvider` file.
 
 ```php
 use Laragear\Rut\Rut;
@@ -677,6 +720,8 @@ use Laragear\Rut\Rut;
 Rut::$jsonFormat = function (Rut $rut) {
     return ['num' => $rut->num, 'vd' => $rut->vd];
 }
+
+Rut::parse('5.138.171-8')->toJson(); // "{"num":5138171,"vd":"8"}"
 ```
 
 ### Verification Digit Case
@@ -702,6 +747,8 @@ $rut = Rut::parse('12351839-K');
 $rut->format(); // "12.351.839-k"
 $rut->toJson(); // "12.351.839-k"
 ```
+
+> This doesn't affect database rules, as the verification digit is normalized automatically.
 
 ## PhpStorm stubs
 
