@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Laragear\Rut;
 
+use function count;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Validation\Factory;
@@ -14,7 +15,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
-use function count;
 use function is_iterable;
 
 /**
@@ -192,6 +192,7 @@ class RutServiceProvider extends ServiceProvider
      *
      * @param  \Laragear\Rut\RutFormat|int|null  $format
      * @return \Laragear\Rut\RutFormat|null
+     *
      * @deprecated This helper will be removed in the next version as there will no need to use it.
      */
     protected function normalizeFormat(RutFormat|int|null $format): ?RutFormat
