@@ -97,15 +97,22 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     public static Closure|RutFormat|null $jsonFormat = null;
 
     /**
+     * The RUT verification digit.
+     *
+     * @var string
+     */
+    public readonly string $vd;
+
+    /**
      * Create a new Rut instance.
      *
      * @param  int  $num
      * @param  string  $vd
      * @return void
      */
-    public function __construct(public int $num, public string $vd)
+    public function __construct(public readonly int $num, string $vd)
     {
-        $this->vd = static::$uppercase ? strtoupper($this->vd) : strtolower($this->vd);
+        $this->vd = static::$uppercase ? strtoupper($vd) : strtolower($vd);
     }
 
     /**
