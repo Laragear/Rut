@@ -1,6 +1,6 @@
 # Upgrading
 
-The following is a somewhat-detailed way to upgrade this package.
+The following is a somewhat-detailed way to upgrade this package from prior versions.
 
 ## From 1.x to 2.x
 
