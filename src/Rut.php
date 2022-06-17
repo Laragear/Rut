@@ -4,18 +4,18 @@ declare(strict_types=1);
 
 namespace Laragear\Rut;
 
+use function array_reverse;
 use Closure;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
 use JetBrains\PhpStorm\Pure;
-use JsonSerializable;
-use Stringable;
-use function array_reverse;
 use function json_encode;
+use JsonSerializable;
 use function max;
 use function preg_filter;
 use function str_split;
+use Stringable;
 use function strlen;
 use function strtolower;
 use function strtoupper;
@@ -262,6 +262,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      * Serializes the current RUT.
      *
      * @return array{0: string}
+     *
      * @internal
      */
     #[Pure]
@@ -274,6 +275,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      * Creates a new instance from a serialized data array.
      *
      * @param  array{0: string}  $data
+     *
      * @internal
      */
     public function __unserialize(array $data): void
@@ -288,6 +290,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      *
      * @param  \Laragear\Rut\Rut|string|int|null  $rut
      * @return static
+     *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
     public static function parse(self|string|int|null $rut): static
@@ -339,6 +342,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      *
      * @param  static|string|int|null  $string
      * @return array
+     *
      * @throws \Laragear\Rut\Exceptions\EmptyRutException
      */
     public static function split(self|string|int|null $string): array
