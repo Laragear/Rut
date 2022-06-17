@@ -1,0 +1,721 @@
+# Rut
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/laragear/rut.svg)](https://packagist.org/packages/laragear/rut) [![Latest stable test run](https://github.com/Laragear/Rut/workflows/Tests/badge.svg)](https://github.com/Laragear/Rut/actions) [![Codecov coverage](https://codecov.io/gh/Laragear/Rut/branch/1.x/graph/badge.svg?token=5COE8X0JMJ)](https://codecov.io/gh/Laragear/Rut) [![Maintainability](https://api.codeclimate.com/v1/badges/677b55bbf19bda17e0f5/maintainability)](https://codeclimate.com/github/Laragear/Rut/maintainability) [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Laragear_Rut&metric=alert_status)](https://sonarcloud.io/dashboard?id=Laragear_Rut) [![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/9.x/octane#introduction)
+
+Herramientas para analizar, validar y generar RUT Chilenos en Laravel.
+
+```php
+use Laragear\Rut\Rut;
+
+$rut = Rut::parse('18.765.432-1');
+
+if ($rut->isValid()) {
+    return 'Tu RUT es válido!';
+}
+```
+
+## Mantengamos esta librería gratis
+
+[![](.assets/patreon.png)](https://patreon.com/packagesforlaravel)[![](.assets/ko-fi.png)](https://ko-fi.com/DarkGhostHunter)[![](.assets/buymeacoffee.png)](https://www.buymeacoffee.com/darkghosthunter)[![](.assets/paypal.png)](https://www.paypal.com/paypalme/darkghosthunter)
+
+Tu apoyo me permite mantener este paquete gratuito, actualizado y mantenible. Como alternativa, puedes **[correr la voz!](http://twitter.com/share?text=Estoy%20usando%20este%20genial%20paquete%20para%20PHP&url=https://github.com%2FLaragear%2FRut&hashtags=PHP,Laravel,Chile)**
+
+## Requerimientos
+
+- PHP 8.0 o más reciente
+- Laravel 9.x o más reciente
+
+## Instalación
+
+Ve a la consola en tu proyecto e instálalo con Composer:
+
+```bash
+composer require laragear/rut
+```
+
+## Creando un RUT
+
+Para crear un RUT desde una fuente **válida**, crea una instancia del objecto `Rut` con los números y el dígito verificador, de forma separada.
+
+```php
+use Laragear\Rut\Rut;
+
+$rut = new Rut(5138171, 8);
+```
+
+Si no, quizás quieras usar `parse()` para crear una nueva instancia desde un pedazo de texto. El método intentará crear una instancia de `Rut` a partir de lo que recibe, o lanzará una excepción `InvalidRutException` en caso que la cadena de texto no tenga suficientes caractéres para crear un RUT.
+
+```php
+use Laragear\Rut\Rut;
+
+$rut = Rut::parse('5.138.171-8');
+```
+
+## Validando un RUT
+
+Deberías usar las Reglas de [Validación incluidas](#reglas-de-validación) para validar RUT en tu aplicación.
+
+Si no, aún puedes manualmente validar un RUT de forma matemática usando `isValid()` o `isInvalid()`.
+
+```php
+use Laragear\Rut\Rut;
+
+$rut = Rut::parse('5.138.171-8');
+
+if ($rut->isValid()) {
+    return "¡El rut es válido!";
+}
+```
+
+Al usar el método `validate()`, recibirás una excepción `InvalidRutException` si es inválido.
+
+```php
+use Laragear\Rut\Rut;
+
+Rut::parse('5.138.171-K')->validate(); // InvalidRutException: "The given RUT is invalid."
+```
+
+También puedes validar RUT como texto directamente, o un RUT con números y dígito verificador por separado, usando el método `check()`.
+
+```php
+use Laragear\Rut\Rut;
+
+if (Rut::check('5.138.171-8')) {
+    return "¡El rut es válido!";
+}
+
+if (Rut::check(5138171, '8')) {
+    return "¡Este también es válido!";
+}
+```
+
+## RUT de personas vs empresas
+
+Para diferenciar el RUT de una persona y el RUT de una empresa, puedes usar `isPerson()` o `isCompany()`, respectivamente. El "corte" es hecho a partir de los 50.000.000, así que es usualmente seguro asumir que un RUT como `76.543.210-K` es para una empresa.
+
+```php
+$rut = Rut::parse('76.543.210-3');
+
+if ($rut->isCompany()) {
+    return 'Si eres una empresa, usa nuestra solución B2B.';
+}
+```
+> Este paquete considera un RUT como válido si está entre 100.000 y 100.000.000, inclusivo. La mayoría de la gente, sino toda, que usa RUT bajo los 100.000 ya han muerto, y todavía estamos a décadas de superar los 100.000.000. Nota que pueden haber ciertas excepciones para tener un RUT sobre los 100 millones, sin embargo es altamente probable que sean temporales o para personas o empresas.
+
+## Generando RUTs
+
+Este paquete incluye con un conveniente generador de RUT en forma de _facade_, llamado `Generator`, que puede crear cientos o millones de RUT al azar usando métodos fluidos.
+
+El método `make()` genera una colleción [Collection](https://laravel.com/docs/collections) de 15 `Rut` por defecto, pero puedes poner cualquier número. También puedes usar `makeOne()` para crear un único `Rut` al azar.
+
+```php
+use Laragear\Rut\Facades\Generator;
+
+$ruts = Generator::make(10);
+
+$rut = Generator::makeOne();
+```
+
+Usa `asPeople()` para crear RUT de personas, o `asCompanies()` para crear RUT de empresas.
+
+```php
+use Laragear\Rut\Facades\Generator;
+
+$ruts = Generator::asPeople()->make(10);
+
+$rut = Generator::asCompanies()->makeOne();
+```
+
+Si planeas crear varios millones de RUT, habrá una alta probabilidad que te encuentres con duplicados. Para evitar colisiones, o mejor dicho, para asegurarse que cada RUT es único en la lista, puedes usar `unique()` a cambio de un rendimiento menor.
+
+```php
+use Laragear\Rut\Facades\Generator;
+
+$ruts = Generator::unique()->asCompanies()->make(10000000);
+```
+
+## Reglas de validación
+
+Todas las reglas de validación se pueden traducir. Puedes añadir tus propia traducción para estas reglas publicando los archivos de traducción:
+
+```shell
+php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="translations"
+```
+
+### `rut`
+
+Esta regla valida el RUT recibido. Automáticamente **limpia el RUT** de todo excepto números y el dígito de verificación, para después ver si el RUT es matemáticamente válido.
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Validator;
+
+$validator = Validator::make([
+    'rut' => '14328145-0'
+], [
+    'rut' => 'rut'
+]);
+
+echo $validator->passes(); // true
+
+$validator = Validator::make([
+    'rut' => '65.00!!!390XXXX2'
+], [
+    'rut' => 'rut'
+]);
+
+echo $validator->passes(); // true (6.500.390-2)
+```
+
+Esta regla de validación puede ser muy útil para permitir que el usuario decida cómo escribir su RUT (con o sin puntos, con o sin guión), así que no hay necesidad de forzar un formato en específico. Posteriormente, puedes usar algunas [ayudas para recuperar el RUT desde el objecto `Request`]().
+
+Esta regla también acepta un `array` de RUTs. En este caso, `rut` pasará la validación si todos los RUT son válidos.
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Validator;
+
+$validator = Validator::make([
+    'rut' => ['14328145-0', '12.343.580-K', 'estonoesunrut']
+], [
+    'rut' => 'rut'
+]);
+
+echo $validator->passes(); // false
+
+$validator = Validator::make([
+    'rut' => ['14328145-0', '12.343.580-K', '20881410-9']
+], [
+    'rut' => 'rut'
+]);
+
+echo $validator->passes(); // true
+```
+
+### `rut_strict`
+
+Esta regla funciona igual que [`rut`](#rut-1), pero validará que todos los RUT sigan el formato estricto: con separador de miles y guión antes del dígito verificador. No pasará validación si, a pesar de estar estrictamente escrito, es matemáticamente incorrecto.
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Validator;
+
+$validator = Validator::make([
+    'rut' => '14.328.145-0'
+], [
+    'rut' => 'rut_strict'
+]);
+
+echo $validator->passes(); // true
+
+$validator = Validator::make([
+    'rut' => '1.4328.145-0'
+], [
+    'rut' => 'rut_strict'
+]);
+
+echo $validator->passes(); // false
+```
+
+Esta regla también acepta un `array` de RUTs. En este caso, `rut_strict` pasará la validación si todos los RUT son escritos estrictamente y matemáticamente válidos.
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Validator;
+
+$validator = Validator::make([
+    'rut' => ['1.4328.145-0', '12.343.580-K']
+], [
+    'rut.*' => 'required|rut_strict',
+]);
+
+echo $validator->paases(); // false
+```
+
+### `rut_exists` (Base de datos)
+
+En vez de usar la regla [exists](https://laravel.com/docs/master/validation#rule-exists) de Laravel, puedes usar `rut_exists` en caso que tu base de datos tenga columnas separadas para el número de RUT y el dígito verificador de RUT.
+
+Para que esto funciona, necesitas indicar qué tabla a buscar, la columna que contiene el número de RUT y la columna que contiene el dígito verificador de RUT. Si no, la regla intentará adivinar el nombre de las columnas añadiendo `_num` y `_vd` al nombre del atributo a validar, respectivamente.
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Validator;
+
+$validator = Validator::make([
+    'rut' => '12.343.580-K'
+], [
+    'rut' => 'required|rut_exists:mysql.users,rut_num,rut_vd'
+]);
+
+echo $validator->passes(); // false
+```
+
+Esta regla valida que el RUT se válido, aún cuando se escriba _mal_, y que exista en la base de datos.
+
+Puedes configurar la consulta a la base de datos usando la clase `Rule` de Laravel con el método `rutExists`. Nota que puedes indicar una o ambas columnas del RUT si no quieres que la regla las adivine, especialmente cuando usas un comodín en tu regla de validación.
+
+ 
+```php
+<?php
+
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
+$validator = Validator::make([
+    'rut' => [
+        'rut_1' => '12.343.580-K',
+        'rut_2' => '13.871.792-5',
+    ],
+], [
+    'rut' => [
+        'required',
+        Rule::rutExists('mysql.users', 'rut_num', 'rut_vd')->where('account_id', 1),
+    ]
+]);
+
+echo $validator->passes(); // true
+```
+
+Por algunas limitaciones de Laravel, es recomendad usar `Rule` con métodos básicos de la base de datos.
+
+> Todas las reglas de validación para la base de datos normalizarán el dígito verificador en mayúsculas.
+
+### `num_exists` (base de datos)
+
+Esta regla de validación valida que el RUT sea correcto, no estricto, y que sólo el número del RUT exista en la base de datos, sin considera el dígito verificador en ella. Si la base de datos tiene un índice en la columna del número de RUT, esta validación será muy rápida de ejecutar.
+
+Esta regla automáticamente valida que el RUT sea matemáticamente correcto antes de consultar la base datos.
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Validator;
+
+$validator = Validator::make([
+    'rut' => '12.343.580-K'
+], [
+    'rut' => 'required|num_exists:mysql.users,rut_num' 
+]);
+
+echo $validator->passes(); // false
+```
+
+Puedes personalizar la consulta usando `Rule` y el método `numExists()`. 
+ 
+```php
+<?php
+
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
+$validator = Validator::make([
+    'rut' => '12.343.580-K',
+], [
+    'rut' => [
+        'required',
+        Rule::numExists('mysql.users', 'rut_num')->where('account_id', 1),
+    ]
+]);
+
+echo $validator->passes(); // false
+```
+
+### `rut_unique` (base de datos)
+
+Esta regla funciona casi igual que la regla `rut_exists`, pero en vez de verificar que el RUT existe en la base de datos, pasará la validación si _no existe_. Esta regla funciona igual que [la regla `unique` de Laravel](https://laravel.com/docs/validation#rule-unique).
+
+Esta regla automáticamente valida que el RUT sea matemáticamente correcto antes de consultar a la base de datos.
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Validator;
+
+$validator = Validator::make([
+    'rut' => '12.343.580-K'
+], [
+    'rut' => 'required|rut_unique:mysql.users,rut_num,rut_vd' 
+]);
+
+echo $validator->passes(); // false
+```
+
+También puedes excluir un ID o registros de la validación. Para ello, necesitas usar la clase `Rule` y luego `ignore()`.
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
+$validator = Validator::make([
+    'rut' => '12.343.580-K',
+], [
+    'rut' => [
+        'required',
+        Rule::rutUnique('mysql.users', 'rut_num')->ignore(request()->user()),
+    ]
+]);
+
+echo $validator->passes(); // false
+```
+
+> Todas las reglas de validación para la base de datos normalizarán el dígito verificador en mayúsculas.
+
+> **[PELIGRO]** **Nunca pases datos entregados por el usuario al método `ignore()`. En vez de eso, solo entrega algún ID generado por tu aplicación o UUID, desde una instancia de modelo Eloquent. Si no, tu aplicación será vulnerable a inyecciones SQL.**
+
+### `num_unique` (base de datos)
+
+Este regla valida que sólo el número del RUT no exista en la base de datos, algo útil si la tabla tiene un índice sólo en la columna que contiene el número de RUT. Esta regla funciona igual que [la regla `unique` de Laravel](https://laravel.com/docs/validation#rule-unique).
+
+Esta regla automáticamente valida que el RUT sea matemáticamente correcto antes de ejecutar la consulta en la base de datos.
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Validator;
+
+$validator = Validator::make([
+    'rut' => '12.343.580-K'
+], [
+    'rut' => 'required|num_unique:mysql.users,rut_num' 
+]);
+
+echo $validator->passes(); // false
+```
+
+También puedes excluir un ID o registros de la validación. Para ello, necesitas usar la clase `Rule` y luego `ignore()`.
+
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
+
+$validator = Validator::make([
+    'rut' => '12.343.580-K',
+], [
+    'rut' => [
+        'required',
+        Rule::numUnique('mysql.users')->ignore(request()->user()->id),
+    ]
+]);
+
+echo $validator->passes(); // false
+```
+
+> Todas las reglas de validación para la base de datos normalizarán el dígito verificador en mayúsculas.
+
+> **[PELIGRO]** **Nunca pases datos entregados por el usuario al método `ignore()`. En vez de eso, solo entrega algún ID generado por tu aplicación o UUID, desde una instancia de modelo Eloquent. Si no, tu aplicación será vulnerable a inyecciones SQL.**
+
+## Ayuda para migraciones
+
+Si estás creando una base de datos, no necesitas crear las columnas de RUT manualmente. Sólo usa el método `rut()` para crearlas, o `rutNullable()` para permitir que acepten valores nulos.
+
+```php
+Schema::create('users', function (Blueprint $table) {
+    // $table->unsignedInteger('rut_num');
+    // $table->char('rut_vd', 1);
+
+    $table->rut();
+    
+    // ...
+});
+
+Schema::create('company', function (Blueprint $table) {
+    // $table->unsignedInteger('rut_num')->nullable();
+    // $table->char('rut_vd', 1)->nullable();
+
+    $table->rutNullable();
+    
+    // ...
+});
+```
+
+> El método `rutNullable()` hace ambas columnas acepten valores nulos.
+
+Si planeas crear un índice en el número del RUT, simplemente añade `index()`, `primary()` o `unique()`, dependiendo de lo que necesites. Tiene mucho sentido sólo crear el índice en el número en vez de todo el RUT si consideras que sólo RUT válidos entrarán a la base de datos.
+
+```php
+Schema::create('users', function (Blueprint $table) {
+    // $table->unsignedInteger('rut_num')->primary();
+    // $table->char('rut_vd', 1);
+
+    $table->rut()->primary();
+    
+    // ...
+});
+```
+
+## Ayuda de RUT en el objecto Request
+
+Este paquete incluye el macro `rut()` en la instancia `Request`, que permite recibir un RUT desde los datos de una consulta HTTP.
+
+```php
+use Illuminate\Http\Request;
+
+public function show(Request $request)
+{
+    $request->validate([
+        'persona' => 'required|rut'
+    ]);
+    
+    $rut = $request->rut('persona');
+    
+    // ...
+}
+```
+
+Si la clave a recibir es _iterable_, como un lista `array` o una instancia de `Collection`, recibirás una colleción `Collection` de instancias de `Rut`.
+
+```php
+$request->validate([
+    'gente'   => 'required|array',
+    'gente.*' => 'rut'
+]);
+
+$ruts = $request->rut('gente');
+```
+
+También puedes recibir múltiples claves desde la petición, que también entregarán una colleción `Collection`.
+
+```php
+$request->validate([
+    'mama'        => 'required|rut',
+    'papa'        => 'required|rut',
+    'hijos'       => 'required|array'
+    'hijoss.*'    => 'required|rut',
+]);
+
+$parents = $request->rut('mama', 'papa'); // También puede ser $request->rut(['mama', 'papa']);
+$children = $request->rut('hijos');
+```
+
+> Es imperativo que valides los datos de la petición HTTP antes de recibir los RUT. Si no lo haces, y un RUT está malformado, recibirás una excepción.
+
+## Traits para modelos Eloquent
+
+Este paquete incluye el trait (o trato, como quieras) `HasRut` que puedes usar en modelos Eloquent para tablas que tienen el RUT separado en número y dígito verificador.
+
+Este trato añade convenientes métodos para construir tu consulta a la base de datos con RUT, además de incluir el atributo `rut` dentro del modelo, el cual contiene una instancia de `Rut`.
+
+
+```php
+<?php
+
+namespace App\Models;
+
+use Laragear\Rut\HasRut;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+
+class User extends Authenticatable
+{
+    use HasRut;
+    
+    // ...
+}
+```
+
+Con ello, algunas convenientes ayudas para construir consultas usando RUT:
+
+| Method name         | Description                                                              |
+|---------------------|--------------------------------------------------------------------------|
+| `findRut()`         | Encuentra un registro por el RUT.                                        |
+| `findManyRut()`     | Encuentra varios registros que contengan los RUT                         |
+| `findRutOrFail()`   | Encuentra un registro por el RUT o falla.                                |
+| `findRutOrNew()`    | Encuentra un registro por el RUT o crea una nueva instancia del modelo.  |
+| `whereRut()`        | Crea una cláusula `WHERE` donde el RUT es igual al entregado.            |
+| `whereRutNot()`     | Crea una cláusula `WHERE` excluyendo uno o más RUT.                      |
+| `orWhereRut()`      | Crea una cláusula `OR WHERE` donde el RUT es igual al entregado.         |
+| `orWhereRutNot()`   | Crea una cláusula `OR WHERE` excluyendo uno o más RUT.                   |
+| `whereRutIn()`      | Crea una cláusula `WHERE IN` donde el RUT está en la lista entregada.    |
+| `whereRutNotIn()`   | Crea una cláusula `WHERE NOT IN` excluyendo uno o más RUT.               |
+| `orWhereRutIn()`    | Crea una cláusula `OR WHERE IN` donde el RUT está en la lista entregada. |
+| `orWhereRutNotIn()` | Crea una cláusula `OR WHERE NOT IN` excluyendo uno o más RUT.            |
+
+> Estas cláusulas y ayudas para la consulta en la base de datos sólo trabajan sobre la columna del número de RUT por conveniencia, ya que el dígito verificador de RUT sólo debería ser verificado al persistir el RUT.
+
+La propiedad `rut` es dinámicamente creada a partir de ambas columnas de RUT usando un [Cast](https://laravel.com/docs/eloquent-mutators#attribute-casting).
+
+```php
+echo $user->rut; // "20490006-K"
+```
+
+#### Configurar las columnas de RUT
+
+Por convención, el trait usa `rut_num` and `rut_vd` como el nombre del número y dígito verificador de RUT, respectivamente. Puedes fácilmente cambiarlos por cualquier otro con los que estés trabajando en la tabla, para un modelo específico.
+
+```php
+class User extends Authenticatable
+{
+    use HasRut;
+    
+    protected const RUT_NUM = 'numero_rut';
+    protected const RUT_VD = 'digito_rut';
+    
+    // ...    
+}
+```
+
+#### Añadiendo un RUT
+
+Por defecto, un modelo con las columnas de RUT las serializará como cualquier otra columna. Esto puede ser útil para algunos frameworks fuera de la aplicación:
+
+```json
+{
+    "id": 1,
+    "rut_num": 16887941,
+    "rut_vd": "5",
+    "name": "Taylor",
+    "email": "taylor@laravel.com"
+}
+```
+
+Para evitar que se serializen por separado, y a cambio obtengas una sola clave con el RUT completo como cadena de texto, sobreescribe el método `shouldAppendRut()` en el modelo a elección para que entregue `true`. Esto puede serte útil si estás usando la [validación en tiempo-real de Livewire](https://laravel-livewire.com/docs/2.x/input-validation#real-time-validation).
+
+
+```php
+/**
+ * If the `rut` key should be appended, and hide the underlying RUT columns.
+ *
+ * @return bool
+ */
+public function shouldAppendRut(): bool
+{
+    return true;
+}
+```
+
+Esto efectivamente añadirá la clave `rut` al modelo durante la serialización, usando el [formato por defecto](#formateando-un-rut).
+
+```json
+{
+    "id": 1,
+    "rut": "16.887.941-5",
+    "name": "Taylor",
+    "email": "taylor@laravel.com"
+}
+```
+
+> Este comportamiento será activado por defecto en la próxima versión 2.x.
+
+## Configuración
+
+Este paquete funciona de maravillas después de instalarlo, pero quizás quieras cambiar cómo se formatea un `Rut` cuando pasa a ser texto. Para ello, publica el archivo de configuración con Artisan.
+
+```shell
+php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="config"
+```
+
+Recibirás un archivo de configuración en `config/rut.php`.
+
+```php
+use Laragear\Rut\Rut;
+
+return [
+    'format' => Rut::FORMAT_STRICT,
+    'uppercase' => true,
+];
+```
+
+### Formato de RUT
+
+```php
+use Laragear\Rut\Format;
+
+return [
+    'format' => Format::DEFAULT,
+];
+```
+
+Por defecto, los RUT son formateados de forma _estricta_. Esta configuración altera cómo son serializados a texto en tu aplicación, de forma global.
+
+| Formato    | Ejemplo       | Descripción                                                      |
+|------------|---------------|------------------------------------------------------------------|
+| Estricto   | `5.138.171-8` | La opción predeterminada. Incluye separador de miles y guión.    |
+| Básico     | `5138171-8`   | Sin separador de miles, sólo guión.                              |
+| Bruto      | `51381718`    | Sin separador de miles ni guión.                                 |
+
+Puedes usar `format()` para formatear el RUT a texto, o pasar un formato diferente por instancia de `Rut` en vez de global.
+
+```php
+use Laragear\Rut\Rut;
+
+$rut = Rut::parse('5.138.171-8');
+
+$rut->format(); // "5.138.171-8"
+$rut->format(Rut::FORMAT_STRICT); // "5.138.171-8"
+$rut->format(Rut::FORMAT_BASIC); // "5138171-8"
+$rut->format(Rut::FORMAT_RAW); // "51381718"
+```
+
+Para el caso de JSON, los RUTs son transformados a cadenas de texto usando el formato global. Puedes usar la propiedad estática `$jsonFormat` para alterar en qué formato se serializarán al entregarse bajo JSON exclusivamente.
+
+```php
+use Laragear\Rut\Rut;
+
+Rut::$jsonFormat = Rut::FORMAT_RAW;
+
+Rut::parse('5.138.171-8'); // "5.138.171-8"
+Rut::parse('5.138.171-8')->toJson(); // "5138171-8"
+```
+
+### Mayúscula o minúscula
+
+```php
+return [
+    'uppercase' => true,
+];
+```
+
+Dado que el dígito de verificación puede ser `K`, es usualmente buena idea siempre trabajar con mayúsculas o minúsculas en toda la aplicación.
+
+La instancia `Rut` por defecto usará mayúsculas `K`, pero puedes cambiarlo de forma global colocando `false` en esta clave, lo que afectará a todas las instancias y la serialización en JSON.
+
+```php
+use Laragear\Rut\Format;
+use Laragear\Rut\Rut;
+
+config()->set('rut.uppercase', false)
+
+$rut = Rut::parse('12351839-K');
+
+$rut->format(); // "12.351.839-k"
+```
+
+> Esto no afecta las reglas de base de datos, puesto que normalizan el dígito verificador automáticamente.
+
+## Auto-completar en PhpStorm
+
+Para usuarios de PhpStorm, hay un archivo "stub" para ayudarte a autocompletar con código disponible en este paquete. Puedes publicarlo usando el tag `phpstorm`:
+
+```shell
+php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="phpstorm"
+```
+
+El archivo se publica dentro del directorio `.stubs` en tu proyecto. Deberías [apuntar PhpStorm a esta carpeta stubs](https://www.jetbrains.com/help/phpstorm/php.html#advanced-settings-area) para que funcione.
+
+## Compatibilidad con Laravel Octane
+
+- No hay objectos únicos usando la instancia maestra de la aplicación.
+- No hay objectos únicos usando la instancia maestra de la configuración.
+- No hay objectos únicos usando la instancia maestra de la petición HTTP.
+- Las propiedades estáticas de `Rut` sólo se escriben una vez durante el inicio de la aplicación.
+
+No deberías tener problemas al usar este paquete como es indicado junto a Laravel Octane.
+
+## Seguridad
+
+Si descubres algún problema de seguridad o vulnerabilidad, manda un correo a darkghosthunter@gmail.com en vez hacerlo público en el repositorio.
+
+# Licencia
+
+Este paquete está licencado por los términos descritos en la [Licencia MIT](LICENSE.md) (en inglés).
+
+[Laravel](https://laravel.com) es una marca registrada de [Taylor Otwell](https://github.com/TaylorOtwell/). Copyright © 2011-2022 Laravel LLC.
