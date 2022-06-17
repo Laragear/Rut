@@ -6,7 +6,7 @@ The following is a somewhat-detailed way to upgrade this package.
 
 ### Format Enum
 
-Formatting a RUT is now done using the `RutFormat` enum. While using the `Rut` constant and `int`, will still work, these will be removed in later versions.
+Formatting a RUT is now done using the `RutFormat` enum. While using the `Rut` constants and integers will still work, these will be removed in later versions in favour of Enums.
 
 ```php
 use Laragear\Rut\Rut
@@ -19,7 +19,7 @@ Rut::parse('187654321')->format(Rut::FORMAT_BASIC);
 Rut::parse('187654321')->format(RutFormat::Basic);
 ```
 
-In your config file, you should change the `format` key, and `json_format` if it's not `null`, to these enums.
+While not mandatory, in your config file you should change the `format` key, and `json_format` if it's not `null`, to these enums.
 
 ```php
 use Laragear\Rut\RutFormat;
@@ -45,5 +45,3 @@ public function shouldAppendRut(): bool
     return false;
 }
 ```
-
-## 

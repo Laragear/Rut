@@ -18,6 +18,8 @@ if ($rut->isValid()) {
 }
 ```
 
+> [Este README está disponible en español.](README_es.md)
+
 ## Keep this package free
 
 [![](.assets/patreon.png)](https://patreon.com/packagesforlaravel)[![](.assets/ko-fi.png)](https://ko-fi.com/DarkGhostHunter)[![](.assets/buymeacoffee.png)](https://www.buymeacoffee.com/darkghosthunter)[![](.assets/paypal.png)](https://www.paypal.com/paypalme/darkghosthunter)
@@ -36,6 +38,8 @@ Fire up Composer and require it into your project:
 ```bash
 composer require laragear/rut
 ```
+
+## [Upgrading from 1.x to 2.x](UPGRADE.md#from-1x-to-2x)
 
 ## Creating a RUT
 
