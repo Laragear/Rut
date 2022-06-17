@@ -4,18 +4,19 @@ declare(strict_types=1);
 
 namespace Laragear\Rut;
 
-use function array_reverse;
 use Closure;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
+use JetBrains\PhpStorm\ArrayShape;
 use JetBrains\PhpStorm\Pure;
-use function json_encode;
 use JsonSerializable;
+use Stringable;
+use function array_reverse;
+use function json_encode;
 use function max;
 use function preg_filter;
 use function str_split;
-use Stringable;
 use function strlen;
 use function strtolower;
 use function strtoupper;
@@ -199,7 +200,8 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     /**
      * Formats the RUT into a given style.
      *
-     * @param  \Laragear\Rut\RutFormat|int|null  $format
+     * @param  \Laragear\Rut\RutFormat|int|null  $format  Integers are only available for backward compatibility,
+     *                                                    and it will be removed in later versions.
      * @return string
      */
     public function format(RutFormat|int $format = null): string
@@ -231,6 +233,8 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      * Returns the string representation of the RUT.
      *
      * @return string
+     *
+     * @internal
      */
     public function __toString(): string
     {
@@ -296,18 +300,14 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     public static function parse(self|string|int|null $rut): static
     {
         // No need to parse a Rut that is already a Rut object.
-        if ($rut instanceof static) {
-            return $rut;
-        }
-
-        return new static(...static::split($rut));
+        return $rut instanceof static ? $rut : new static(...static::split($rut));
     }
 
     /**
      * Creates a collection of RUTs by parsing them.
      *
-     * @param  iterable<string>  $ruts
-     * @return \Illuminate\Support\Collection
+     * @param  iterable<int|string, string>  $ruts
+     * @return \Illuminate\Support\Collection<int|string, \Laragear\Rut\Rut>
      */
     public static function map(iterable $ruts): Collection
     {
@@ -341,10 +341,11 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      * Cleans and splits a RUT string into an array of the number and verification digit.
      *
      * @param  static|string|int|null  $string
-     * @return array
+     * @return array{int, string}
      *
      * @throws \Laragear\Rut\Exceptions\EmptyRutException
      */
+    #[ArrayShape(["int", "string"])]
     public static function split(self|string|int|null $string): array
     {
         if ($string instanceof static) {
