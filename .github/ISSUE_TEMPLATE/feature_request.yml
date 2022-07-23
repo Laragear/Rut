@@ -11,7 +11,7 @@ body:
         Thanks for contributing to this package!
         New features keep this package fresh and fun for everybody to use.
   - type: checkboxes
-    id: requeriments
+    id: requirements
     attributes:
       label: Please check these requirements
       options:
