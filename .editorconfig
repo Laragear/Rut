@@ -19,3 +19,8 @@ indent_size = 2
 
 [phpunit.xml]
 indent_size = unset
+
+[*.php]
+block_comment_start = /*
+block_comment = *
+block_comment_end = */
