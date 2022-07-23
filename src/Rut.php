@@ -111,7 +111,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      * @param  string  $vd
      * @return void
      */
-    public function __construct(public readonly int $num, string $vd)
+    final public function __construct(public readonly int $num, string $vd)
     {
         $this->vd = static::$uppercase ? strtoupper($vd) : strtolower($vd);
     }
@@ -382,7 +382,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
             if ($i === 8) {
                 $i = 2;
             }
-            $sum += $v * $i;
+            $sum += (int) $v * $i;
             $i++;
         }
 

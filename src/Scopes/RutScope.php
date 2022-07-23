@@ -165,7 +165,11 @@ class RutScope implements Scope
         }
 
         return $builder->where(
-            $builder->getModel()->getQualifiedRutNumColumn(), $not ? '!=' : '=', Rut::split($rut)[0], $boolean
+            // @phpstan-ignore-next-line
+            $builder->getModel()->getQualifiedRutNumColumn(),
+            $not ? '!=' : '=',
+            Rut::split($rut)[0],
+            $boolean
         );
     }
 
@@ -225,8 +229,13 @@ class RutScope implements Scope
             return Rut::split($rut)[0];
         });
 
+        // @phpstan-ignore-next-line
         return $builder->whereIn(
-            $builder->getModel()->getQualifiedRutNumColumn(), $ruts, $boolean, $not
+            // @phpstan-ignore-next-line
+            $builder->getModel()->getQualifiedRutNumColumn(),
+            $ruts,
+            $boolean,
+            $not
         );
     }
 

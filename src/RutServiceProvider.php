@@ -80,7 +80,7 @@ class RutServiceProvider extends ServiceProvider
             $translator = $app->make('translator');
 
             foreach (static::RULES as [$rule, $extension, $key]) {
-                $validator->extend($rule, [ValidatesRut::class, $extension], $translator->get($key));
+                $validator->extend($rule, ValidatesRut::{$extension}(...), $translator->get($key));
             }
         });
     }
@@ -182,6 +182,7 @@ class RutServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->publishes([static::CONFIG => $this->app->configPath('rut.php')], 'config');
+            // @phpstan-ignore-next-line
             $this->publishes([static::LANG => $this->app->langPath('vendor/rut')], 'translations');
             $this->publishes([static::STUBS => $this->app->basePath('.stubs/rut.php')], 'phpstorm');
         }
