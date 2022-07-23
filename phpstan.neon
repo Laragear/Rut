@@ -1,5 +1,5 @@
 parameters:
 	ignoreErrors:
-		- '#Call to method getRutNumColumn() on an unknown class Laragear\Rut\HasRut.#'
-		- '#Call to method getRutVdColumn() on an unknown class Laragear\Rut\HasRut.#'
-		- '#Parameter $model of method Laragear\Rut\Casts\CastRut::set() has invalid type Laragear\Rut\HasRut.#'
+		- '#Call to method getRutNumColumn\(\) on an unknown class Laragear\Rut\HasRut.#'
+		- '#Call to method getRutVdColumn\(\) on an unknown class Laragear\Rut\HasRut.#'
+		- '#Parameter $model of method Laragear\Rut\Casts\CastRut::set\(\) has invalid type Laragear\Rut\HasRut.#'
