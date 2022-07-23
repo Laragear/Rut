@@ -22,7 +22,7 @@ if ($rut->isValid()) {
 
 ## Mantengamos esta librería gratis
 
-[![](.assets/patreon.png)](https://patreon.com/packagesforlaravel)[![](.assets/ko-fi.png)](https://ko-fi.com/DarkGhostHunter)[![](.assets/buymeacoffee.png)](https://www.buymeacoffee.com/darkghosthunter)[![](.assets/paypal.png)](https://www.paypal.com/paypalme/darkghosthunter)
+[![](.github/.assets/patreon.png)](https://patreon.com/packagesforlaravel)[![](.github/.assets/ko-fi.png)](https://ko-fi.com/DarkGhostHunter)[![](.github/.assets/buymeacoffee.png)](https://www.buymeacoffee.com/darkghosthunter)[![](.github/.assets/paypal.png)](https://www.paypal.com/paypalme/darkghosthunter)
 
 Tu apoyo me permite mantener este paquete gratuito, actualizado y mantenible. Como alternativa, puedes **[correr la voz!](http://twitter.com/share?text=Estoy%20usando%20este%20genial%20paquete%20para%20PHP&url=https://github.com%2FLaragear%2FRut&hashtags=PHP,Laravel,Chile)**
 
