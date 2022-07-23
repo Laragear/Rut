@@ -16,6 +16,7 @@ block_comment_end = */
 
 [*.md]
 trim_trailing_whitespace = false
+indent_size = unset
 block_comment_start = unset
 block_comment = unset
 block_comment_end = unset
