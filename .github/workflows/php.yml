@@ -10,7 +10,7 @@ jobs:
 
   byte_level:
     name: "0️⃣ Byte-level"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout code"
         uses: "actions/checkout@v3"
@@ -24,7 +24,7 @@ jobs:
 
   syntax_errors:
     name: "1️⃣ Syntax errors"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-latest"
     steps:
       - name: "Set up PHP"
         uses: "shivammathur/setup-php@v2"
@@ -48,7 +48,7 @@ jobs:
     needs:
       - "byte_level"
       - "syntax_errors"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-latest"
     strategy:
       matrix:
         php-version:
@@ -86,7 +86,7 @@ jobs:
     needs:
       - "byte_level"
       - "syntax_errors"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-latest"
     steps:
       - name: "Set up PHP"
         uses: "shivammathur/setup-php@v2"
@@ -113,7 +113,7 @@ jobs:
     needs:
       - "byte_level"
       - "syntax_errors"
-    runs-on: "ubuntu-20.04"
+    runs-on: "ubuntu-latest"
     steps:
       - name: "Checkout code"
         uses: "actions/checkout@v3"
