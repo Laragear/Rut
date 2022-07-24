@@ -25,4 +25,4 @@ block_comment_end = unset
 indent_size = 2
 
 [phpunit.xml]
-indent_size = unset
+indent_size = 2
