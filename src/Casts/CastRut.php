@@ -41,18 +41,20 @@ class CastRut implements CastsAttributes
     public function set($model, string $key, $value, array $attributes): ?array
     {
         if (null === $value) {
-            // @phpstan-ignore-next-line
             return [
+                // @phpstan-ignore-next-line
                 $model->getRutNumColumn() => null,
+                // @phpstan-ignore-next-line
                 $model->getRutVdColumn()  => null,
             ];
         }
 
         $value = Rut::parse($value);
 
-        // @phpstan-ignore-next-line
         return [
+            // @phpstan-ignore-next-line
             $model->getRutNumColumn() => $value->num,
+            // @phpstan-ignore-next-line
             $model->getRutVdColumn()  => $value->vd,
         ];
     }
