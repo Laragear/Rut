@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Laragear\Rut\Scopes;
 
-use function count;
-use function get_class;
 use Illuminate\Contracts\Support\Arrayable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
@@ -13,12 +11,14 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Collection as BaseCollection;
-use function is_countable;
-use function is_iterable;
 use Laragear\Rut\Rut;
 use ReflectionClass;
 use ReflectionMethod as Method;
 use SplFixedArray;
+use function count;
+use function get_class;
+use function is_countable;
+use function is_iterable;
 
 class RutScope implements Scope
 {
@@ -161,8 +161,8 @@ class RutScope implements Scope
             return static::whereRutIn($builder, $rut, $boolean, $not);
         }
 
-        // @phpstan-ignore-next-line
         return $builder->where(
+            // @phpstan-ignore-next-line
             $builder->getModel()->getQualifiedRutNumColumn(), $not ? '!=' : '=', Rut::split($rut)[0], $boolean
         );
     }
@@ -225,6 +225,7 @@ class RutScope implements Scope
 
         // @phpstan-ignore-next-line
         return $builder->whereIn(
+            // @phpstan-ignore-next-line
             $builder->getModel()->getQualifiedRutNumColumn(), $ruts, $boolean, $not
         );
     }
