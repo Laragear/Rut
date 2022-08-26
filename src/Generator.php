@@ -34,7 +34,7 @@ class Generator
      * @param  int  $max
      * @param  bool  $unique
      */
-    public function __construct(
+    final public function __construct(
         protected int $iterations = self::ITERATIONS,
         protected int $min = Rut::MIN,
         protected int $max = Rut::MAX,

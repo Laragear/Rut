@@ -11,7 +11,7 @@ class CastRut implements CastsAttributes
     /**
      * Transform the attribute from the underlying model values.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|\Laragear\Rut\HasRut  $model
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
@@ -20,7 +20,9 @@ class CastRut implements CastsAttributes
     #[Pure]
     public function get($model, string $key, $value, array $attributes): ?Rut
     {
+        // @phpstan-ignore-nextline
         if (isset($attributes[$model->getRutNumColumn()], $attributes[$model->getRutVdColumn()])) {
+            // @phpstan-ignore-nextline
             return new Rut($attributes[$model->getRutNumColumn()], $attributes[$model->getRutVdColumn()]);
         }
 
@@ -30,7 +32,7 @@ class CastRut implements CastsAttributes
     /**
      * Transform the attribute to its underlying model values.
      *
-     * @param  \Illuminate\Database\Eloquent\Model|\Laragear\Rut\HasRut  $model
+     * @param  \Illuminate\Database\Eloquent\Model  $model
      * @param  string  $key
      * @param  mixed  $value
      * @param  array  $attributes
@@ -39,6 +41,7 @@ class CastRut implements CastsAttributes
     public function set($model, string $key, $value, array $attributes): ?array
     {
         if (null === $value) {
+            // @phpstan-ignore-nextline
             return [
                 $model->getRutNumColumn() => null,
                 $model->getRutVdColumn()  => null,
@@ -47,6 +50,7 @@ class CastRut implements CastsAttributes
 
         $value = Rut::parse($value);
 
+        // @phpstan-ignore-nextline
         return [
             $model->getRutNumColumn() => $value->num,
             $model->getRutVdColumn()  => $value->vd,
