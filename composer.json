@@ -14,7 +14,7 @@
         {
             "name": "Italo Baeza C.",
             "email": "DarkGhostHunter@Gmail.com",
-            "homepage": "https://patreon.com/packagesforlaravel"
+            "homepage": "https://github.com/sponsors/DarkGhostHunter"
         }
     ],
     "support": {
@@ -22,17 +22,15 @@
         "issues": "https://github.com/Laragear/Rut/issues"
     },
     "require": {
-        "php": "^8.0.2",
-        "illuminate/database": "9.*",
-        "illuminate/validation": "9.*",
-        "illuminate/support": "9.*"
+        "php": "8.*",
+        "illuminate/database": "9.*|10.*",
+        "illuminate/validation": "9.*|10.*",
+        "illuminate/support": "9.*|10.*"
     },
     "require-dev": {
-        "orchestra/testbench": "7.*",
-        "phpunit/phpunit": "^9.5",
-        "mockery/mockery": "^1.5",
+        "orchestra/testbench": "^7.22|8.*",
         "doctrine/dbal": "^3.3",
-        "jetbrains/phpstorm-attributes": "^1.0"
+        "jetbrains/phpstorm-attributes": "*"
     },
     "autoload": {
         "psr-4": {
@@ -63,16 +61,8 @@
     },
     "funding": [
         {
-            "type": "Patreon",
-            "url": "https://patreon.com/PackagesForLaravel"
-        },
-        {
-            "type": "Ko-Fi",
-            "url": "https://ko-fi.com/DarkGhostHunter"
-        },
-        {
-            "type": "Buy me a cofee",
-            "url": "https://www.buymeacoffee.com/darkghosthunter"
+            "type": "GitHub Sponsorship",
+            "url": "https://github.com/sponsors/DarkGhostHunter"
         },
         {
             "type": "Paypal",
