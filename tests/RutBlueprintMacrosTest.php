@@ -47,7 +47,7 @@ class RutBlueprintMacrosTest extends TestCase
 
         $indexes = $schema->getConnection()
             ->getDoctrineSchemaManager()
-            ->listTableDetails('test_table_with_index')
+            ->introspectTable('test_table_with_index')
             ->getIndexes();
 
         static::assertArrayHasKey('test_table_with_index_rut_num_index', $indexes);
@@ -58,7 +58,7 @@ class RutBlueprintMacrosTest extends TestCase
 
         $primary = $schema->getConnection()
             ->getDoctrineSchemaManager()
-            ->listTableDetails('test_table_with_primary')
+            ->introspectTable('test_table_with_primary')
             ->getPrimaryKey();
 
         static::assertCount(1, $primary->getColumns());
@@ -70,8 +70,8 @@ class RutBlueprintMacrosTest extends TestCase
 
         $unique = $schema->getConnection()
             ->getDoctrineSchemaManager()
-            ->listTableDetails('test_table_with_unique')
-            ->getIndexes('rut_num');
+            ->introspectTable('test_table_with_unique')
+            ->getIndexes();
 
         static::assertCount(1, $unique);
         static::assertArrayHasKey('test_table_with_unique_rut_num_unique', $unique);
