@@ -4,6 +4,7 @@ namespace Tests;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\ColumnDefinition;
+use function collect;
 
 class RutBlueprintMacrosTest extends TestCase
 {
@@ -45,33 +46,30 @@ class RutBlueprintMacrosTest extends TestCase
             $table->rut()->index();
         });
 
-        $indexes = $schema->getConnection()
-            ->getDoctrineSchemaManager()
-            ->introspectTable('test_table_with_index')
-            ->getIndexes();
+        $indexes = collect(
+            $schema->getConnection()->getDoctrineSchemaManager()->listTableIndexes('test_table_with_index')
+        )->keyBy->getName();
 
-        static::assertArrayHasKey('test_table_with_index_rut_num_index', $indexes);
+        static::assertTrue($indexes->has('test_table_with_index_rut_num_index'));
 
         $schema->create('test_table_with_primary', function (Blueprint $table) {
             $table->rut()->primary();
         });
 
-        $primary = $schema->getConnection()
-            ->getDoctrineSchemaManager()
-            ->introspectTable('test_table_with_primary')
-            ->getPrimaryKey();
+        $primary = collect(
+            $schema->getConnection()->getDoctrineSchemaManager()->listTableIndexes('test_table_with_primary')
+        )->filter->isPrimary();
 
-        static::assertCount(1, $primary->getColumns());
-        static::assertContains('rut_num', $primary->getColumns());
+        static::assertCount(1, $primary->first()?->getColumns());
+        static::assertContains('rut_num', $primary->first()?->getColumns());
 
         $schema->create('test_table_with_unique', function (Blueprint $table) {
             $table->rut()->unique();
         });
 
-        $unique = $schema->getConnection()
-            ->getDoctrineSchemaManager()
-            ->introspectTable('test_table_with_unique')
-            ->getIndexes();
+        $unique = collect(
+            $schema->getConnection()->getDoctrineSchemaManager()->listTableIndexes('test_table_with_unique')
+        )->filter->isUnique()->keyBy->getName();
 
         static::assertCount(1, $unique);
         static::assertArrayHasKey('test_table_with_unique_rut_num_unique', $unique);
@@ -119,10 +117,9 @@ class RutBlueprintMacrosTest extends TestCase
             $table->rut()->index();
         });
 
-        $indexes = $schema->getConnection()
-            ->getDoctrineSchemaManager()
-            ->listTableDetails('test_table_with_index')
-            ->getIndexes();
+        $indexes = collect(
+            $schema->getConnection()->getDoctrineSchemaManager()->listTableIndexes('test_table_with_index')
+        )->keyBy->getName();
 
         static::assertArrayHasKey('test_table_with_index_rut_num_index', $indexes);
 
@@ -130,22 +127,20 @@ class RutBlueprintMacrosTest extends TestCase
             $table->rut()->primary();
         });
 
-        $primary = $schema->getConnection()
-            ->getDoctrineSchemaManager()
-            ->listTableDetails('test_table_with_primary')
-            ->getPrimaryKey();
+        $primary = collect(
+            $schema->getConnection()->getDoctrineSchemaManager()->listTableIndexes('test_table_with_primary')
+        )->filter->isPrimary();
 
-        static::assertCount(1, $primary->getColumns());
-        static::assertContains('rut_num', $primary->getColumns());
+        static::assertCount(1, $primary->first()?->getColumns());
+        static::assertContains('rut_num', $primary->first()?->getColumns());
 
         $schema->create('test_table_with_unique', function (Blueprint $table) {
             $table->rut()->unique();
         });
 
-        $unique = $schema->getConnection()
-            ->getDoctrineSchemaManager()
-            ->listTableDetails('test_table_with_unique')
-            ->getIndexes('rut_num');
+        $unique = collect(
+            $schema->getConnection()->getDoctrineSchemaManager()->listTableIndexes('test_table_with_unique')
+        )->filter->isUnique()->keyBy->getName();
 
         static::assertCount(1, $unique);
         static::assertArrayHasKey('test_table_with_unique_rut_num_unique', $unique);
