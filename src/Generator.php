@@ -7,6 +7,7 @@ namespace Laragear\Rut;
 use Illuminate\Support\Collection;
 use JetBrains\PhpStorm\Pure;
 use LogicException;
+
 use function max;
 use function rand;
 

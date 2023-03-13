@@ -4,9 +4,10 @@ declare(strict_types=1);
 
 namespace Laragear\Rut\Rules;
 
-use function addslashes;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\DatabaseRule;
+
+use function addslashes;
 use function rtrim;
 use function sprintf;
 
