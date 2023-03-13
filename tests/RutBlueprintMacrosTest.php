@@ -4,6 +4,7 @@ namespace Tests;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\ColumnDefinition;
+
 use function collect;
 
 class RutBlueprintMacrosTest extends TestCase
