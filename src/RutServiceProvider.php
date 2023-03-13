@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Laragear\Rut;
 
-use function count;
 use Illuminate\Contracts\Config\Repository;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Validation\Factory;
@@ -15,6 +14,8 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
+
+use function count;
 use function is_iterable;
 
 class RutServiceProvider extends ServiceProvider
@@ -152,7 +153,7 @@ class RutServiceProvider extends ServiceProvider
      */
     protected function macroRequest(): void
     {
-        Request::macro('rut', function (iterable|string ...$input): Rut|Collection {
+        Request::macro('rut', function (iterable | string ...$input): Rut|Collection {
             /** @var \Illuminate\Http\Request $this */
             if (empty($input)) {
                 $input[0] = 'rut';
