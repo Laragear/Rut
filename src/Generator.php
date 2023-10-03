@@ -21,9 +21,17 @@ class Generator
     /** @var array Boundaries for all types of RUT */
     protected const BOUNDARY_NONE = [Rut::MIN, Rut::MAX];
     /** @var array Boundaries for people RUTs */
-    protected const BOUNDARY_PEOPLE = [Rut::MIN, Rut::COMPANY_BASE];
+    protected const BOUNDARY_PEOPLE = [Rut::MIN, Rut::INVESTOR_BASE - 1];
+    /** @var array Boundaries for investor RUTs */
+    protected const BOUNDARY_INVESTOR = [Rut::INVESTOR_BASE, Rut::INVESTMENT_COMPANY_BASE - 1];
+    /** @var array Boundaries for investment companies RUTs */
+    protected const BOUNDARY_INVESTMENT_COMPANY = [Rut::INVESTMENT_COMPANY_BASE, Rut::CONTINGENCY_BASE - 1];
+    /** @var array Boundaries for contingency RUTs */
+    protected const BOUNDARY_CONTINGENCY = [Rut::CONTINGENCY_BASE, Rut::COMPANY_BASE - 1];
     /** @var array Boundaries for company RUTs */
-    protected const BOUNDARY_COMPANIES = [Rut::COMPANY_BASE + 1, Rut::MAX];
+    protected const BOUNDARY_COMPANIES = [Rut::COMPANY_BASE, Rut::TEMPORAL_BASE - 1];
+    /** @var array Boundaries for temporal RUTs */
+    protected const BOUNDARY_TEMPORAL = [Rut::TEMPORAL_BASE, Rut::MAX];
 
     /**
      * Create a new Generator instance.
@@ -66,6 +74,36 @@ class Generator
     }
 
     /**
+     * Sets the generator to create investor RUTs.
+     *
+     * @return static
+     */
+    public function asInvestors(): static
+    {
+        return $this->between(...static::BOUNDARY_INVESTOR);
+    }
+
+    /**
+     * Sets the generator to create investment companies RUTs.
+     *
+     * @return static
+     */
+    public function asInvestmentCompanies(): static
+    {
+        return $this->between(...static::BOUNDARY_INVESTMENT_COMPANY);
+    }
+
+    /**
+     * Sets the generator to create contingency RUTs.
+     *
+     * @return static
+     */
+    public function asContingency(): static
+    {
+        return $this->between(...static::BOUNDARY_CONTINGENCY);
+    }
+
+    /**
      * Sets the generator to create company RUTs.
      *
      * @return static
@@ -73,6 +111,26 @@ class Generator
     public function asCompanies(): static
     {
         return $this->between(...static::BOUNDARY_COMPANIES);
+    }
+
+    /**
+     * Sets the generator to create temporal RUTs.
+     *
+     * @return static
+     */
+    public function asTemporal(): static
+    {
+        return $this->between(...static::BOUNDARY_TEMPORAL);
+    }
+
+    /**
+     * Sets the generator to create definitive RUTs.
+     *
+     * @return static
+     */
+    public function asDefinitive(): static
+    {
+        return $this->between(Rut::MIN, Rut::TEMPORAL_BASE - 1);
     }
 
     /**

@@ -61,17 +61,28 @@ $rut = Rut::parse('5.138.171-8');
 
 ## RUT de personas vs empresas
 
-Para diferenciar el RUT de una persona y el RUT de una empresa, puedes usar `isPerson()` o `isCompany()`, respectivamente. El "corte" es hecho a partir de los 50.000.000, así que es usualmente seguro asumir que un RUT como `76.543.210-K` es para una empresa.
+Oficialmente, existen seis tipos de RUT. Para diferenciarlos, tienes acceso a los métodos `is...()`.
+
+| Tipo de RUT              | Desde         | Hasta         | Chequeo de tipo       |
+|--------------------------|---------------|---------------|-----------------------|
+| Person                   | `    100.000` | ` 45.999.999` | `isPerson()`          |
+| Foreign Investor Person  | ` 46.000.000` | ` 47.999.999` | `isInvestor()`        |
+| Foreign Investor Company | ` 47.000.000` | ` 47.999.999` | `isInvestorCompany()` |
+| Contingency              | ` 48.000.000` | ` 59.999.999` | `isContingency()`     |
+| Company                  | ` 60.000.000` | ` 99.999.999` | `isCompany()`         |
+| Temporal                 | `100.000.000` | `199.999.999` | `isTemporal()`        |
+
+Adicionalmente, tienes acceso al método `isPermanent()`, que chequea si el RUT está debajo de 100.000.000.
 
 ```php
-$rut = Rut::parse('76.543.210-3');
+use Laragear\Rut\Rut;
 
-if ($rut->isCompany()) {
-    return 'Si eres una empresa, usa nuestra solución B2B.';
-}
+Rut::parse('76.482.465-2')->isPermanent(); // "true"
+
+Rut::parse('76.482.465-2')->isTemporal(); // "false"
 ```
 
-> Este paquete considera un RUT como válido si está entre 100.000 y 100.000.000, inclusivo. La mayoría de la gente, si no es toda, que usa RUT bajo los 100.000 ya han muerto, y todavía estamos a décadas de superar los 100.000.000. Nota que puede haber ciertas excepciones para tener un RUT sobre los 100 millones, sin embargo, es altamente probable que sean temporales o para personas o empresas.
+> Este paquete considera un RUT como válido si está entre 100.000 y 100.000.000, inclusivo. La mayoría de la gente, si no es toda, que usa RUT bajo los 100.000 ya han fallecido.
 
 ## Generando RUTs
 
@@ -92,9 +103,11 @@ Usa `asPeople()` para crear RUT de personas, o `asCompanies()` para crear RUT de
 ```php
 use Laragear\Rut\Facades\Generator;
 
-$ruts = Generator::asPeople()->make(10);
+$people = Generator::asPeople()->make(10);
 
-$rut = Generator::asCompanies()->makeOne();
+$companies = Generator::asCompanies()->make(10);
+
+$temporal = Generator::asTemporal()->makeOne();
 ```
 
 Si planeas crear varios millones de RUT, habrá una alta probabilidad que te encuentres con duplicados. Para evitar colisiones, o mejor dicho, para asegurarse que cada RUT es único en la lista, puedes usar `unique()` a cambio de un rendimiento menor.
@@ -583,7 +596,7 @@ echo $user->rut; // "20490006-K"
 
 #### Configurar las columnas de RUT
 
-Por convención, el trait usa `rut_num` and `rut_vd` como el nombre del número y dígito verificador de RUT, respectivamente. Puedes fácilmente cambiarlos por cualquier otro con los que estés trabajando en la tabla, para un modelo específico.
+Por convención, el _trait_ usa `rut_num` and `rut_vd` como el nombre del número y dígito verificador de RUT, respectivamente. Puedes fácilmente cambiarlos por cualquier otro con los que estés trabajando en la tabla, para un modelo específico.
 
 ```php
 class User extends Authenticatable
