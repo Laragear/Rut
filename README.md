@@ -59,19 +59,30 @@ use Laragear\Rut\Rut;
 $rut = Rut::parse('5.138.171-8');
 ```
 
-## Person vs Company RUT
+## RUT Types
 
-To differentiate between a person RUT and a company RUT, you can use `isPerson()` or `isCompany()`, respectively. The "cut" is done at 50.000.000, so is usually safe to assume a RUT like `76.543.210-K` is for a company.
+Officially, there are six types of RUT. To differentiate between them, you have access to `is...()` methods.
+
+| RUT Type                 | From          | To            | Type Check            |
+|--------------------------|---------------|---------------|-----------------------|
+| Person                   | `    100.000` | ` 45.999.999` | `isPerson()`          |
+| Foreign Investor Person  | ` 46.000.000` | ` 47.999.999` | `isInvestor()`        |
+| Foreign Investor Company | ` 47.000.000` | ` 47.999.999` | `isInvestorCompany()` |
+| Contingency              | ` 48.000.000` | ` 59.999.999` | `isContingency()`     |
+| Company                  | ` 60.000.000` | ` 99.999.999` | `isCompany()`         |
+| Temporal                 | `100.000.000` | `199.999.999` | `isTemporal()`        |
+
+Additionally, you have access to the `isPermanent()` method, which checks if the RUT is below 100.000.000.
 
 ```php
-$rut = Rut::parse('76.543.210-3');
+use Laragear\Rut\Rut;
 
-if ($rut->isCompany()) {
-    return 'If you are a company, use our B2B solution instead.';
-}
+Rut::parse('76.482.465-2')->isPermanent(); // "true"
+
+Rut::parse('76.482.465-2')->isTemporal(); // "false"
 ```
 
-> This package considers RUT as valid when between 100.000 and 100.000.000, inclusive. Most (if not all) people using 99.999 or lower RUT numbers are deceased, and 100.000.000 RUTs are still decades away from happening. Note that there may be certain exceptions for having a RUT over 100 millions, but there is a high chance these are not meant to be permanent or for citizens.
+> This package considers RUT as valid when between 100.000 and 200.000.000, inclusive. Most (if not all) people using 99.999 or lower RUT numbers are deceased.
 
 ## Generating RUTs
 
@@ -87,17 +98,19 @@ $ruts = Generator::make(10);
 $rut = Generator::makeOne();
 ```
 
-You can use `asPeople()` to make lesser RUTs numbers, or `asCompanies()` to create greater RUTs numbers.
+You can use `as...()` to make a given type of RUTs. 
 
 ```php
 use Laragear\Rut\Facades\Generator;
 
-$ruts = Generator::asPeople()->make(10);
+$people = Generator::asPeople()->make(10);
 
-$rut = Generator::asCompanies()->makeOne();
+$companies = Generator::asCompanies()->make(10);
+
+$temporal = Generator::asTemporal()->makeOne();
 ```
 
-If you plan to create several millions of RUTs, there is a high change you will come with duplicates. To avoid collisions, use the `unique()` method in exchange for a performance hit to remove duplicates.
+If you plan to create several millions of RUTs, there is a high change you will come with duplicates. To avoid collisions, use the `unique()` method in exchange for a small performance hit to remove duplicates.
 
 ```php
 use Laragear\Rut\Facades\Generator;

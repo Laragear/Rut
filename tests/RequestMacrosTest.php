@@ -24,9 +24,9 @@ class RequestMacrosTest extends TestCase
     {
         $request = Request::create('/path', 'POST');
 
-        $request->request->set('foo', (Generator::makeOne())->format());
-        $request->request->set('bar', (Generator::makeOne())->format());
-        $request->request->set('baz', (Generator::makeOne())->format());
+        $request->request->set('foo', Generator::makeOne()->format());
+        $request->request->set('bar', Generator::makeOne()->format());
+        $request->request->set('baz', Generator::makeOne()->format());
 
         $ruts = $request->rut('foo', 'bar', 'baz', 'quz');
 
@@ -41,8 +41,8 @@ class RequestMacrosTest extends TestCase
 
         $request = Request::create('/path', 'POST');
 
-        $request->request->set('foo', (Generator::makeOne())->format());
-        $request->request->set('bar', (Generator::makeOne())->format());
+        $request->request->set('foo', Generator::makeOne()->format());
+        $request->request->set('bar', Generator::makeOne()->format());
         $request->request->set('baz', 'invalid');
 
         $request->rut('foo', 'bar', 'baz', 'quz');

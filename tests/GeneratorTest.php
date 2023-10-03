@@ -54,15 +54,55 @@ class GeneratorTest extends TestCase
         $rut = $this->generator->asPeople()->makeOne();
 
         static::assertGreaterThanOrEqual(100000, $rut->num);
-        static::assertLessThanOrEqual(50000000, $rut->num);
+        static::assertLessThan(46000000, $rut->num);
+    }
+
+    public function test_makes_investor_rut(): void
+    {
+        $rut = $this->generator->asInvestors()->makeOne();
+
+        static::assertGreaterThanOrEqual(46000000, $rut->num);
+        static::assertLessThan(47000000, $rut->num);
+    }
+
+    public function test_makes_investment_companies_rut(): void
+    {
+        $rut = $this->generator->asInvestmentCompanies()->makeOne();
+
+        static::assertGreaterThanOrEqual(47000000, $rut->num);
+        static::assertLessThan(48000000, $rut->num);
+    }
+
+    public function test_makes_contingency_rut(): void
+    {
+        $rut = $this->generator->asContingency()->makeOne();
+
+        static::assertGreaterThanOrEqual(48000000, $rut->num);
+        static::assertLessThan(60000000, $rut->num);
     }
 
     public function test_makes_company_rut(): void
     {
         $rut = $this->generator->asCompanies()->makeOne();
 
-        static::assertGreaterThanOrEqual(50000001, $rut->num);
-        static::assertLessThanOrEqual(100000000, $rut->num);
+        static::assertGreaterThanOrEqual(60000000, $rut->num);
+        static::assertLessThan(100000000, $rut->num);
+    }
+
+    public function test_makes_temporal_rut(): void
+    {
+        $rut = $this->generator->asTemporal()->makeOne();
+
+        static::assertGreaterThanOrEqual(100000000, $rut->num);
+        static::assertLessThan(200000000, $rut->num);
+    }
+
+    public function test_makes_definitive_rut(): void
+    {
+        $rut = $this->generator->asDefinitive()->makeOne();
+
+        static::assertGreaterThanOrEqual(100000, $rut->num);
+        static::assertLessThan(200000000, $rut->num);
     }
 
     public function test_makes_any_rut(): void

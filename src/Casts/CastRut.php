@@ -3,7 +3,6 @@
 namespace Laragear\Rut\Casts;
 
 use Illuminate\Contracts\Database\Eloquent\CastsAttributes;
-use JetBrains\PhpStorm\Pure;
 use Laragear\Rut\Rut;
 
 class CastRut implements CastsAttributes
@@ -17,7 +16,6 @@ class CastRut implements CastsAttributes
      * @param  array  $attributes
      * @return \Laragear\Rut\Rut|null
      */
-    #[Pure]
     public function get($model, string $key, $value, array $attributes): ?Rut
     {
         // Only return a Rut instance when both number and verification digit are filled.

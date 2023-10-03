@@ -4,19 +4,18 @@ declare(strict_types=1);
 
 namespace Laragear\Rut;
 
-use function array_reverse;
 use Closure;
 use Illuminate\Contracts\Support\Jsonable;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
-use JetBrains\PhpStorm\ArrayShape;
-use JetBrains\PhpStorm\Pure;
-use function json_encode;
 use JsonSerializable;
+use Stringable;
+
+use function array_reverse;
+use function json_encode;
 use function max;
 use function preg_filter;
 use function str_split;
-use Stringable;
 use function strlen;
 use function strtolower;
 use function strtoupper;
@@ -37,21 +36,55 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      *
      * @var int
      */
-    public const MAX = 100000000;
+    public const MAX = 200000000;
+
+    /**
+     * Where to draw the line between person and investor RUTs.
+     *
+     * @see https://www.sii.cl/documentos/resoluciones/2000b/reso5412.htm
+     *
+     * @const int
+     */
+    public const INVESTOR_BASE = 46000000;
+
+    /**
+     * Where to draw the line between investor and investment companies RUTs.
+     *
+     * @see https://www.sii.cl/documentos/resoluciones/2000b/reso5412.htm
+     *
+     * @const int
+     */
+    public const INVESTMENT_COMPANY_BASE = 47000000;
+
+    /**
+     * Where to draw the line between investment companies and contingency RUTs.
+     *
+     * @see https://www.sii.cl/documentos/resoluciones/2000b/reso5412.htm
+     *
+     * @const int
+     */
+    public const CONTINGENCY_BASE = 48000000;
 
     /**
      * Where to draw the line between person and company RUTs.
      *
      * @const int
      */
-    public const COMPANY_BASE = 50000000;
+    public const COMPANY_BASE = 60000000;
+
+    /**
+     * Where to separate between company and temporal RUTs.
+     *
+     * @const int
+     */
+    public const TEMPORAL_BASE = 100000000;
 
     /**
      * Sets RUT representation with only the characters.
      *
      * @example "187654321"
      *
-     * @deprecated Use `Laragear\Rut\RutFormat::Raw` directly. This will be deleted in later versions.
+     * @deprecated Use `Laragear\Rut\RutFormat::Raw` directly. This will be deleted in the next version.
      * @see \Laragear\Rut\RutFormat
      */
     public const FORMAT_RAW = RutFormat::Raw;
@@ -61,7 +94,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      *
      * @example "18765432-1"
      *
-     * @deprecated Use `Laragear\Rut\RutFormat::Basic` directly. This will be deleted in later versions.
+     * @deprecated Use `Laragear\Rut\RutFormat::Basic` directly. This will be deleted in the next version.
      * @see \Laragear\Rut\RutFormat
      */
     public const FORMAT_BASIC = RutFormat::Basic;
@@ -71,7 +104,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      *
      * @example "18.765.432-1"
      *
-     * @deprecated Use `Laragear\Rut\RutFormat::Strict` directly. This will be deleted in later versions.
+     * @deprecated Use `Laragear\Rut\RutFormat::Strict` directly. This will be deleted in the next version.
      * @see \Laragear\Rut\RutFormat
      */
     public const FORMAT_STRICT = RutFormat::Strict;
@@ -117,24 +150,63 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     }
 
     /**
-     * Check if the RUT is below 50.000.000.
+     * Check if the RUT is below 46.000.000.
      *
      * @return bool
      */
     public function isPerson(): bool
     {
-        return $this->num < static::COMPANY_BASE;
+        return $this->num < static::INVESTMENT_COMPANY_BASE;
     }
 
     /**
-     * Check if the RUT is equal or above 50.000.000;.
+     * Check if the RUT is between 46.000.000 and 46.999.999, inclusive.
      *
      * @return bool
      */
-    #[Pure]
+    public function isInvestor(): bool
+    {
+        return $this->num >= static::INVESTOR_BASE && $this->num < static::CONTINGENCY_BASE;
+    }
+
+    /**
+     * Check if the RUT is between 47.000.000 and 47.999.999, inclusive.
+     *
+     * @return bool
+     */
+    public function isInvestmentCompany(): bool
+    {
+        return $this->num >= static::INVESTMENT_COMPANY_BASE && $this->num < static::CONTINGENCY_BASE;
+    }
+
+    /**
+     * Check if the RUT is between 48.000.000 and 59.999.999, inclusive.
+     *
+     * @return bool
+     */
+    public function isContingency(): bool
+    {
+        return $this->num >= static::CONTINGENCY_BASE && $this->num < static::COMPANY_BASE;
+    }
+
+    /**
+     * Check if the RUT is between 60.000.000 and 999.999.999, inclusive.
+     *
+     * @return bool
+     */
     public function isCompany(): bool
     {
-        return ! $this->isPerson();
+        return $this->num >= static::COMPANY_BASE && $this->num < static::TEMPORAL_BASE;
+    }
+
+    /**
+     * Check if the RUT is between 100.000.000 and 199.999.999, inclusive.
+     *
+     * @return bool
+     */
+    public function isTemporal(): bool
+    {
+        return $this->num >= static::TEMPORAL_BASE && $this->num < static::MAX;
     }
 
     /**
@@ -170,7 +242,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     }
 
     /**
-     * Check if this RUT is equal to other RUT.
+     * Check if this RUT is equal to another RUT.
      *
      * @param  \Laragear\Rut\Rut|int|string  $rut
      * @return bool
@@ -269,7 +341,6 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      *
      * @internal
      */
-    #[Pure]
     public function __serialize(): array
     {
         return [RutFormat::Raw->format($this)];
@@ -345,7 +416,6 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      *
      * @throws \Laragear\Rut\Exceptions\EmptyRutException
      */
-    #[ArrayShape(['int', 'string'])]
     public static function split(self|string|int|null $string): array
     {
         if ($string instanceof static) {
@@ -401,7 +471,6 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      * @param  int  $num
      * @return static
      */
-    #[Pure]
     public static function fromNum(int $num): static
     {
         return new static($num, static::getVd($num));
