@@ -7,6 +7,7 @@ use Laragear\Rut\Exceptions\InvalidRutException;
 use Laragear\Rut\Generator;
 use Laragear\Rut\Rut;
 use PHPUnit\Framework\TestCase;
+
 use function json_encode;
 use function serialize;
 use function unserialize;
