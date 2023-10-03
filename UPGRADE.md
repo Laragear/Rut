@@ -6,7 +6,7 @@ The following is a somewhat-detailed way to upgrade this package from prior vers
 
 ### Format Enum
 
-Formatting a RUT is now done using the `RutFormat` enum. While using the `Rut` constants and integers will still work, these will be removed in later versions in favour of Enums.
+Formatting a RUT is now done using the `RutFormat` enum. While using the `Rut` constants and integers will still work, these will be removed the next major version.
 
 ```php
 use Laragear\Rut\Rut
@@ -32,7 +32,7 @@ return [
 
 ### Eloquent Model Append
 
-By default, the Model appends the `rut` property on serialization, and hides `rut_num` and `rut_vd` columns. The name of these columns may change depending on the Model RUT configuration. This behavior can be reverted by overriding `shouldAppendRut()` to return `false`.
+By default, the Model appends the `rut` property on serialization, and hides `rut_num` and `rut_vd` columns. The name of these columns may change depending on the Model RUT configuration, but usually it's not. Anyway, this behavior can be reverted by overriding `shouldAppendRut()` to return `false`.
 
 ```php
 /**
