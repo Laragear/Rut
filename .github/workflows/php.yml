@@ -37,10 +37,8 @@ jobs:
       - name: "Checkout code"
         uses: "actions/checkout@v3"
 
-      - name: "Install dependencies"
-        uses: "ramsey/composer-install@v2"
-        with:
-          dependency-versions: "highest"
+      - name: "Validate Composer configuration"
+        run: "composer validate --strict"
 
       - name: "Check source code for syntax errors"
         run: "composer exec -- parallel-lint src/"
@@ -54,19 +52,25 @@ jobs:
     strategy:
       matrix:
         php-version:
+          - "8.0"
+          - "8.1"
           - "8.2"
-        laravel-constrain:
-          - "9.*|10.*"
+        laravel-constraint:
+          - "9.*"
+          - "10.*"
         dependencies:
           - "lowest"
           - "highest"
+        exclude:
+          - php-version: "8.0"
+            laravel-constraint: "10.*"
     steps:
       - name: "Set up PHP"
         uses: "shivammathur/setup-php@v2"
         with:
           php-version: "${{ matrix.php-version }}"
-          extensions: mbstring, intl
-          coverage: xdebug
+          extensions: "mbstring, intl"
+          coverage: "xdebug"
 
       - name: "Checkout code"
         uses: "actions/checkout@v3"
@@ -75,6 +79,7 @@ jobs:
         uses: "ramsey/composer-install@v2"
         with:
           dependency-versions: "${{ matrix.dependencies }}"
+          composer-options: "--with=laravel/framework:${{ matrix.laravel-constraint }}"
 
       - name: "Execute unit tests"
         run: "composer run-script test"
@@ -92,8 +97,9 @@ jobs:
       - name: "Set up PHP"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "latest"
           tools: "phpstan"
+          php-version: "latest"
+          coverage: "none"
 
       - name: "Checkout code"
         uses: "actions/checkout@v3"
@@ -103,8 +109,6 @@ jobs:
 
       - name: "Install dependencies"
         uses: "ramsey/composer-install@v2"
-        with:
-          dependency-versions: "highest"
 
       - name: "Execute static analysis"
         run: "composer exec -- phpstan analyze -l 5 src/"

@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
-
 use function count;
 use function is_iterable;
 
@@ -183,7 +182,6 @@ class RutServiceProvider extends ServiceProvider
 
         if ($this->app->runningInConsole()) {
             $this->publishes([static::CONFIG => $this->app->configPath('rut.php')], 'config');
-            // @phpstan-ignore-next-line
             $this->publishes([static::LANG => $this->app->langPath('vendor/rut')], 'translations');
             $this->publishes([static::STUBS => $this->app->basePath('.stubs/rut.php')], 'phpstorm');
         }
