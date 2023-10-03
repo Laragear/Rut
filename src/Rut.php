@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
 use JsonSerializable;
 use Stringable;
+
 use function array_reverse;
 use function json_encode;
 use function max;
@@ -41,6 +42,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      * Where to draw the line between person and investor RUTs.
      *
      * @see https://www.sii.cl/documentos/resoluciones/2000b/reso5412.htm
+     *
      * @const int
      */
     public const INVESTOR_BASE = 46000000;
@@ -49,6 +51,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      * Where to draw the line between investor and investment companies RUTs.
      *
      * @see https://www.sii.cl/documentos/resoluciones/2000b/reso5412.htm
+     *
      * @const int
      */
     public const INVESTMENT_COMPANY_BASE = 47000000;
@@ -57,6 +60,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      * Where to draw the line between investment companies and contingency RUTs.
      *
      * @see https://www.sii.cl/documentos/resoluciones/2000b/reso5412.htm
+     *
      * @const int
      */
     public const CONTINGENCY_BASE = 48000000;

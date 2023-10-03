@@ -6,6 +6,7 @@ namespace Laragear\Rut;
 
 use Illuminate\Support\Collection;
 use LogicException;
+
 use function max;
 use function rand;
 
