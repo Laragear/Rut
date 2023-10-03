@@ -7,7 +7,6 @@ use Laragear\Rut\Exceptions\InvalidRutException;
 use Laragear\Rut\Generator;
 use Laragear\Rut\Rut;
 use PHPUnit\Framework\TestCase;
-
 use function json_encode;
 use function serialize;
 use function unserialize;
@@ -42,7 +41,7 @@ class RutTest extends TestCase
 
     public function test_rut_checks_for_person(): void
     {
-        $rut = new Rut(50000000 - 1, 'k');
+        $rut = new Rut(40000000, 'k');
 
         static::assertTrue($rut->isPerson());
         static::assertFalse($rut->isCompany());
@@ -50,7 +49,7 @@ class RutTest extends TestCase
 
     public function test_rut_checks_for_company(): void
     {
-        $rut = new Rut(50000000, 'k');
+        $rut = new Rut(60000000, 4);
 
         static::assertFalse($rut->isPerson());
         static::assertTrue($rut->isCompany());
@@ -72,8 +71,8 @@ class RutTest extends TestCase
 
     public function test_rut_over_max_is_invalid(): void
     {
-        static::assertTrue(Rut::fromNum(100000000)->isValid());
-        static::assertFalse(Rut::fromNum(100000001)->isValid());
+        static::assertTrue(Rut::fromNum(200000000)->isValid());
+        static::assertFalse(Rut::fromNum(200000001)->isValid());
     }
 
     public function test_ruts_checks_valid_rut(): void

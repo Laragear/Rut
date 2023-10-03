@@ -109,8 +109,8 @@ class GeneratorTest extends TestCase
     {
         $rut = $this->generator->asAnything()->makeOne();
 
-        static::assertGreaterThanOrEqual(0, $rut->num);
-        static::assertLessThanOrEqual(100000000, $rut->num);
+        static::assertGreaterThanOrEqual(100000, $rut->num);
+        static::assertLessThanOrEqual(200000000, $rut->num);
     }
 
     public function test_makes_rut_between_two_numbers(): void
