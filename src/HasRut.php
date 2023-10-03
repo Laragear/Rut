@@ -70,7 +70,7 @@ trait HasRut
      */
     public function getRutNumColumn(): string
     {
-        return defined('static::RUT_NUM') ? static::RUT_NUM : 'rut_num';
+        return defined(static::class . '::RUT_NUM') ? static::RUT_NUM : 'rut_num';
     }
 
     /**
@@ -80,7 +80,7 @@ trait HasRut
      */
     public function getRutVdColumn(): string
     {
-        return defined('static::RUT_NUM') ? static::RUT_VD : 'rut_vd';
+        return defined(static::class . '::RUT_VD') ? static::RUT_VD : 'rut_vd';
     }
 
     /**
