@@ -31,7 +31,7 @@ jobs:
       - name: "Set up PHP"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "8.1"
+          php-version: "latest"
           tools: "parallel-lint"
 
       - name: "Checkout code"
@@ -54,9 +54,9 @@ jobs:
     strategy:
       matrix:
         php-version:
-          - "8.1"
+          - "8.2"
         laravel-constrain:
-          - "9.*"
+          - "9.*|10.*"
         dependencies:
           - "lowest"
           - "highest"
@@ -92,7 +92,7 @@ jobs:
       - name: "Set up PHP"
         uses: "shivammathur/setup-php@v2"
         with:
-          php-version: "8.1"
+          php-version: "latest"
           tools: "phpstan"
 
       - name: "Checkout code"
