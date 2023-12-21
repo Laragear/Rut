@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
-
 use function count;
 use function is_iterable;
 
@@ -25,7 +24,7 @@ class RutServiceProvider extends ServiceProvider
 {
     public const CONFIG = __DIR__.'/../config/rut.php';
     public const LANG = __DIR__.'/../lang';
-    public const STUBS = __DIR__.'/../.stubs/stubs.php';
+    public const STUBS = __DIR__.'/../.stubs/stubs';
 
     /**
      * Rules to register into the validator.
