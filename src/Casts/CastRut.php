@@ -44,7 +44,7 @@ class CastRut implements CastsAttributes
                 // @phpstan-ignore-next-line
                 $model->getRutNumColumn() => null,
                 // @phpstan-ignore-next-line
-                $model->getRutVdColumn()  => null,
+                $model->getRutVdColumn() => null,
             ];
         }
 
@@ -55,7 +55,7 @@ class CastRut implements CastsAttributes
             // @phpstan-ignore-next-line
             $model->getRutNumColumn() => $value->num,
             // @phpstan-ignore-next-line
-            $model->getRutVdColumn()  => $value->vd,
+            $model->getRutVdColumn() => $value->vd,
         ];
     }
 }

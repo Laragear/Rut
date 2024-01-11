@@ -32,7 +32,7 @@ class CastsRutTest extends TestCase
     {
         static::assertEquals(
             [
-                'id'  => 'int',
+                'id' => 'int',
                 'rut' => CastRut::class,
             ],
             $this->model->getCasts()
