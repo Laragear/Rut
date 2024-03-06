@@ -6,6 +6,7 @@ namespace Laragear\Rut\Rules;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\DatabaseRule;
+
 use function addslashes;
 use function rtrim;
 use function sprintf;
@@ -23,8 +24,7 @@ class RutUnique
         protected string $vdColumn,
         protected mixed $ignore = null,
         protected string $idColumn = 'id'
-    )
-    {
+    ) {
         $this->table = $table;
     }
 

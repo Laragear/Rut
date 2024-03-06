@@ -33,7 +33,7 @@ class RutBlueprintMacrosTest extends TestCase
         static::assertTrue($schema->hasColumn('test_table', 'rut_num'));
         static::assertTrue($schema->hasColumn('test_table', 'rut_vd'));
         static::assertEquals('integer', $schema->getColumnType('test_table', 'rut_num'));
-        static::assertEquals('varchar', $schema->getColumnType('test_table', 'rut_vd'));
+        static::assertTrue('string', $schema->getColumnType('test_table', 'rut_vd'));
 
         static::assertFalse($blueprint->getColumns()[0]->autoIncrement);
         static::assertNull($blueprint->getColumns()[0]->nullable);
@@ -103,7 +103,7 @@ class RutBlueprintMacrosTest extends TestCase
         static::assertTrue($schema->hasColumn('test_table', 'rut_num'));
         static::assertTrue($schema->hasColumn('test_table', 'rut_vd'));
         static::assertEquals('integer', $schema->getColumnType('test_table', 'rut_num'));
-        static::assertEquals('varchar', $schema->getColumnType('test_table', 'rut_vd'));
+        static::assertEquals('string', $schema->getColumnType('test_table', 'rut_vd'));
 
         static::assertFalse($blueprint->getColumns()[0]->autoIncrement);
         static::assertTrue($blueprint->getColumns()[0]->nullable);

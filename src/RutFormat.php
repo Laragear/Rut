@@ -47,7 +47,7 @@ enum RutFormat
         return match ($this) {
             self::Strict => number_format($rut->num, 0, null, '.').'-'.$rut->vd,
             self::Basic => "$rut->num-$rut->vd",
-            default => $rut->num. $rut->vd,
+            default => $rut->num.$rut->vd,
         };
     }
 }

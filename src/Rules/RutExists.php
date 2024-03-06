@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Laragear\Rut\Rules;
 
 use Illuminate\Validation\Rules\DatabaseRule;
+
 use function rtrim;
 use function sprintf;
 
