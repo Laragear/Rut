@@ -8,6 +8,7 @@ use Laragear\Rut\Exceptions\EmptyRutException;
 use Laragear\Rut\Facades\Generator;
 use Laragear\Rut\HasRut;
 use Laragear\Rut\Rut;
+use Laragear\Rut\RutFormat;
 use Tests\PreparesDatabase;
 use Tests\TestCase;
 
@@ -57,7 +58,7 @@ class CastsRutTest extends TestCase
                 'name' => 'John',
                 'email' => 'anything@cmail.com',
                 'password' => '123456',
-                'rut' => $rut->format(Rut::FORMAT_BASIC),
+                'rut' => $rut->format(RutFormat::Basic),
             ]
         )->save();
 

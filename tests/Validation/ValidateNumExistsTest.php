@@ -5,7 +5,7 @@ namespace Tests\Validation;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Validator;
 use InvalidArgumentException;
-use Laragear\Rut\Rut;
+use Laragear\Rut\RutFormat;
 use Tests\PreparesDatabase;
 use Tests\TestCase;
 
@@ -49,7 +49,7 @@ class ValidateNumExistsTest extends TestCase
     public function test_num_exists_fails_when_doesnt_exists(): void
     {
         $validator = Validator::make([
-            'rut' => $this->uniqueRut()->format(Rut::FORMAT_STRICT),
+            'rut' => $this->uniqueRut()->format(RutFormat::Strict),
         ], [
             'rut' => 'num_exists:testing.users,rut_num',
         ]);

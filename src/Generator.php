@@ -6,7 +6,6 @@ namespace Laragear\Rut;
 
 use Illuminate\Support\Collection;
 use LogicException;
-
 use function max;
 use function rand;
 
@@ -14,33 +13,26 @@ class Generator
 {
     /**
      * The default number of iterations.
-     *
-     * @var int
      */
     protected const ITERATIONS = 15;
 
-    /** @var array Boundaries for all types of RUT */
+    // Boundaries for all types of RUT.
     protected const BOUNDARY_NONE = [Rut::MIN, Rut::MAX];
-    /** @var array Boundaries for people RUTs */
+    // Boundaries for people RUTs.
     protected const BOUNDARY_PEOPLE = [Rut::MIN, Rut::INVESTOR_BASE - 1];
-    /** @var array Boundaries for investor RUTs */
+    // Boundaries for investor RUTs.
     protected const BOUNDARY_INVESTOR = [Rut::INVESTOR_BASE, Rut::INVESTMENT_COMPANY_BASE - 1];
-    /** @var array Boundaries for investment companies RUTs */
+    // Boundaries for investment companies RUTs.
     protected const BOUNDARY_INVESTMENT_COMPANY = [Rut::INVESTMENT_COMPANY_BASE, Rut::CONTINGENCY_BASE - 1];
-    /** @var array Boundaries for contingency RUTs */
+    // Boundaries for contingency RUTs.
     protected const BOUNDARY_CONTINGENCY = [Rut::CONTINGENCY_BASE, Rut::COMPANY_BASE - 1];
-    /** @var array Boundaries for company RUTs */
+    // Boundaries for company RUTs.
     protected const BOUNDARY_COMPANIES = [Rut::COMPANY_BASE, Rut::TEMPORAL_BASE - 1];
-    /** @var array Boundaries for temporal RUTs */
+    // Boundaries for temporal RUTs.
     protected const BOUNDARY_TEMPORAL = [Rut::TEMPORAL_BASE, Rut::MAX];
 
     /**
      * Create a new Generator instance.
-     *
-     * @param  int  $iterations
-     * @param  int  $min
-     * @param  int  $max
-     * @param  bool  $unique
      */
     final public function __construct(
         protected int $iterations = self::ITERATIONS,
@@ -55,9 +47,6 @@ class Generator
      * Forces the generator to create unique RUTs.
      *
      * This can be performance detrimental on some scenarios or large iterations.
-     *
-     * @param  bool  $unique
-     * @return static
      */
     public function unique(bool $unique = true): static
     {
@@ -66,8 +55,6 @@ class Generator
 
     /**
      * Sets the generator to create people RUTs.
-     *
-     * @return static
      */
     public function asPeople(): static
     {
@@ -76,8 +63,6 @@ class Generator
 
     /**
      * Sets the generator to create investor RUTs.
-     *
-     * @return static
      */
     public function asInvestors(): static
     {
@@ -86,8 +71,6 @@ class Generator
 
     /**
      * Sets the generator to create investment companies RUTs.
-     *
-     * @return static
      */
     public function asInvestmentCompanies(): static
     {
@@ -96,8 +79,6 @@ class Generator
 
     /**
      * Sets the generator to create contingency RUTs.
-     *
-     * @return static
      */
     public function asContingency(): static
     {
@@ -106,8 +87,6 @@ class Generator
 
     /**
      * Sets the generator to create company RUTs.
-     *
-     * @return static
      */
     public function asCompanies(): static
     {
@@ -116,8 +95,6 @@ class Generator
 
     /**
      * Sets the generator to create temporal RUTs.
-     *
-     * @return static
      */
     public function asTemporal(): static
     {
@@ -126,8 +103,6 @@ class Generator
 
     /**
      * Sets the generator to create definitive RUTs.
-     *
-     * @return static
      */
     public function asDefinitive(): static
     {
@@ -136,8 +111,6 @@ class Generator
 
     /**
      * Sets the generator to create any RUTs.
-     *
-     * @return static
      */
     public function asAnything(): static
     {
@@ -146,10 +119,6 @@ class Generator
 
     /**
      * Sets the boundaries for numbers for the RUTs.
-     *
-     * @param  int  $min
-     * @param  int  $max
-     * @return static
      */
     public function between(int $min, int $max): static
     {
@@ -158,8 +127,6 @@ class Generator
 
     /**
      * Makes one random RUT.
-     *
-     * @return \Laragear\Rut\Rut
      */
     public function makeOne(): Rut
     {
@@ -169,8 +136,7 @@ class Generator
     /**
      * Makes one or many random RUT.
      *
-     * @param  int  $iterations
-     * @return \Illuminate\Support\Collection<\Laragear\Rut\Rut>
+     * @return \Illuminate\Support\Collection<int, \Laragear\Rut\Rut>
      */
     public function make(int $iterations = self::ITERATIONS): Collection
     {
@@ -180,11 +146,7 @@ class Generator
     /**
      * Generates many random RUT.
      *
-     * @param  int  $iterations
-     * @param  bool  $unique
-     * @param  int  $min
-     * @param  int  $max
-     * @return \Illuminate\Support\Collection<\Laragear\Rut\Rut>
+     * @return \Illuminate\Support\Collection<int, \Laragear\Rut\Rut>
      */
     protected static function generate(int $iterations, bool $unique, int $min, int $max): Collection
     {
@@ -215,11 +177,6 @@ class Generator
 
     /**
      * Check if the possible iterations for the generator exceed the boundaries.
-     *
-     * @param  int  $iterations
-     * @param  int  $min
-     * @param  int  $max
-     * @return void
      */
     protected static function validateIterationsUnderBoundaries(int $iterations, int $min, int $max): void
     {

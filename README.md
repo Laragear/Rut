@@ -4,7 +4,7 @@
 [![Codecov coverage](https://codecov.io/gh/Laragear/Rut/branch/1.x/graph/badge.svg?token=5COE8X0JMJ)](https://codecov.io/gh/Laragear/Rut)
 [![Maintainability](https://api.codeclimate.com/v1/badges/677b55bbf19bda17e0f5/maintainability)](https://codeclimate.com/github/Laragear/Rut/maintainability)
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Laragear_Rut&metric=alert_status)](https://sonarcloud.io/dashboard?id=Laragear_Rut)
-[![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/9.x/octane#introduction)
+[![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/11.x/octane#introduction)
 
 Tools to parse, validate and generate Chilean RUT in Laravel.
 
@@ -18,18 +18,15 @@ if ($rut->isValid()) {
 }
 ```
 
-> [Este README está disponible en español.](README_es.md)
-
 ## Keep this package free
 
-[![](.github/.assets/patreon.png)](https://patreon.com/packagesforlaravel)[![](.github/.assets/ko-fi.png)](https://ko-fi.com/DarkGhostHunter)[![](.github/.assets/buymeacoffee.png)](https://www.buymeacoffee.com/darkghosthunter)[![](.github/.assets/paypal.png)](https://www.paypal.com/paypalme/darkghosthunter)
+[![](.github/assets/support.png)](https://github.com/sponsors/DarkGhostHunter)
 
 Your support allows me to keep this package free, up-to-date and maintainable. Alternatively, you can **[spread the word!](http://twitter.com/share?text=I%20am%20using%20this%20cool%20PHP%20package&url=https://github.com%2FLaragear%2FRut&hashtags=PHP,Laravel,Chile)**
 
 ## Requirements
 
-- PHP 8.1 or later
-- Laravel 9.x or later
+- Laravel 10 or later
 
 ## Installation
 
@@ -38,8 +35,6 @@ Fire up Composer and require it into your project:
 ```bash
 composer require laragear/rut
 ```
-
-## [Upgrading from 1.x to 2.x](UPGRADE.md#from-1x-to-2x)
 
 ## Creating a RUT
 
@@ -82,6 +77,8 @@ Rut::parse('76.482.465-2')->isPermanent(); // "true"
 Rut::parse('76.482.465-2')->isTemporal(); // "false"
 ```
 
+> [!IMPORTANT]
+> 
 > This package considers RUT as valid when between 100.000 and 200.000.000, inclusive. Most (if not all) people using 99.999 or lower RUT numbers are deceased.
 
 ## Generating RUTs
@@ -333,6 +330,8 @@ $validator = Validator::make([
 echo $validator->passes(); // true
 ```
 
+> [!TIP]
+>
 > Database rules will normalize the verification _digit_ as uppercase in the database for search queries.
 
 ### `num_exists` database rule
@@ -415,9 +414,13 @@ $validator = Validator::make([
 echo $validator->passes(); // false
 ```
 
+> [!TIP]
+>
 > Database rules will normalize the verification _digit_ as uppercase in the database for search queries.
 
-> **[Warning]** **You should never pass any user controlled request input into the ignore method. Instead, you should only pass a system generated unique ID such as an auto-incrementing ID or UUID from an Eloquent model instance. Otherwise, your application will be vulnerable to an SQL injection attack.**
+> [!CAUTION]
+> 
+> **You should never pass any user controlled request input into the ignore method. Instead, you should only pass a system generated unique ID such as an auto-incrementing ID or UUID from an Eloquent model instance. Otherwise, your application will be vulnerable to an SQL injection attack.**
 
 ### `num_unique` database rule
 
@@ -459,9 +462,13 @@ $validator = Validator::make([
 echo $validator->passes(); // false
 ```
 
+> [!TIP]
+> 
 > Database rules will normalize the verification _digit_ in the database for search queries.
 
-> **[Warning]** **You should never pass any user controlled request input into the ignore method. Instead, you should only pass a system generated unique ID such as an auto-incrementing ID or UUID from an Eloquent model instance. Otherwise, your application will be vulnerable to an SQL injection attack.**
+> [!CAUTION]
+>
+> **You should never pass any user controlled request input into the ignore method. Instead, you should only pass a system generated unique ID such as an auto-incrementing ID or UUID from an Eloquent model instance. Otherwise, your application will be vulnerable to an SQL injection attack.**
 
 ## Database Blueprint helper
 
@@ -487,6 +494,8 @@ Schema::create('company', function (Blueprint $table) {
 });
 ```
 
+> [!TIP]
+> 
 > The `rutNullable()` method creates **both** Number and Verification Digit columns as nullable.
 
 If you plan to use the RUT Number as an index, which may speed up queries to look for RUTs, you can just index the Number column by fluently adding `primary()`, `index()` or `unique()` depending on your database needs. This is because it has more performance sense to index only the Number rather than the whole RUT.
@@ -546,6 +555,8 @@ $parents = $request->rut('mom', 'dad'); // Or $request->rut(['mom', 'dad']);
 $children = $request->rut('children');
 ```
 
+> [!IMPORTANT]
+>
 > It's imperative you validate your input before retrieving RUTs. If there is a malformed RUT, an exception will be thrown.
 
 ## RUT traits for Eloquent Models
@@ -587,6 +598,8 @@ With that, you will have access to convenient RUT queries shorthands:
 | `orWhereRutIn()`    | Creates a `OR WHERE IN` clause with the given RUTs.                      |
 | `orWhereRutNotIn()` | Creates a `OR WHERE NOT IN` clause excluding the given RUTs.             |
 
+> [!IMPORTANT]
+> 
 > These RUT queries work over the RUT Number for convenience, as the RUT Verification Digit should be verified only on persistence.
 
 These scopes can be used in your queries easily:
@@ -697,7 +710,7 @@ return [
 use Laragear\Rut\RutFormat;
 
 return [
-    'format' => RutFormat::DEFUALT,
+    'format' => RutFormat::DEFAULT,
 ];
 ```
 
@@ -761,6 +774,8 @@ $rut->format(); // "12.351.839-k"
 $rut->toJson(); // "12.351.839-k"
 ```
 
+> [!TIP]
+> 
 > This doesn't affect database rules, as the verification digit is normalized automatically.
 
 ## PhpStorm stubs
@@ -790,4 +805,4 @@ If you discover any security related issues, please email darkghosthunter@gmail.
 
 This specific package version is licensed under the terms of the [MIT License](LICENSE.md), at time of publishing.
 
-[Laravel](https://laravel.com) is a Trademark of [Taylor Otwell](https://github.com/TaylorOtwell/). Copyright © 2011-2022 Laravel LLC.
+[Laravel](https://laravel.com) is a Trademark of [Taylor Otwell](https://github.com/TaylorOtwell/). Copyright © 2011-2024 Laravel LLC.

@@ -6,7 +6,6 @@ namespace Laragear\Rut\Rules;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Validation\Rules\DatabaseRule;
-
 use function addslashes;
 use function rtrim;
 use function sprintf;
@@ -16,52 +15,22 @@ class RutUnique
     use DatabaseRule;
 
     /**
-     * Column of the RUT number.
-     *
-     * @var string
-     */
-    protected string $numColumn;
-
-    /**
-     * Column of the VD number.
-     *
-     * @var string
-     */
-    protected string $vdColumn;
-
-    /**
-     * The ID that should be ignored.
-     *
-     * @var mixed
-     */
-    protected mixed $ignore = null;
-
-    /**
-     * The name of the ID column.
-     *
-     * @var string
-     */
-    protected string $idColumn = 'id';
-
-    /**
      * Create a new rule instance.
-     *
-     * @param  string  $table
-     * @param  string  $numColumn
-     * @param  string  $vdColumn
      */
-    public function __construct(string $table, string $numColumn, string $vdColumn)
+    public function __construct(
+        string $table,
+        protected string $numColumn,
+        protected string $vdColumn,
+        protected mixed $ignore = null,
+        protected string $idColumn = 'id'
+    )
     {
         $this->table = $table;
-        $this->numColumn = $numColumn;
-        $this->vdColumn = $vdColumn;
     }
 
     /**
      * Ignore the given ID during the unique check.
      *
-     * @param  mixed  $id
-     * @param  string|null  $idColumn
      * @return $this
      */
     public function ignore(mixed $id, string $idColumn = null): RutUnique
@@ -79,8 +48,6 @@ class RutUnique
     /**
      * Ignore the given model during the unique check.
      *
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @param  string|null  $idColumn
      * @return $this
      */
     public function ignoreModel(Model $model, ?string $idColumn = null): RutUnique
@@ -93,10 +60,8 @@ class RutUnique
 
     /**
      * Convert the rule to a validation string.
-     *
-     * @return string
      */
-    public function __toString()
+    public function __toString(): string
     {
         return rtrim(sprintf('rut_unique:%s,%s,%s,%s,%s,%s',
             $this->table,

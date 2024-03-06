@@ -4,6 +4,7 @@ namespace Tests;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\ColumnDefinition;
+use Illuminate\Support\Arr;
 
 class RutBlueprintMacrosTest extends TestCase
 {
@@ -18,7 +19,6 @@ class RutBlueprintMacrosTest extends TestCase
 
     public function test_creates_database_with_rut_columns(): void
     {
-        /** @var \Illuminate\Database\Schema\Builder $schema */
         $schema = $this->app->make('db')->connection()->getSchemaBuilder();
 
         /** @var \Illuminate\Database\Schema\Blueprint $blueprint */
@@ -26,13 +26,14 @@ class RutBlueprintMacrosTest extends TestCase
 
         $schema->create('test_table', function (Blueprint $table) use (&$blueprint) {
             $table->rut();
+
             $blueprint = $table;
         });
 
         static::assertTrue($schema->hasColumn('test_table', 'rut_num'));
         static::assertTrue($schema->hasColumn('test_table', 'rut_vd'));
         static::assertEquals('integer', $schema->getColumnType('test_table', 'rut_num'));
-        static::assertEquals('string', $schema->getColumnType('test_table', 'rut_vd'));
+        static::assertEquals('varchar', $schema->getColumnType('test_table', 'rut_vd'));
 
         static::assertFalse($blueprint->getColumns()[0]->autoIncrement);
         static::assertNull($blueprint->getColumns()[0]->nullable);
@@ -45,36 +46,32 @@ class RutBlueprintMacrosTest extends TestCase
             $table->rut()->index();
         });
 
-        $indexes = $schema->getConnection()
-            ->getDoctrineSchemaManager()
-            ->listTableDetails('test_table_with_index')
-            ->getIndexes();
+        $indexes = $schema->getIndexes('test_table_with_index');
 
-        static::assertArrayHasKey('test_table_with_index_rut_num_index', $indexes);
+        static::assertSame('test_table_with_index_rut_num_index', Arr::get($indexes, '0.name'));
+        static::assertSame(['rut_num'], Arr::get($indexes, '0.columns'));
 
         $schema->create('test_table_with_primary', function (Blueprint $table) {
             $table->rut()->primary();
         });
 
-        $primary = $schema->getConnection()
-            ->getDoctrineSchemaManager()
-            ->listTableDetails('test_table_with_primary')
-            ->getPrimaryKey();
+        $primary = $schema->getIndexes('test_table_with_primary');
 
-        static::assertCount(1, $primary->getColumns());
-        static::assertContains('rut_num', $primary->getColumns());
+        static::assertSame('primary', Arr::get($primary, '0.name'));
+        static::assertSame(['rut_num'], Arr::get($primary, '0.columns'));
+        static::assertTrue(Arr::get($primary, '0.unique'));
+        static::assertTrue(Arr::get($primary, '0.primary'));
 
         $schema->create('test_table_with_unique', function (Blueprint $table) {
             $table->rut()->unique();
         });
 
-        $unique = $schema->getConnection()
-            ->getDoctrineSchemaManager()
-            ->listTableDetails('test_table_with_unique')
-            ->getIndexes('rut_num');
+        $unique = $schema->getIndexes('test_table_with_unique');
 
-        static::assertCount(1, $unique);
-        static::assertArrayHasKey('test_table_with_unique_rut_num_unique', $unique);
+        static::assertSame('test_table_with_unique_rut_num_unique', Arr::get($unique, '0.name'));
+        static::assertSame(['rut_num'], Arr::get($unique, '0.columns'));
+        static::assertTrue(Arr::get($unique, '0.unique'));
+        static::assertFalse(Arr::get($unique, '0.primary'));
     }
 
     public function test_creates_database_with_named_rut_columns(): void
@@ -106,7 +103,7 @@ class RutBlueprintMacrosTest extends TestCase
         static::assertTrue($schema->hasColumn('test_table', 'rut_num'));
         static::assertTrue($schema->hasColumn('test_table', 'rut_vd'));
         static::assertEquals('integer', $schema->getColumnType('test_table', 'rut_num'));
-        static::assertEquals('string', $schema->getColumnType('test_table', 'rut_vd'));
+        static::assertEquals('varchar', $schema->getColumnType('test_table', 'rut_vd'));
 
         static::assertFalse($blueprint->getColumns()[0]->autoIncrement);
         static::assertTrue($blueprint->getColumns()[0]->nullable);
@@ -119,36 +116,30 @@ class RutBlueprintMacrosTest extends TestCase
             $table->rut()->index();
         });
 
-        $indexes = $schema->getConnection()
-            ->getDoctrineSchemaManager()
-            ->listTableDetails('test_table_with_index')
-            ->getIndexes();
+        $indexes = $schema->getIndexes('test_table_with_index');
 
-        static::assertArrayHasKey('test_table_with_index_rut_num_index', $indexes);
+        static::assertSame('test_table_with_index_rut_num_index', Arr::get($indexes, '0.name'));
+        static::assertSame(['rut_num'], Arr::get($indexes, '0.columns'));
+        static::assertFalse(Arr::get($indexes, '0.unique'));
+        static::assertFalse(Arr::get($indexes, '0.primary'));
 
         $schema->create('test_table_with_primary', function (Blueprint $table) {
             $table->rut()->primary();
         });
 
-        $primary = $schema->getConnection()
-            ->getDoctrineSchemaManager()
-            ->listTableDetails('test_table_with_primary')
-            ->getPrimaryKey();
+        $primary = $schema->getIndexes('test_table_with_primary');
 
-        static::assertCount(1, $primary->getColumns());
-        static::assertContains('rut_num', $primary->getColumns());
+        static::assertSame('primary', Arr::get($primary, '0.name'));
+        static::assertSame(['rut_num'], Arr::get($primary, '0.columns'));
 
         $schema->create('test_table_with_unique', function (Blueprint $table) {
             $table->rut()->unique();
         });
 
-        $unique = $schema->getConnection()
-            ->getDoctrineSchemaManager()
-            ->listTableDetails('test_table_with_unique')
-            ->getIndexes('rut_num');
+        $unique = $schema->getIndexes('test_table_with_unique');
 
-        static::assertCount(1, $unique);
-        static::assertArrayHasKey('test_table_with_unique_rut_num_unique', $unique);
+        static::assertSame('test_table_with_unique_rut_num_unique', Arr::get($unique, '0.name'));
+        static::assertSame(['rut_num'], Arr::get($unique, '0.columns'));
     }
 
     public function test_creates_database_with_named_rut_nullable_columns(): void

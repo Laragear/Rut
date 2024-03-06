@@ -9,6 +9,7 @@ use Laragear\Rut\Exceptions\EmptyRutException;
 use Laragear\Rut\Facades\Generator;
 use Laragear\Rut\HasRut;
 use Laragear\Rut\Rut;
+use Laragear\Rut\RutFormat;
 
 class HasRutTest extends TestCase
 {
@@ -94,7 +95,7 @@ class HasRutTest extends TestCase
 
     public function test_model_finds_rut_or_fails_returns_exception_not_found(): void
     {
-        $rut = $this->uniqueRut()->format(Rut::FORMAT_BASIC);
+        $rut = $this->uniqueRut()->format(RutFormat::Basic);
 
         $this->expectException(ModelNotFoundException::class);
         $this->expectExceptionMessage("No query results for model [Tests\DummyModel] $rut");
@@ -104,7 +105,7 @@ class HasRutTest extends TestCase
 
     public function test_model_finds_rut_or_fails_returns_exception_not_found_on_many(): void
     {
-        $rut = $this->uniqueRut()->format(Rut::FORMAT_BASIC);
+        $rut = $this->uniqueRut()->format(RutFormat::Basic);
 
         $this->expectException(ModelNotFoundException::class);
         $this->expectExceptionMessage("No query results for model [Tests\DummyModel] 20490006K, $rut");
@@ -140,7 +141,7 @@ class HasRutTest extends TestCase
 
     public function test_where_rut(): void
     {
-        $rut = $this->uniqueRut()->format(Rut::FORMAT_BASIC);
+        $rut = $this->uniqueRut()->format(RutFormat::Basic);
 
         static::assertEquals(1, DummyModel::whereRut($this->model->first()->rut)->first()->getKey());
         static::assertNull(DummyModel::whereRut($rut)->first());
@@ -165,7 +166,7 @@ class HasRutTest extends TestCase
 
     public function test_or_where_rut(): void
     {
-        $rut = $this->uniqueRut()->format(Rut::FORMAT_BASIC);
+        $rut = $this->uniqueRut()->format(RutFormat::Basic);
 
         $query = DummyModel::where('id', 10)->orWhereRut($this->model->first()->rut);
 

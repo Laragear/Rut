@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Laragear\Rut;
 
-use Illuminate\Contracts\Config\Repository;
+use Illuminate\Contracts\Config\Repository as ConfigContract;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Contracts\Validation\Factory;
 use Illuminate\Database\Eloquent\Model;
@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
-
 use function count;
 use function is_iterable;
 
@@ -43,8 +42,6 @@ class RutServiceProvider extends ServiceProvider
 
     /**
      * Register the application services.
-     *
-     * @return void
      */
     public function register(): void
     {
@@ -60,8 +57,6 @@ class RutServiceProvider extends ServiceProvider
 
     /**
      * Registers the random generator.
-     *
-     * @return void
      */
     protected function registerGenerator(): void
     {
@@ -72,8 +67,6 @@ class RutServiceProvider extends ServiceProvider
 
     /**
      * Register the Validator rules.
-     *
-     * @return void
      */
     protected function registerRules(): void
     {
@@ -88,8 +81,6 @@ class RutServiceProvider extends ServiceProvider
 
     /**
      * Register the RUT helper for the blueprint.
-     *
-     * @return void
      */
     protected function macroBlueprint(): void
     {
@@ -114,8 +105,6 @@ class RutServiceProvider extends ServiceProvider
 
     /**
      * Register the macro for the Rule class.
-     *
-     * @return void
      */
     protected function macroRules(): void
     {
@@ -150,8 +139,6 @@ class RutServiceProvider extends ServiceProvider
 
     /**
      * Adds a macro to the Request.
-     *
-     * @return void
      */
     protected function macroRequest(): void
     {
@@ -171,38 +158,17 @@ class RutServiceProvider extends ServiceProvider
 
     /**
      * Bootstrap any package services.
-     *
-     * @param  \Illuminate\Contracts\Config\Repository  $config
-     * @return void
      */
-    public function boot(Repository $config): void
+    public function boot(ConfigContract $config): void
     {
-        Rut::$format = $this->normalizeFormat($config->get('rut.format', RutFormat::DEFAULT));
+        Rut::$format = $config->get('rut.format', RutFormat::DEFAULT);
         Rut::$uppercase = $config->get('rut.uppercase', true);
-        Rut::$jsonFormat = $this->normalizeFormat($config->get('rut.json_format'));
+        Rut::$jsonFormat = $config->get('rut.json_format');
 
         if ($this->app->runningInConsole()) {
             $this->publishes([static::CONFIG => $this->app->configPath('rut.php')], 'config');
             $this->publishes([static::LANG => $this->app->langPath('vendor/rut')], 'translations');
             $this->publishes([static::STUBS => $this->app->basePath('.stubs/rut.php')], 'phpstorm');
         }
-    }
-
-    /**
-     * Normalize an int into an Enum.
-     *
-     * @param  \Laragear\Rut\RutFormat|int|null  $format
-     * @return \Laragear\Rut\RutFormat|null
-     *
-     * @deprecated This helper will be removed in the next version as there will no need to use it.
-     */
-    protected function normalizeFormat(RutFormat|int|null $format): ?RutFormat
-    {
-        return match ($format) {
-            0 => RutFormat::Raw,
-            1 => RutFormat::Basic,
-            2 => RutFormat::Strict,
-            default => $format
-        };
     }
 }

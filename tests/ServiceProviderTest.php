@@ -98,7 +98,7 @@ class ServiceProviderTest extends TestCase
     {
         parent::tearDown();
 
-        Rut::$format = Rut::FORMAT_STRICT;
+        Rut::$format = RutFormat::Strict;
         Rut::$uppercase = true;
         Rut::$jsonFormat = null;
     }

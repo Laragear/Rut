@@ -27,8 +27,6 @@ trait HasRut
     /**
      * Boot the HasRut trait.
      *
-     * @return void
-     *
      * @internal
      */
     public static function bootHasRut(): void
@@ -38,8 +36,6 @@ trait HasRut
 
     /**
      * Initialize the HasRut trait.
-     *
-     * @return void
      *
      * @internal
      */
@@ -55,8 +51,6 @@ trait HasRut
 
     /**
      * If the `rut` key should be appended, while hiding the underlying RUT columns.
-     *
-     * @return bool
      */
     public function shouldAppendRut(): bool
     {
@@ -65,8 +59,6 @@ trait HasRut
 
     /**
      * Get the name of the "rut number" column.
-     *
-     * @return string
      */
     public function getRutNumColumn(): string
     {
@@ -75,8 +67,6 @@ trait HasRut
 
     /**
      * Get the name of the "rut verification digit" column.
-     *
-     * @return string
      */
     public function getRutVdColumn(): string
     {
@@ -85,8 +75,6 @@ trait HasRut
 
     /**
      * Get the fully qualified "rut number" column.
-     *
-     * @return string
      */
     public function getQualifiedRutNumColumn(): string
     {

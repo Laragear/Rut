@@ -17,10 +17,6 @@ class ValidatesRut
 {
     /**
      * Returns if the RUTs are valid.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
      */
     public static function validateRut(string $attribute, mixed $value): bool
     {
@@ -39,10 +35,6 @@ class ValidatesRut
 
     /**
      * Returns if the RUTs are valid and properly formatted.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @return bool
      */
     public static function validateRutStrict(string $attribute, mixed $value): bool
     {
@@ -61,12 +53,6 @@ class ValidatesRut
 
     /**
      * Returns if the number of the RUT exist in the Database.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @param  array  $parameters
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return bool
      */
     public static function validateNumExists(
         string $attribute,
@@ -91,12 +77,6 @@ class ValidatesRut
 
     /**
      * Returns if the number of the RUT exist in the Database.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @param  array  $parameters
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return bool
      */
     public static function validateNumUnique(
         string $attribute,
@@ -121,12 +101,6 @@ class ValidatesRut
 
     /**
      * Returns if the RUT exist in the Database.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @param  array  $parameters
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return bool
      */
     public static function validateRutExists(string $attribute, mixed $value, array $parameters, Validator $validator): bool
     {
@@ -143,12 +117,6 @@ class ValidatesRut
 
     /**
      * Returns if the RUT exist in the Database.
-     *
-     * @param  string  $attribute
-     * @param  mixed  $value
-     * @param  array  $parameters
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return bool
      */
     public static function validateRutUnique(string $attribute, mixed $value, array $parameters, Validator $validator): bool
     {
@@ -165,12 +133,6 @@ class ValidatesRut
 
     /**
      * Creates a query to check records existence.
-     *
-     * @param  string  $attribute
-     * @param  \Laragear\Rut\Rut  $rut
-     * @param  array  $parameters
-     * @param  \Illuminate\Validation\Validator  $validator
-     * @return \Illuminate\Database\Query\Builder
      */
     protected static function query(string $attribute, Rut $rut, array $parameters, Validator $validator): Builder
     {
@@ -198,11 +160,6 @@ class ValidatesRut
 
     /**
      * Parse the parameters.
-     *
-     * @param  array  $parameters
-     * @param  int  $sliceOffset
-     * @param  int  $pad
-     * @return array
      */
     protected static function parseParameters(array $parameters, int $sliceOffset = 0, int $pad = 0): array
     {
@@ -223,10 +180,6 @@ class ValidatesRut
 
     /**
      * Add additional where clauses.
-     *
-     * @param  \Illuminate\Database\Query\Builder  $query
-     * @param  array  $wheres
-     * @return \Illuminate\Database\Query\Builder
      */
     protected static function addExtraWheres(Builder $query, array $wheres): Builder
     {

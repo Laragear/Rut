@@ -15,7 +15,6 @@ use Laragear\Rut\Rut;
 use ReflectionClass;
 use ReflectionMethod as Method;
 use SplFixedArray;
-
 use function count;
 use function get_class;
 use function is_countable;
@@ -29,16 +28,12 @@ class RutScope implements Scope
     /**
      * List of (fixed) methods for the current scope.
      *
-     * @var \SplFixedArray
+     * @var \SplFixedArray<\Closure():\Illuminate\Database\Eloquent\Builder>
      */
     protected static SplFixedArray $methods;
 
     /**
      * Apply the scope to a given Eloquent query builder.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @param  \Illuminate\Database\Eloquent\Model  $model
-     * @return void
      */
     public function apply(Builder $builder, Model $model): void
     {
@@ -47,9 +42,6 @@ class RutScope implements Scope
 
     /**
      * Extend the Eloquent Query Builder instance with macros.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @return void
      */
     public function extend(Builder $builder): void
     {
@@ -77,10 +69,7 @@ class RutScope implements Scope
     /**
      * Find a model by its RUT number key.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @param  iterable|int|string|\Illuminate\Contracts\Support\Arrayable|\Laragear\Rut\Rut  $rut
-     * @param  array|string  $columns
-     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection|null
+     * @param  string|string[]  $columns
      *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
@@ -96,10 +85,7 @@ class RutScope implements Scope
     /**
      * Find multiple models by their primary keys.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @param  iterable|\Illuminate\Contracts\Support\Arrayable  $ruts
-     * @param  array|string  $columns
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @param  string|string[]  $columns
      *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
@@ -111,10 +97,7 @@ class RutScope implements Scope
     /**
      * Find a model by its primary key or throw an exception.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @param  iterable|int|string|\Illuminate\Contracts\Support\Arrayable|\Laragear\Rut\Rut  $rut
-     * @param  array|string  $columns
-     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Collection
+     * @param  string|string[]  $columns
      *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
@@ -138,10 +121,7 @@ class RutScope implements Scope
     /**
      * Find a model by its primary key or return fresh model instance.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @param  iterable|int|string|\Illuminate\Contracts\Support\Arrayable|\Laragear\Rut\Rut  $rut
-     * @param  array|string  $columns
-     * @return \Illuminate\Database\Eloquent\Model
+     * @param  string|string[]  $columns
      *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
@@ -152,12 +132,6 @@ class RutScope implements Scope
 
     /**
      * Adds a `WHERE` clause to the query with the RUT number.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @param  iterable|int|string|\Illuminate\Contracts\Support\Arrayable|\Laragear\Rut\Rut  $rut
-     * @param  string  $boolean
-     * @param  bool  $not
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function whereRut(Builder $builder, int|string|iterable|Arrayable|Rut $rut, string $boolean = 'and', bool $not = false): Builder
     {
@@ -177,10 +151,6 @@ class RutScope implements Scope
     /**
      * Adds a `WHERE` clause to the query with the RUT number.
      *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @param  iterable|int|string|\Illuminate\Contracts\Support\Arrayable|\Laragear\Rut\Rut  $rut
-     * @return \Illuminate\Database\Eloquent\Builder
-     *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
     public static function orWhereRut(Builder $builder, iterable|int|string|Arrayable|Rut $rut): Builder
@@ -190,11 +160,6 @@ class RutScope implements Scope
 
     /**
      * Adds a `WHERE` clause to the query without the RUT number.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @param  iterable|int|string|\Illuminate\Contracts\Support\Arrayable|\Laragear\Rut\Rut  $rut
-     * @param  string  $boolean
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function whereRutNot(Builder $builder, int|string|iterable|Arrayable|Rut $rut, string $boolean = 'and'): Builder
     {
@@ -203,10 +168,6 @@ class RutScope implements Scope
 
     /**
      * Adds a `WHERE` clause to the query with the RUT number.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @param  iterable|int|string|\Illuminate\Contracts\Support\Arrayable|\Laragear\Rut\Rut  $rut
-     * @return \Illuminate\Database\Eloquent\Builder
      *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
@@ -217,12 +178,6 @@ class RutScope implements Scope
 
     /**
      * Adds a `WHERE IN` clause to the query with the RUTs number.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @param  iterable|\Illuminate\Contracts\Support\Arrayable  $ruts
-     * @param  string  $boolean
-     * @param  bool  $not
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function whereRutIn(Builder $builder, iterable|Arrayable $ruts, string $boolean = 'and', bool $not = false): Builder
     {
@@ -242,11 +197,6 @@ class RutScope implements Scope
 
     /**
      * Adds a `WHERE IN` clause to the query with the RUTs number.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @param  iterable|\Illuminate\Contracts\Support\Arrayable  $ruts
-     * @param  bool  $not
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function orWhereRutIn(Builder $builder, iterable|Arrayable $ruts, bool $not = false): Builder
     {
@@ -255,11 +205,6 @@ class RutScope implements Scope
 
     /**
      * Adds a `WHERE IN` clause to the query with the RUTs number.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @param  iterable|\Illuminate\Contracts\Support\Arrayable  $ruts
-     * @param  string  $boolean
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function whereRutNotIn(Builder $builder, iterable|Arrayable $ruts, string $boolean = 'and'): Builder
     {
@@ -268,10 +213,6 @@ class RutScope implements Scope
 
     /**
      * Adds a `WHERE IN` clause to the query with the RUTs number.
-     *
-     * @param  \Illuminate\Database\Eloquent\Builder  $builder
-     * @param  iterable|\Illuminate\Contracts\Support\Arrayable  $ruts
-     * @return \Illuminate\Database\Eloquent\Builder
      */
     public static function orWhereRutNotIn(Builder $builder, iterable|Arrayable $ruts): Builder
     {
