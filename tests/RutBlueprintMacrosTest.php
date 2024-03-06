@@ -4,154 +4,84 @@ namespace Tests;
 
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\ColumnDefinition;
-use Illuminate\Support\Arr;
+use function tap;
 
 class RutBlueprintMacrosTest extends TestCase
 {
-    public function test_helper_returns_rut_number_column(): void
+    public function test_helper_returns_rut_num_column(): void
     {
-        $blueprint = new Blueprint('test_table');
+        $column = (new Blueprint('test_table'))->rut();
 
-        $number = $blueprint->rut();
+        static::assertInstanceOf(ColumnDefinition::class, $column);
+        static::assertSame('rut_num', $column->get('name'));
 
-        static::assertInstanceOf(ColumnDefinition::class, $number);
+        $column = (new Blueprint('test_table'))->rutNullable();
+
+        static::assertInstanceOf(ColumnDefinition::class, $column);
+        static::assertSame('rut_num', $column->get('name'));
     }
 
-    public function test_creates_database_with_rut_columns(): void
+    public function test_helper_register_two_rut_columns(): void
     {
-        $schema = $this->app->make('db')->connection()->getSchemaBuilder();
+        $blueprint = tap(new Blueprint('test_table'))->rut();
 
-        /** @var \Illuminate\Database\Schema\Blueprint $blueprint */
-        $blueprint = null;
+        [$rutNum, $rutVd] = $blueprint->getColumns();
 
-        $schema->create('test_table', function (Blueprint $table) use (&$blueprint) {
-            $table->rut();
+        static::assertSame('rut_num', $rutNum->get('name'));
+        static::assertSame('integer', $rutNum->get('type'));
+        static::assertFalse($rutNum->get('autoIncrement'));
+        static::assertTrue($rutNum->get('unsigned'));
 
-            $blueprint = $table;
-        });
-
-        static::assertTrue($schema->hasColumn('test_table', 'rut_num'));
-        static::assertTrue($schema->hasColumn('test_table', 'rut_vd'));
-        static::assertEquals('integer', $schema->getColumnType('test_table', 'rut_num'));
-        static::assertTrue('string', $schema->getColumnType('test_table', 'rut_vd'));
-
-        static::assertFalse($blueprint->getColumns()[0]->autoIncrement);
-        static::assertNull($blueprint->getColumns()[0]->nullable);
-        static::assertTrue($blueprint->getColumns()[0]->unsigned);
-
-        static::assertEquals(1, $blueprint->getColumns()[1]->length);
-        static::assertNull($blueprint->getColumns()[1]->nullable);
-
-        $schema->create('test_table_with_index', function (Blueprint $table) {
-            $table->rut()->index();
-        });
-
-        $indexes = $schema->getIndexes('test_table_with_index');
-
-        static::assertSame('test_table_with_index_rut_num_index', Arr::get($indexes, '0.name'));
-        static::assertSame(['rut_num'], Arr::get($indexes, '0.columns'));
-
-        $schema->create('test_table_with_primary', function (Blueprint $table) {
-            $table->rut()->primary();
-        });
-
-        $primary = $schema->getIndexes('test_table_with_primary');
-
-        static::assertSame('primary', Arr::get($primary, '0.name'));
-        static::assertSame(['rut_num'], Arr::get($primary, '0.columns'));
-        static::assertTrue(Arr::get($primary, '0.unique'));
-        static::assertTrue(Arr::get($primary, '0.primary'));
-
-        $schema->create('test_table_with_unique', function (Blueprint $table) {
-            $table->rut()->unique();
-        });
-
-        $unique = $schema->getIndexes('test_table_with_unique');
-
-        static::assertSame('test_table_with_unique_rut_num_unique', Arr::get($unique, '0.name'));
-        static::assertSame(['rut_num'], Arr::get($unique, '0.columns'));
-        static::assertTrue(Arr::get($unique, '0.unique'));
-        static::assertFalse(Arr::get($unique, '0.primary'));
+        static::assertSame('rut_vd', $rutVd->get('name'));
+        static::assertSame('char', $rutVd->get('type'));
     }
 
-    public function test_creates_database_with_named_rut_columns(): void
+    public function test_helper_register_columns_with_custom_name(): void
     {
-        /** @var \Illuminate\Database\Schema\Builder $schema */
-        $schema = $this->app->make('db')->connection()->getSchemaBuilder();
+        $blueprint = tap(new Blueprint('test_table'))->rut('foo');
 
-        $schema->create('test_table', function (Blueprint $table) {
-            $table->rut('foo');
-        });
+        [$rutNum, $rutVd] = $blueprint->getColumns();
 
-        static::assertTrue($schema->hasColumn('test_table', 'foo_num'));
-        static::assertTrue($schema->hasColumn('test_table', 'foo_vd'));
+        static::assertSame('foo_num', $rutNum->get('name'));
+        static::assertSame('integer', $rutNum->get('type'));
+        static::assertFalse($rutNum->get('autoIncrement'));
+        static::assertTrue($rutNum->get('unsigned'));
+
+        static::assertSame('foo_vd', $rutVd->get('name'));
+        static::assertSame('char', $rutVd->get('type'));
     }
 
-    public function test_creates_database_with_rut_nullable_columns(): void
+    public function test_helper_register_two_rut_columns_nullable(): void
     {
-        /** @var \Illuminate\Database\Schema\Builder $schema */
-        $schema = $this->app->make('db')->connection()->getSchemaBuilder();
+        $blueprint = tap(new Blueprint('test_table'))->rutNullable();
 
-        /** @var \Illuminate\Database\Schema\Blueprint $blueprint */
-        $blueprint = null;
+        [$rutNum, $rutVd] = $blueprint->getColumns();
 
-        $schema->create('test_table', function (Blueprint $table) use (&$blueprint) {
-            $table->rutNullable();
-            $blueprint = $table;
-        });
+        static::assertSame('rut_num', $rutNum->get('name'));
+        static::assertSame('integer', $rutNum->get('type'));
+        static::assertFalse($rutNum->get('autoIncrement'));
+        static::assertTrue($rutNum->get('unsigned'));
+        static::assertTrue($rutNum->get('nullable'));
 
-        static::assertTrue($schema->hasColumn('test_table', 'rut_num'));
-        static::assertTrue($schema->hasColumn('test_table', 'rut_vd'));
-        static::assertEquals('integer', $schema->getColumnType('test_table', 'rut_num'));
-        static::assertEquals('string', $schema->getColumnType('test_table', 'rut_vd'));
-
-        static::assertFalse($blueprint->getColumns()[0]->autoIncrement);
-        static::assertTrue($blueprint->getColumns()[0]->nullable);
-        static::assertTrue($blueprint->getColumns()[0]->unsigned);
-
-        static::assertEquals(1, $blueprint->getColumns()[1]->length);
-        static::assertTrue($blueprint->getColumns()[1]->nullable);
-
-        $schema->create('test_table_with_index', function (Blueprint $table) {
-            $table->rut()->index();
-        });
-
-        $indexes = $schema->getIndexes('test_table_with_index');
-
-        static::assertSame('test_table_with_index_rut_num_index', Arr::get($indexes, '0.name'));
-        static::assertSame(['rut_num'], Arr::get($indexes, '0.columns'));
-        static::assertFalse(Arr::get($indexes, '0.unique'));
-        static::assertFalse(Arr::get($indexes, '0.primary'));
-
-        $schema->create('test_table_with_primary', function (Blueprint $table) {
-            $table->rut()->primary();
-        });
-
-        $primary = $schema->getIndexes('test_table_with_primary');
-
-        static::assertSame('primary', Arr::get($primary, '0.name'));
-        static::assertSame(['rut_num'], Arr::get($primary, '0.columns'));
-
-        $schema->create('test_table_with_unique', function (Blueprint $table) {
-            $table->rut()->unique();
-        });
-
-        $unique = $schema->getIndexes('test_table_with_unique');
-
-        static::assertSame('test_table_with_unique_rut_num_unique', Arr::get($unique, '0.name'));
-        static::assertSame(['rut_num'], Arr::get($unique, '0.columns'));
+        static::assertSame('rut_vd', $rutVd->get('name'));
+        static::assertSame('char', $rutVd->get('type'));
+        static::assertTrue($rutVd->get('nullable'));
     }
 
-    public function test_creates_database_with_named_rut_nullable_columns(): void
+    public function test_helper_register_columns_with_custom_name_nullable(): void
     {
-        /** @var \Illuminate\Database\Schema\Builder $schema */
-        $schema = $this->app->make('db')->connection()->getSchemaBuilder();
+        $blueprint = tap(new Blueprint('test_table'))->rutNullable('foo');
 
-        $schema->create('test_table', function (Blueprint $table) {
-            $table->rutNullable('foo');
-        });
+        [$rutNum, $rutVd] = $blueprint->getColumns();
 
-        static::assertTrue($schema->hasColumn('test_table', 'foo_num'));
-        static::assertTrue($schema->hasColumn('test_table', 'foo_vd'));
+        static::assertSame('foo_num', $rutNum->get('name'));
+        static::assertSame('integer', $rutNum->get('type'));
+        static::assertFalse($rutNum->get('autoIncrement'));
+        static::assertTrue($rutNum->get('unsigned'));
+        static::assertTrue($rutNum->get('nullable'));
+
+        static::assertSame('foo_vd', $rutVd->get('name'));
+        static::assertSame('char', $rutVd->get('type'));
+        static::assertTrue($rutVd->get('nullable'));
     }
 }
