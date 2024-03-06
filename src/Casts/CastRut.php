@@ -10,7 +10,7 @@ class CastRut implements CastsAttributes
     /**
      * @inheritdoc
      *
-     * @param  \Laragear\Rut\HasRut  $model
+     * @param  \Illuminate\Database\Eloquent\Model&\Laragear\Rut\HasRut  $model
      */
     public function get($model, string $key, $value, array $attributes): ?Rut
     {
@@ -25,7 +25,7 @@ class CastRut implements CastsAttributes
     /**
      * @inheritdoc
      *
-     * @param  \Laragear\Rut\HasRut  $model
+     * @param  \Illuminate\Database\Eloquent\Model&\Laragear\Rut\HasRut  $model
      * @param  \Laragear\Rut\Rut|string|int|null  $value
      */
     public function set($model, string $key, $value, array $attributes): ?array

@@ -10,6 +10,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\Traits\Macroable;
 use JsonSerializable;
 use Stringable;
+
 use function array_reverse;
 use function json_encode;
 use function max;
@@ -162,6 +163,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      * Checks if the current RUT is valid, or throws an exception.
      *
      * @return $this
+     *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
     public function validate(): static

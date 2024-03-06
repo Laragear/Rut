@@ -28,7 +28,7 @@ class RutScope implements Scope
     /**
      * List of (fixed) methods for the current scope.
      *
-     * @var \SplFixedArray<\Closure():\Illuminate\Database\Eloquent\Builder>
+     * @var \SplFixedArray<string>
      */
     protected static SplFixedArray $methods;
 
