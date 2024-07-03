@@ -146,7 +146,7 @@ class ValidatesRut
         $query = DB::connection($connection)
             ->table($table)
             ->where($num_column, $rut->num)
-            ->whereRaw("UPPER(\"$vd_column\") = ?", strtoupper($rut->vd))
+            ->whereRaw("UPPER($vd_column) = ?", strtoupper($rut->vd))
             ->when($wheres[0] ?? null, function (Builder $query) use ($wheres) {
                 $query->where($wheres[1] ?? 'id', '!=', $wheres[0]);
             });
