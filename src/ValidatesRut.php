@@ -184,7 +184,7 @@ class ValidatesRut
     protected static function addExtraWheres(Builder $query, array $wheres): Builder
     {
         foreach (array_chunk($wheres, 2) as $item) {
-            if ($item[1]) {
+            if ($item[1] && $item[0] !== null) {
                 $query->where($item[0], $item[1]);
             }
         }
