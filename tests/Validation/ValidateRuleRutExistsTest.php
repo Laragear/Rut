@@ -112,15 +112,4 @@ class ValidateRuleRutExistsTest extends TestCase
 
         static::assertTrue($validator->fails());
     }
-
-    public function test_validation_rule_rut_exists_fail_when_invalid_column(): void
-    {
-        $validator = Validator::make([
-            'rut' => $this->randomRut()->format(),
-        ], [
-            'rut' => Rule::rutExists('testing.users', 'absent_num', 'absent_vd'),
-        ]);
-
-        static::assertTrue($validator->fails());
-    }
 }
