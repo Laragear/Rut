@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
-
 use function count;
 use function is_iterable;
 
@@ -111,28 +110,28 @@ class RutServiceProvider extends ServiceProvider
     {
         Rule::macro(
             'rutExists',
-            static function (Model|string $table, $numColumn = 'NULL', $rutColumn = 'NULL'): Rules\RutExists {
+            function (Model|string $table, $numColumn = 'NULL', $rutColumn = 'NULL'): Rules\RutExists {
                 return new Rules\RutExists($table, $numColumn, $rutColumn);
             }
         );
 
         Rule::macro(
             'rutUnique',
-            static function (Model|string $table, $numColumn = 'NULL', $rutColumn = 'NULL'): Rules\RutUnique {
+            function (Model|string $table, $numColumn = 'NULL', $rutColumn = 'NULL'): Rules\RutUnique {
                 return new Rules\RutUnique($table, $numColumn, $rutColumn);
             }
         );
 
         Rule::macro(
             'numExists',
-            static function (Model|string $table, $column = 'NULL'): Rules\NumExists {
+            function (Model|string $table, $column = 'NULL'): Rules\NumExists {
                 return new Rules\NumExists($table, $column);
             }
         );
 
         Rule::macro(
             'numUnique',
-            static function (Model|string $table, $column = 'NULL'): Rules\NumUnique {
+            function (Model|string $table, $column = 'NULL'): Rules\NumUnique {
                 return new Rules\NumUnique($table, $column);
             }
         );
