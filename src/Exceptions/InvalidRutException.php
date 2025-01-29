@@ -13,7 +13,7 @@ class InvalidRutException extends LogicException implements RutException
     public function __construct(
         string $message = 'The given RUT is invalid.',
         int $code = 0,
-        Throwable $previous = null
+        ?Throwable $previous = null
     ) {
         parent::__construct($message, $code, $previous);
     }

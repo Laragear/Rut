@@ -33,7 +33,7 @@ class RutUnique
      *
      * @return $this
      */
-    public function ignore(mixed $id, string $idColumn = null): RutUnique
+    public function ignore(mixed $id, ?string $idColumn = null): RutUnique
     {
         if ($id instanceof Model) {
             return $this->ignoreModel($id, $idColumn);

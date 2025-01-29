@@ -196,7 +196,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     /**
      * Formats the RUT to a string using the default style or the given style.
      */
-    public function format(RutFormat $format = null): string
+    public function format(?RutFormat $format = null): string
     {
         $format ??= static::$format;
 
@@ -296,7 +296,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      * @param  int|string|null  $vd
      * @return bool
      */
-    public static function check(int|string $num, int|string $vd = null): bool
+    public static function check(int|string $num, int|string|null $vd = null): bool
     {
         // If the developer only issued the num, we will understand is the whole RUT.
         if (null === $vd) {
