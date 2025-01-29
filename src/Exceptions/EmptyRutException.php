@@ -13,7 +13,7 @@ class EmptyRutException extends LogicException implements RutException
     public function __construct(
         string $message = 'The RUT needs at least 7 valid characters.',
         int $code = 0,
-        Throwable $previous = null
+        ?Throwable $previous = null
     ) {
         parent::__construct($message, $code, $previous);
     }
