@@ -1,8 +1,8 @@
 # Rut
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/laragear/rut.svg)](https://packagist.org/packages/laragear/rut)
 [![Latest stable test run](https://github.com/Laragear/Rut/workflows/Tests/badge.svg)](https://github.com/Laragear/Rut/actions)
-[![Codecov coverage](https://codecov.io/gh/Laragear/Rut/branch/1.x/graph/badge.svg?token=5COE8X0JMJ)](https://codecov.io/gh/Laragear/Rut)
-[![Maintainability](https://api.codeclimate.com/v1/badges/677b55bbf19bda17e0f5/maintainability)](https://codeclimate.com/github/Laragear/Rut/maintainability)
+[![Codecov coverage](https://codecov.io/gh/Laragear/Rut/graph/badge.svg?token=5COE8X0JMJ)](https://codecov.io/gh/Laragear/Rut)
+[![Maintainability](https://qlty.sh/badges/362bcde7-82e1-4c5a-886d-8c20ef2458b0/maintainability.svg)](https://qlty.sh/gh/Laragear/projects/Rut)
 [![Sonarcloud Status](https://sonarcloud.io/api/project_badges/measure?project=Laragear_Rut&metric=alert_status)](https://sonarcloud.io/dashboard?id=Laragear_Rut)
 [![Laravel Octane Compatibility](https://img.shields.io/badge/Laravel%20Octane-Compatible-success?style=flat&logo=laravel)](https://laravel.com/docs/11.x/octane#introduction)
 
@@ -22,11 +22,11 @@ if ($rut->isValid()) {
 
 [![](.github/assets/support.png)](https://github.com/sponsors/DarkGhostHunter)
 
-Your support allows me to keep this package free, up-to-date and maintainable. Alternatively, you can **[spread the word!](http://twitter.com/share?text=I%20am%20using%20this%20cool%20PHP%20package&url=https://github.com%2FLaragear%2FRut&hashtags=PHP,Laravel,Chile)**
+Your support allows me to keep this package free, up-to-date and maintainable. Alternatively, you can **spread the word on social media**.
 
 ## Requirements
 
-- Laravel 10 or later
+- Laravel 11 or later
 
 ## Installation
 
@@ -805,4 +805,4 @@ If you discover any security related issues, please email darkghosthunter@gmail.
 
 This specific package version is licensed under the terms of the [MIT License](LICENSE.md), at time of publishing.
 
-[Laravel](https://laravel.com) is a Trademark of [Taylor Otwell](https://github.com/TaylorOtwell/). Copyright © 2011-2024 Laravel LLC.
+[Laravel](https://laravel.com) is a Trademark of [Taylor Otwell](https://github.com/TaylorOtwell/). Copyright © 2011-2025 Laravel LLC.
