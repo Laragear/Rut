@@ -6,6 +6,7 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\ColumnDefinition;
 use Illuminate\Database\Schema\Grammars\Grammar;
+
 use function tap;
 
 class RutBlueprintMacrosTest extends TestCase
@@ -23,12 +24,12 @@ class RutBlueprintMacrosTest extends TestCase
 
     public function test_helper_returns_rut_num_column(): void
     {
-        $column = ($this->blueprint())->rut();
+        $column = $this->blueprint()->rut();
 
         static::assertInstanceOf(ColumnDefinition::class, $column);
         static::assertSame('rut_num', $column->get('name'));
 
-        $column = ($this->blueprint())->rutNullable();
+        $column = $this->blueprint()->rutNullable();
 
         static::assertInstanceOf(ColumnDefinition::class, $column);
         static::assertSame('rut_num', $column->get('name'));
