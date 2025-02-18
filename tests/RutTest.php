@@ -361,7 +361,7 @@ class RutTest extends TestCase
 
     public function test_formats_json_using_callback(): void
     {
-        Rut::$jsonFormat = fn($rut) => $rut->formatRaw();
+        Rut::$jsonFormat = fn ($rut) => $rut->formatRaw();
 
         $rut = new Rut(11111111, 1);
 

@@ -157,7 +157,7 @@ class RutScope implements Scope
         }
 
         return $builder->where(
-        // @phpstan-ignore-next-line
+            // @phpstan-ignore-next-line
             $builder->getModel()->getQualifiedRutNumColumn(),
             $not ? '!=' : '=',
             Rut::split($rut)[0],
@@ -211,7 +211,7 @@ class RutScope implements Scope
 
         // @phpstan-ignore-next-line
         return $builder->whereIn(
-        // @phpstan-ignore-next-line
+            // @phpstan-ignore-next-line
             $builder->getModel()->getQualifiedRutNumColumn(),
             $ruts,
             $boolean,
