@@ -10,6 +10,7 @@ use Laragear\Rut\Facades\Generator;
 use Laragear\Rut\HasRut;
 use Laragear\Rut\Rut;
 use Laragear\Rut\RutFormat;
+use const PHP_INT_MAX;
 
 class HasRutTest extends TestCase
 {
@@ -46,6 +47,10 @@ class HasRutTest extends TestCase
         static::assertTrue($model->newQuery()->hasMacro('whereRutNot'));
         static::assertTrue($model->newQuery()->hasMacro('orWhereRut'));
         static::assertTrue($model->newQuery()->hasMacro('orWhereRutNot'));
+        static::assertTrue($model->newQuery()->hasMacro('whereRutIsPerson'));
+        static::assertTrue($model->newQuery()->hasMacro('orWhereRutIsPerson'));
+        static::assertTrue($model->newQuery()->hasMacro('whereRutIsCompany'));
+        static::assertTrue($model->newQuery()->hasMacro('orWhereRutIsCompany'));
     }
 
     public function test_model_finds_by_rut(): void
@@ -260,6 +265,240 @@ class HasRutTest extends TestCase
     {
         static::assertCount(1, DummyModel::where('id', 1)->orWhereRutNotIn([DummyModel::find(2)->rut, '20490006K'])->get());
         static::assertEmpty(DummyModel::where('id', 10)->orWhereRutNotIn([DummyModel::find(1)->rut, DummyModel::find(2)->rut, '20490006K'])->get());
+    }
+
+    public function test_where_rut_is_person(): void
+    {
+        static::assertCount(3, DummyModel::whereRutIsPerson()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut = Rut::fromNum(Rut::INVESTOR_BASE - 1),
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(4, DummyModel::whereRutIsPerson()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut = Rut::fromNum(Rut::INVESTOR_BASE),
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(4, DummyModel::whereRutIsPerson()->get());
+    }
+
+    public function test_or_where_rut_is_person(): void
+    {
+        $rut = Rut::fromNum(Rut::INVESTOR_BASE);
+
+        static::assertCount(3, DummyModel::whereRut($rut)->orWhereRutIsPerson()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut,
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(4, DummyModel::whereRut($rut)->orWhereRutIsPerson()->get());
+    }
+
+    public function test_where_rut_is_investor(): void
+    {
+        static::assertEmpty(DummyModel::whereRutIsInvestor()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut = Rut::fromNum(Rut::INVESTOR_BASE),
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(1, DummyModel::whereRutIsInvestor()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut = Rut::fromNum(Rut::INVESTMENT_COMPANY_BASE),
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(1, DummyModel::whereRutIsInvestor()->get());
+    }
+
+    public function test_or_where_rut_is_investor(): void
+    {
+        $rut = Rut::fromNum(Rut::INVESTOR_BASE);
+
+        static::assertCount(1, DummyModel::whereKey(1)->orWhereRutIsInvestor()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut,
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(2, DummyModel::whereKey(1)->orWhereRutIsInvestor()->get());
+    }
+
+    public function test_where_rut_is_investment_company(): void
+    {
+        static::assertEmpty(DummyModel::whereRutIsInvestmentCompany()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut = Rut::fromNum(Rut::INVESTMENT_COMPANY_BASE),
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(1, DummyModel::whereRutIsInvestmentCompany()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut = Rut::fromNum(Rut::CONTINGENCY_BASE),
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(1, DummyModel::whereRutIsInvestmentCompany()->get());
+    }
+
+    public function test_or_where_rut_is_investment_company(): void
+    {
+        $rut = Rut::fromNum(Rut::INVESTMENT_COMPANY_BASE);
+
+        static::assertCount(1, DummyModel::whereKey(1)->orWhereRutIsInvestmentCompany()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut,
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(2, DummyModel::whereKey(1)->orWhereRutIsInvestmentCompany()->get());
+    }
+
+    public function test_where_rut_is_contingency(): void
+    {
+        static::assertEmpty(DummyModel::whereRutIsContingency()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut = Rut::fromNum(Rut::CONTINGENCY_BASE),
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(1, DummyModel::whereRutIsContingency()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut = Rut::fromNum(Rut::COMPANY_BASE),
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(1, DummyModel::whereRutIsContingency()->get());
+    }
+
+    public function test_or_where_rut_is_contingency(): void
+    {
+        $rut = Rut::fromNum(Rut::CONTINGENCY_BASE);
+
+        static::assertCount(1, DummyModel::whereKey(1)->orWhereRutIsContingency()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut,
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(2, DummyModel::whereKey(1)->orWhereRutIsContingency()->get());
+    }
+
+    public function test_where_rut_is_company(): void
+    {
+        static::assertEmpty(DummyModel::whereRutIsCompany()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut = Rut::fromNum(Rut::COMPANY_BASE),
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(1, DummyModel::whereRutIsCompany()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut = Rut::fromNum(Rut::TEMPORAL_BASE),
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(1, DummyModel::whereRutIsCompany()->get());
+    }
+
+    public function test_or_where_rut_is_company(): void
+    {
+        $rut = Rut::fromNum(Rut::COMPANY_BASE);
+
+        static::assertCount(1, DummyModel::whereKey(1)->orWhereRutIsCompany()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut,
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(2, DummyModel::whereKey(1)->orWhereRutIsCompany()->get());
+    }
+
+    public function test_where_rut_is_temporal(): void
+    {
+        static::assertEmpty(DummyModel::whereRutIsTemporal()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut = Rut::fromNum(Rut::TEMPORAL_BASE),
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(1, DummyModel::whereRutIsTemporal()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut = Rut::fromNum(Rut::MAX + 1),
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(1, DummyModel::whereRutIsTemporal()->get());
+    }
+
+    public function test_or_where_rut_is_temporal(): void
+    {
+        $rut = Rut::fromNum(Rut::TEMPORAL_BASE);
+
+        static::assertCount(1, DummyModel::whereKey(1)->orWhereRutIsTemporal()->get());
+
+        DummyModel::make()->forceFill([
+            'name' => $rut,
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ])->save();
+
+        static::assertCount(2, DummyModel::whereKey(1)->orWhereRutIsTemporal()->get());
     }
 
     public function test_error_or_where_rut_not_in_invalid_rut(): void

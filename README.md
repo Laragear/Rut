@@ -117,15 +117,32 @@ $ruts = Generator::unique()->asCompanies()->make(10000000);
 
 ## Serialization
 
-By default, all `Rut` instances are serialized into text using a _strict_ format. You can serialize a `Rut` instance differently using one of the three formats available:
+By default, all `Rut` instances are serialized into text using a _strict_ format, which includes thousands separators and hyphen to separate the RUT number from the RUT verification digit.
 
-| Formatting | Enum                | Example       | Description                                                      |
-|------------|---------------------|---------------|------------------------------------------------------------------|
-| Strict     | `RutFormat::Strict` | `5.138.171-8` | Default option. Serializes with a thousand separator and hyphen. |
-| Basic      | `RutFormat::Basic`  | `5138171-8`   | No thousand separator, only the hyphen.                          |
-| Raw        | `RutFormat::Raw`    | `51381718`    | No thousand separator nor hyphen.                                |
+```php
+use Laragear\Rut\Rut;
+use Laragear\Rut\RutFormat;
 
-You can use `format()` with any `RutFormat` enum as argument to serialize the RUT into text.
+echo Rut::parse('51381718'); // "5.138.171-8"
+````
+
+There are three formats available to transform a RUT into a string: strict, basic and raw.
+
+| Formatting | Example        | Description                                                      |
+|------------|----------------|------------------------------------------------------------------|
+| Strict     | `5.138.171-8`  | Default option. Serializes with a thousand separator and hyphen. |
+| Basic      | `5138171-8`    | No thousand separator, only the hyphen.                          |
+| Raw        | `51381718`     | No thousand separator nor hyphen.                                |
+
+You may change which formatting type to serialize the RUT using one of the convenience methods.
+
+```php
+echo $rut->formatStrict(); // "5.138.171-8"
+echo $rut->formatBasic();  // "5138171-8"
+echo $rut->formatRaw();    // "51381718"
+```
+
+Formatting a RUT can also be done programmatically through the `format()` method, which accepts a `Laragear\Rut\RutFormat` enum. If no argument is passed, it will use the default format.
 
 ```php
 use Laragear\Rut\Rut;
@@ -139,7 +156,9 @@ $rut->format(RutFormat::Basic);  // "5138171-8"
 $rut->format(RutFormat::Raw);    // "51381718"
 ```
 
-You may [change this globally in the configuration](#default-rut-format).
+> [!TIP]
+> 
+> You can change the global format [in the configuration](#default-rut-format).
 
 ## Validating a RUT
 
@@ -583,20 +602,24 @@ class User extends Authenticatable
 
 With that, you will have access to convenient RUT queries shorthands:
 
-| Method name         | Description                                                              |
-|---------------------|--------------------------------------------------------------------------|
-| `findRut()`         | Finds a record by the given RUT.                                         |
-| `findManyRut()`     | Finds many records by the given RUTs.                                    |
-| `findRutOrFail()`   | Finds a record by the RUT or fails.                                      |
-| `findRutOrNew()`    | Finds a record by the RUT or creates one.                                |
-| `whereRut()`        | Creates a `WHERE` clause with the RUT number equal to the issued one.    |
-| `whereRutNot()`     | Creates a `WHERE` clause excluding the given RUT.                        |
-| `orWhereRut()`      | Creates a `OR WHERE` clause with the RUT number equal to the issued one. |
-| `orWhereRutNot()`   | Creates a `OR WHERE` clause excluding the given RUT.                     |
-| `whereRutIn()`      | Creates a `WHERE IN` clause with the given RUTs.                         |
-| `whereRutNotIn()`   | Creates a `WHERE NOT IN` clause excluding the given RUTs.                |
-| `orWhereRutIn()`    | Creates a `OR WHERE IN` clause with the given RUTs.                      |
-| `orWhereRutNotIn()` | Creates a `OR WHERE NOT IN` clause excluding the given RUTs.             |
+| Method name             | Description                                                                           |
+|-------------------------|---------------------------------------------------------------------------------------|
+| `findRut()`             | Finds a record by the given RUT.                                                      |
+| `findManyRut()`         | Finds many records by the given RUTs.                                                 |
+| `findRutOrFail()`       | Finds a record by the RUT or fails.                                                   |
+| `findRutOrNew()`        | Finds a record by the RUT or creates one.                                             |
+| `whereRut()`            | Creates a `WHERE` clause with the RUT number equal to the issued one.                 |
+| `whereRutNot()`         | Creates a `WHERE` clause excluding the given RUT.                                     |
+| `orWhereRut()`          | Creates a `OR WHERE` clause with the RUT number equal to the issued one.              |
+| `orWhereRutNot()`       | Creates a `OR WHERE` clause excluding the given RUT.                                  |
+| `whereRutIn()`          | Creates a `WHERE IN` clause with the given RUTs.                                      |
+| `whereRutNotIn()`       | Creates a `WHERE NOT IN` clause excluding the given RUTs.                             |
+| `orWhereRutIn()`        | Creates a `OR WHERE IN` clause with the given RUTs.                                   |
+| `orWhereRutNotIn()`     | Creates a `OR WHERE NOT IN` clause excluding the given RUTs.                          |
+| `whereRutIsPerson()`    | Finds records with RUTs below 60.000.000.                                             |
+| `orWhereRutIsPerson()`  | Finds records with RUTs below 60.000.000 or the prior condition.                      |
+| `whereRutIsCompany()`   | Finds records with RUTs over 59.999.999 and below 100.000.000.                        |
+| `orWhereRutIsCompany()` | Finds records with RUTs over 59.999.999 and below 100.000.000 or the prior condition. |
 
 > [!IMPORTANT]
 > 
@@ -714,7 +737,7 @@ return [
 ];
 ```
 
-By default, RUTs are _strictly_ formatted. This config alters how RUTs are serialized as string in your application globally.
+By default, RUTs are [_strictly_ formatted](#serialization). This config alters how RUTs are serialized by default as string in your application.
 
 ### JSON format
 
@@ -758,7 +781,7 @@ return [
 ];
 ```
 
-Since the Verification Digit can be either a single digit or the letter `K`, it's usually good idea to keep the case consistent; to always work with uppercase or lowercase across all the application.
+Since the Verification Digit can be either a single digit or the letter `K`, it's usually good idea to keep the character case consistent: always work with uppercase or lowercase across all the application.
 
 The `Rut` instance by default will use uppercase `K`, but you can change it to lowercase globally by setting this to `false`. This will affect all `Rut` instances.
 
@@ -776,7 +799,7 @@ $rut->toJson(); // "12.351.839-k"
 
 > [!TIP]
 > 
-> This doesn't affect database rules, as the verification digit is normalized automatically.
+> This doesn't affect database rules, as the verification digit is normalized automatically in the database query.
 
 ## PhpStorm stubs
 

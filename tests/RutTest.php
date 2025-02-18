@@ -43,23 +43,86 @@ class RutTest extends TestCase
 
     public function test_rut_checks_for_person(): void
     {
-        $rut = new Rut(40000000, 'k');
+        $true = Rut::fromNum(Rut::INVESTOR_BASE - 1);
+        $false = Rut::fromNum(Rut::INVESTOR_BASE);
 
-        static::assertTrue($rut->isPerson());
-        static::assertFalse($rut->isCompany());
+        static::assertTrue($true->isPerson());
+        static::assertFalse($false->isPerson());
+    }
+
+    public function test_rut_checks_for_investor(): void
+    {
+        $true = Rut::fromNum(Rut::INVESTOR_BASE);
+        $false = Rut::fromNum(Rut::INVESTMENT_COMPANY_BASE);
+
+        static::assertTrue($true->isInvestor());
+        static::assertFalse($false->isInvestor());
+    }
+
+    public function test_rut_checks_for_investment_company(): void
+    {
+        $true = Rut::fromNum(Rut::INVESTMENT_COMPANY_BASE);
+        $false = Rut::fromNum(Rut::CONTINGENCY_BASE);
+
+        static::assertTrue($true->isInvestmentCompany());
+        static::assertFalse($false->isInvestmentCompany());
+    }
+
+    public function test_rut_checks_for_contingency(): void
+    {
+        $true = Rut::fromNum(Rut::CONTINGENCY_BASE);
+        $false = Rut::fromNum(Rut::COMPANY_BASE);
+
+        static::assertTrue($true->isContingency());
+        static::assertFalse($false->isContingency());
     }
 
     public function test_rut_checks_for_company(): void
     {
-        $rut = new Rut(60000000, 4);
+        $true = Rut::fromNum(Rut::COMPANY_BASE);
+        $false = Rut::fromNum(Rut::TEMPORAL_BASE);
 
-        static::assertFalse($rut->isPerson());
-        static::assertTrue($rut->isCompany());
+        static::assertTrue($true->isCompany());
+        static::assertFalse($false->isCompany());
+    }
+
+    public function test_rut_checks_for_temporal(): void
+    {
+        $true = Rut::fromNum(Rut::TEMPORAL_BASE);
+        $false = Rut::fromNum(Rut::MAX + 1);
+
+        static::assertTrue($true->isTemporal());
+        static::assertFalse($false->isTemporal());
+    }
+
+    public function test_rut_checks_for_permanent(): void
+    {
+        $true = Rut::fromNum(Rut::TEMPORAL_BASE - 1);
+        $false = Rut::fromNum(Rut::TEMPORAL_BASE);
+
+        static::assertTrue($true->isPermanent());
+        static::assertFalse($false->isPermanent());
     }
 
     public function test_rut_checks_invalid_rut(): void
     {
         $rut = new Rut(10, 10);
+
+        static::assertFalse($rut->isValid());
+        static::assertTrue($rut->isInvalid());
+    }
+
+    public function test_rut_checks_invalid_rut_below_min(): void
+    {
+        $rut = Rut::fromNum(Rut::MIN - 1);
+
+        static::assertFalse($rut->isValid());
+        static::assertTrue($rut->isInvalid());
+    }
+
+    public function test_rut_checks_invalid_rut_over_max(): void
+    {
+        $rut = Rut::fromNum(Rut::MAX + 1);
 
         static::assertFalse($rut->isValid());
         static::assertTrue($rut->isInvalid());
@@ -169,6 +232,10 @@ class RutTest extends TestCase
         static::assertSame('53.851.562-0', $rut->format(RutFormat::Strict));
         static::assertSame('53851562-0', $rut->format(RutFormat::Basic));
         static::assertSame('538515620', $rut->format(RutFormat::Raw));
+
+        static::assertSame('53.851.562-0', $rut->formatStrict());
+        static::assertSame('53851562-0', $rut->formatBasic());
+        static::assertSame('538515620', $rut->formatRaw());
     }
 
     public function test_rut_format_changes_globally(): void
@@ -290,6 +357,15 @@ class RutTest extends TestCase
         static::assertEquals('99.637.702-4', $rut->format());
         static::assertEquals('"996377024"', $rut->toJson());
         static::assertEquals('"996377024"', json_encode($rut));
+    }
+
+    public function test_formats_json_using_callback(): void
+    {
+        Rut::$jsonFormat = fn($rut) => $rut->formatRaw();
+
+        $rut = new Rut(11111111, 1);
+
+        static::assertEquals('"111111111"', json_encode($rut));
     }
 
     protected function tearDown(): void

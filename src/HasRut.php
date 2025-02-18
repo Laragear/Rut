@@ -19,6 +19,18 @@ use function defined;
  * @method static static|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder orWhereRutIn(iterable|\Illuminate\Contracts\Support\Arrayable $ruts, bool $not = false)
  * @method static static|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder whereRutNotIn(iterable|\Illuminate\Contracts\Support\Arrayable $ruts, string $boolean = 'and')
  * @method static static|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder orWhereRutNotIn(iterable|\Illuminate\Contracts\Support\Arrayable $ruts)
+ * @method static static|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder whereRutIsPerson()
+ * @method static static|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder orWhereRutIsPerson()
+ * @method static static|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder whereRutIsInvestor()
+ * @method static static|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder orWhereRutIsInvestor()
+ * @method static static|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder whereRutIsInvestmentCompany()
+ * @method static static|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder orWhereRutIsInvestmentCompany()
+ * @method static static|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder whereRutIsContingency()
+ * @method static static|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder orWhereRutIsContingency()
+ * @method static static|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder whereRutIsCompany()
+ * @method static static|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder orWhereRutIsCompany()
+ * @method static static|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder whereRutIsTemporal()
+ * @method static static|\Illuminate\Database\Eloquent\Builder|\Illuminate\Database\Query\Builder orWhereRutIsTemporal()
  *
  * @property-read \Laragear\Rut\Rut $rut
  */

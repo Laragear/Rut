@@ -27,7 +27,7 @@ trait PreparesDatabase
             'name' => 'John',
             'email' => 'john.doe@email.com',
             'password' => '123456',
-            'rut_num' => ($rut = Generator::makeOne())->num,
+            'rut_num' => ($rut = Generator::asPeople()->makeOne())->num,
             'rut_vd' => strtoupper($rut->vd),
         ])->save();
 
@@ -36,7 +36,7 @@ trait PreparesDatabase
             'name' => 'Michael',
             'email' => 'michael.doe@email.com',
             'password' => '123456',
-            'rut_num' => ($rut = Generator::makeOne())->num,
+            'rut_num' => ($rut = Generator::asPeople()->makeOne())->num,
             'rut_vd' => strtoupper($rut->vd),
         ])->save();
 

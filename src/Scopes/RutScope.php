@@ -74,8 +74,11 @@ class RutScope implements Scope
      *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
-    public static function findRut(Builder $builder, iterable|int|string|Arrayable|Rut $rut, string|array $columns = ['*']): Model|Collection|null
-    {
+    public static function findRut(
+        Builder $builder,
+        iterable|int|string|Arrayable|Rut $rut,
+        string|array $columns = ['*'],
+    ): Model|Collection|null {
         if (is_iterable($rut) || $rut instanceof Arrayable) {
             return static::findManyRut($builder, $rut, $columns);
         }
@@ -90,8 +93,11 @@ class RutScope implements Scope
      *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
-    public static function findManyRut(Builder $builder, iterable|Arrayable $ruts, array|string $columns = ['*']): Collection
-    {
+    public static function findManyRut(
+        Builder $builder,
+        iterable|Arrayable $ruts,
+        array|string $columns = ['*'],
+    ): Collection {
         return static::whereRutIn($builder, $ruts)->get($columns);
     }
 
@@ -102,8 +108,11 @@ class RutScope implements Scope
      *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
-    public static function findRutOrFail(Builder $builder, iterable|int|string|Arrayable|Rut $rut, array|string $columns = ['*']): Model|Collection
-    {
+    public static function findRutOrFail(
+        Builder $builder,
+        iterable|int|string|Arrayable|Rut $rut,
+        array|string $columns = ['*'],
+    ): Model|Collection {
         $result = static::findRut($builder, $rut, $columns);
 
         $rut = $rut instanceof Arrayable ? $rut->toArray() : $rut;
@@ -126,26 +135,33 @@ class RutScope implements Scope
      *
      * @throws \Laragear\Rut\Exceptions\InvalidRutException
      */
-    public static function findRutOrNew(Builder $builder, iterable|int|string|Arrayable|Rut $rut, array|string $columns = ['*']): Model
-    {
+    public static function findRutOrNew(
+        Builder $builder,
+        iterable|int|string|Arrayable|Rut $rut,
+        array|string $columns = ['*'],
+    ): Model {
         return static::findRut($builder, $rut, $columns) ?? $builder->newModelInstance();
     }
 
     /**
      * Adds a `WHERE` clause to the query with the RUT number.
      */
-    public static function whereRut(Builder $builder, int|string|iterable|Arrayable|Rut $rut, string $boolean = 'and', bool $not = false): Builder
-    {
+    public static function whereRut(
+        Builder $builder,
+        int|string|iterable|Arrayable|Rut $rut,
+        string $boolean = 'and',
+        bool $not = false,
+    ): Builder {
         if (is_iterable($rut) || $rut instanceof Arrayable) {
             return static::whereRutIn($builder, $rut, $boolean, $not);
         }
 
         return $builder->where(
-            // @phpstan-ignore-next-line
+        // @phpstan-ignore-next-line
             $builder->getModel()->getQualifiedRutNumColumn(),
             $not ? '!=' : '=',
             Rut::split($rut)[0],
-            $boolean
+            $boolean,
         );
     }
 
@@ -162,8 +178,11 @@ class RutScope implements Scope
     /**
      * Adds a `WHERE` clause to the query without the RUT number.
      */
-    public static function whereRutNot(Builder $builder, int|string|iterable|Arrayable|Rut $rut, string $boolean = 'and'): Builder
-    {
+    public static function whereRutNot(
+        Builder $builder,
+        int|string|iterable|Arrayable|Rut $rut,
+        string $boolean = 'and',
+    ): Builder {
         return static::whereRut($builder, $rut, $boolean, true);
     }
 
@@ -180,19 +199,23 @@ class RutScope implements Scope
     /**
      * Adds a `WHERE IN` clause to the query with the RUTs number.
      */
-    public static function whereRutIn(Builder $builder, iterable|Arrayable $ruts, string $boolean = 'and', bool $not = false): Builder
-    {
+    public static function whereRutIn(
+        Builder $builder,
+        iterable|Arrayable $ruts,
+        string $boolean = 'and',
+        bool $not = false,
+    ): Builder {
         $ruts = BaseCollection::make($ruts)->map(static function (int|string|Rut $rut): int {
             return Rut::split($rut)[0];
         });
 
         // @phpstan-ignore-next-line
         return $builder->whereIn(
-            // @phpstan-ignore-next-line
+        // @phpstan-ignore-next-line
             $builder->getModel()->getQualifiedRutNumColumn(),
             $ruts,
             $boolean,
-            $not
+            $not,
         );
     }
 
@@ -218,5 +241,137 @@ class RutScope implements Scope
     public static function orWhereRutNotIn(Builder $builder, iterable|Arrayable $ruts): Builder
     {
         return static::orWhereRutIn($builder, $ruts, true);
+    }
+
+    /**
+     * Filters the query by RUTs that are below 46.000.000.
+     */
+    public static function whereRutIsPerson(Builder $builder, string $boolean = 'and'): Builder
+    {
+        // @phpstan-ignore-next-line
+        return $builder->where($builder->getModel()->getQualifiedRutNumColumn(), '<', Rut::INVESTOR_BASE, $boolean);
+    }
+
+    /**
+     * Filters the query by RUTs that are below 46.000.000.
+     */
+    public static function orWhereRutIsPerson(Builder $builder): Builder
+    {
+        return static::whereRutIsPerson($builder, 'or');
+    }
+
+    /**
+     * Filters the query by RUTs that are between 46.000.000 inclusive and below 47.000.000.
+     */
+    public static function whereRutIsInvestor(Builder $builder, string $boolean = 'and'): Builder
+    {
+        return $builder->where(static function (Builder $builder): void {
+            $builder->where([
+                // @phpstan-ignore-next-line
+                [$builder->getModel()->getQualifiedRutNumColumn(), '>=', Rut::INVESTOR_BASE],
+                // @phpstan-ignore-next-line
+                [$builder->getModel()->getQualifiedRutNumColumn(), '<', Rut::INVESTMENT_COMPANY_BASE],
+            ]);
+        }, null, null, $boolean);
+    }
+
+    /**
+     * Filters the query by RUTs that are between 46.000.000 inclusive and below 47.000.000.
+     */
+    public static function orWhereRutIsInvestor(Builder $builder): Builder
+    {
+        return static::whereRutIsInvestor($builder, 'or');
+    }
+
+    /**
+     * Filters the query by RUTs that are between 47.000.000 inclusive and below 48.000.000.
+     */
+    public static function whereRutIsInvestmentCompany(Builder $builder, string $boolean = 'and'): Builder
+    {
+        return $builder->where(static function (Builder $builder): void {
+            $builder->where([
+                // @phpstan-ignore-next-line
+                [$builder->getModel()->getQualifiedRutNumColumn(), '>=', Rut::INVESTMENT_COMPANY_BASE],
+                // @phpstan-ignore-next-line
+                [$builder->getModel()->getQualifiedRutNumColumn(), '<', Rut::CONTINGENCY_BASE],
+            ]);
+        }, null, null, $boolean);
+    }
+
+    /**
+     * Filters the query by RUTs that are between 47.000.000 inclusive and below 48.000.000.
+     */
+    public static function orWhereRutIsInvestmentCompany(Builder $builder): Builder
+    {
+        return static::whereRutIsInvestmentCompany($builder, 'or');
+    }
+
+    /**
+     * Filters the query by RUTs that are between 48.000.000 inclusive and below 60.000.000.
+     */
+    public static function whereRutIsContingency(Builder $builder, string $boolean = 'and'): Builder
+    {
+        return $builder->where(static function (Builder $builder): void {
+            $builder->where([
+                // @phpstan-ignore-next-line
+                [$builder->getModel()->getQualifiedRutNumColumn(), '>=', Rut::CONTINGENCY_BASE],
+                // @phpstan-ignore-next-line
+                [$builder->getModel()->getQualifiedRutNumColumn(), '<', Rut::COMPANY_BASE],
+            ]);
+        }, null, null, $boolean);
+    }
+
+    /**
+     * Filters the query by RUTs that are between 48.000.000 inclusive and below 60.000.000.
+     */
+    public static function orWhereRutIsContingency(Builder $builder): Builder
+    {
+        return static::whereRutIsContingency($builder, 'or');
+    }
+
+    /**
+     * Filters the query by RUTs that are between 60.000.000 inclusive and below 100.000.000.
+     */
+    public static function whereRutIsCompany(Builder $builder, string $boolean = 'and'): Builder
+    {
+        return $builder->where(static function (Builder $builder): void {
+            $builder->where([
+                // @phpstan-ignore-next-line
+                [$builder->getModel()->getQualifiedRutNumColumn(), '>=', Rut::COMPANY_BASE],
+                // @phpstan-ignore-next-line
+                [$builder->getModel()->getQualifiedRutNumColumn(), '<', Rut::TEMPORAL_BASE],
+            ]);
+        }, null, null, $boolean);
+    }
+
+    /**
+     * Filters the query by RUTs that are between 60.000.000 inclusive and below 100.000.000.
+     */
+    public static function orWhereRutIsCompany(Builder $builder): Builder
+    {
+        return static::whereRutIsCompany($builder, 'or');
+    }
+
+    /**
+     * Filters the query by RUTs that are 100.000.000 or over.
+     */
+    public static function whereRutIsTemporal(Builder $builder, string $boolean = 'and'): Builder
+    {
+        return $builder->where(static function (Builder $builder): void {
+            $builder->where([
+                // @phpstan-ignore-next-line
+                [$builder->getModel()->getQualifiedRutNumColumn(), '>=', Rut::COMPANY_BASE],
+                // @phpstan-ignore-next-line
+                [$builder->getModel()->getQualifiedRutNumColumn(), '<', Rut::MAX],
+            ]);
+        }, null, null, $boolean);
+    }
+
+    /**
+     * Filters the query by RUTs that are 100.000.000 or over.
+     */
+    public static function orWhereRutIsTemporal(Builder $builder): Builder
+    {
+        return static::whereRutIsTemporal($builder, 'or');
     }
 }

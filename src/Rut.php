@@ -100,7 +100,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      */
     public function isPerson(): bool
     {
-        return $this->num < static::INVESTMENT_COMPANY_BASE;
+        return $this->num < static::INVESTOR_BASE;
     }
 
     /**
@@ -108,7 +108,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
      */
     public function isInvestor(): bool
     {
-        return $this->num >= static::INVESTOR_BASE && $this->num < static::CONTINGENCY_BASE;
+        return $this->num >= static::INVESTOR_BASE && $this->num < static::INVESTMENT_COMPANY_BASE;
     }
 
     /**
@@ -141,6 +141,14 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     public function isTemporal(): bool
     {
         return $this->num >= static::TEMPORAL_BASE && $this->num < static::MAX;
+    }
+
+    /**
+     * Check if the RUT is permanent, assigned below 100.000.000.
+     */
+    public function isPermanent(): bool
+    {
+        return $this->num < static::TEMPORAL_BASE;
     }
 
     /**
@@ -201,6 +209,36 @@ class Rut implements JsonSerializable, Stringable, Jsonable
         $format ??= static::$format;
 
         return $format->format($this);
+    }
+
+    /**
+     * Formats the RUT to a string using the Raw formatting style.
+     *
+     * @return string "18765432K"
+     */
+    public function formatRaw(): string
+    {
+        return $this->format(RutFormat::Raw);
+    }
+
+    /**
+     * Formats the RUT to a string using the Basic formatting style.
+     *
+     * @return string "18765432-K"
+     */
+    public function formatBasic(): string
+    {
+        return $this->format(RutFormat::Basic);
+    }
+
+    /**
+     * Formats the RUT to a string using the Basic formatting style.
+     *
+     * @return string "18.765.432-K"
+     */
+    public function formatStrict(): string
+    {
+        return $this->format(RutFormat::Strict);
     }
 
     /**
