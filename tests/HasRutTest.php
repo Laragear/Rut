@@ -10,7 +10,6 @@ use Laragear\Rut\Facades\Generator;
 use Laragear\Rut\HasRut;
 use Laragear\Rut\Rut;
 use Laragear\Rut\RutFormat;
-use const PHP_INT_MAX;
 
 class HasRutTest extends TestCase
 {
