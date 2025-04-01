@@ -57,7 +57,12 @@ trait HasRut
 
         if ($this->shouldAppendRut()) {
             $this->append('rut');
-            $this->makeHidden($this->getRutNumColumn(), $this->getRutVdColumn());
+
+            if ($this->shouldShowPrimaryKeyIfIsRutNum()) {
+                $this->makeHidden($this->getRutVdColumn());
+            } else {
+                $this->makeHidden($this->getRutNumColumn(), $this->getRutVdColumn());
+            }
         }
     }
 
@@ -67,6 +72,14 @@ trait HasRut
     public function shouldAppendRut(): bool
     {
         return true;
+    }
+
+    /**
+     * If the primary key of the model should be hidden if it's the RUT Num.
+     */
+    public function shouldShowPrimaryKeyIfIsRutNum(): bool
+    {
+        return $this->getKeyName() === $this->getRutNumColumn();
     }
 
     /**
