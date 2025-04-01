@@ -518,6 +518,29 @@ class HasRutTest extends TestCase
 
         static::assertEquals($rut, $model->toArray()['rut']);
     }
+
+    public function test_shows_primary_key_when_rut_num_is_primary_key(): void
+    {
+        $model = DummyModelWithPrimaryKeyAsRutNum::make()->forceFill(['rut' => $rut = Generator::makeOne()]);
+
+        static::assertArrayHasKey('rut', $model->toArray());
+        static::assertArrayNotHasKey('rut_num', $model->toArray());
+        static::assertArrayNotHasKey('rut_vd', $model->toArray());
+
+        static::assertEquals($rut->num, $model->toArray()['id']);
+    }
+
+    public function test_hides_primary_key_when_rut_num_is_primary_key(): void
+    {
+        $model = DummyModelWithPrimaryKeyAsRutNumAndId::make()->forceFill(['rut' => $rut = Generator::makeOne()]);
+
+        static::assertArrayHasKey('rut', $model->toArray());
+        static::assertArrayNotHasKey('rut_num', $model->toArray());
+        static::assertArrayNotHasKey('rut_vd', $model->toArray());
+        static::assertArrayNotHasKey('id', $model->toArray());
+
+        static::assertEquals($rut, $model->toArray()['rut']);
+    }
 }
 
 class DummyModel extends Model
@@ -536,5 +559,28 @@ class DummyModelAppendingRut extends Model
     public function shouldAppendRut(): bool
     {
         return true;
+    }
+}
+
+class DummyModelWithPrimaryKeyAsRutNum extends Model
+{
+    use HasRut;
+
+    protected const RUT_NUM = 'id';
+
+    protected $table = 'users';
+}
+
+class DummyModelWithPrimaryKeyAsRutNumAndId extends Model
+{
+    use HasRut;
+
+    protected const RUT_NUM = 'id';
+
+    protected $table = 'users';
+
+    public function shouldShowPrimaryKeyIfIsRutNum(): bool
+    {
+        return false;
     }
 }
