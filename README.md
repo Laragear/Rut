@@ -675,8 +675,6 @@ To show the underlying RUT columns instead of the RUT string, simply make `shoul
 ```php
 /**
  * If the `rut` key should be appended, and hide the underlying RUT columns.
- *
- * @return bool
  */
 public function shouldAppendRut(): bool
 {
@@ -704,6 +702,41 @@ public function shouldAppendRut(): bool
    $this->append('rut');
 
    return false;
+}
+```
+
+##### Hiding the Primary Key as RUT Number
+
+You may want to have your models using the RUT Number as primary key, especially if you want to keep users unique by the RUT. If that's your case, the library will automatically _show_ the primary key instead of hiding it.
+
+```json
+{
+    "id": 16887941,
+    "name": "Taylor",
+    "email": "taylor@laravel.com",
+    "rut": "16.887.941-5"
+}
+```
+
+If you still want to hide the primary key, you can make the `shouldShowPrimaryKeyIfIsRutNum()` in your model.
+
+```php
+/**
+ * If the primary key of the model should be hidden if it's the RUT Num.
+ */
+public function shouldShowPrimaryKeyIfIsRutNum(): bool
+{
+    return false;
+}
+```
+
+Hiding the Primary Key, which is the RUT Number, won't make hide the RUT property on serialization.
+
+```json
+{
+    "name": "Taylor",
+    "email": "taylor@laravel.com",
+    "rut": "16.887.941-5"
 }
 ```
 
