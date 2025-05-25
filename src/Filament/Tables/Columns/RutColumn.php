@@ -3,11 +3,9 @@
 namespace Laragear\Rut\Filament\Tables\Columns;
 
 use Filament\Tables\Columns\TextColumn;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Arr;
 use Laragear\Rut\Rut;
 use Laragear\Rut\RutFormat;
-use function data_get;
 
 class RutColumn extends TextColumn
 {
@@ -72,11 +70,11 @@ class RutColumn extends TextColumn
         parent::setUp();
 
         $this->getStateUsing = static function (self $column): ?string {
-            if (!$data = $column->getStateFromRecord()) {
+            if (! $data = $column->getStateFromRecord()) {
                 return null;
             }
 
-            $data = match($column->getFromRutData()) {
+            $data = match ($column->getFromRutData()) {
                 'array' => new Rut(...Arr::wrap($data)),
                 'int' => Rut::fromNum($data),
                 default => Rut::parse($data),
