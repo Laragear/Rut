@@ -707,6 +707,105 @@ public function shouldAppendRut(): bool
 }
 ```
 
+## Livewire & Filament
+
+This library comes with some utilities if your application is using [Filament](https://filamentphp.com/), or just [Livewire](https://livewire.laravel.com). 
+
+### RUT Synthesizer
+
+If you're using Livewire, this library will automatically register the `Laragear\Rut\Livewire\Synth\RutSynth` [synthesizer](https://livewire.laravel.com/docs/synthesizers) to serialize the `Laragear\Rut\Rut` instance back and forth the frontend. If you don't want to register it and use your own, set the [configuration](#register-synthesizer) to _falsy_.
+
+The RUT Synthesizer uses the `rut` as key in the frontend. You may change it using the `$key` static property. A good place to put this logic is in the `boot()` method of your `AppServiceProvider` file.
+
+```php
+use Laragear\Rut\Livewire\Synthesizers\RutSynth;
+
+public function boot()
+{
+    RutSynth::$key = 'my-rut-key';
+}
+```
+
+### Filament RUT Column
+
+If you may wish to show a column of RUT inside a Filament Table, you may use the `Laragear\Rut\Filament\Tables\Columns\RutColumn` class. It's based on the native `Filament\Tables\Columns\TextColumn` class, so it supports all its features.
+
+```php
+use Filament\Tables\Table;
+use Laragear\Rut\Filament\Tables\Columns\RutColumn;
+
+public static function table(Table $table)
+{
+    $table->columns([
+        RutColumn::make('rut')
+            ->alignCenter()
+            ->tooltip('The user RUT in the application.');
+    ]);
+}
+```
+
+#### RUT Column source type
+
+By default, the RUT is generated from a state that is already a `Rut` instance o a RUT string. If you're using a different source type, like only the RUT Number or an array with the RUT Number and Verification Digit separated, you may use the `fromRutNumber()` or `fromRutArray()`, respectively.
+
+```php
+use Filament\Tables\Table;
+use Laragear\Rut\Filament\Tables\Columns\RutColumn;
+
+public static function table(Table $table)
+{
+    $table->columns([
+        RutColumn::make('rut')->fromRutNumber(),
+        RutColumn::make('business_rut')->fromRutArray()
+    ]);
+}
+```
+
+> [!TIP]
+> 
+> When using `fromRutArray()`, the array is [_spread_](https://wiki.php.net/rfc/spread_operator_for_array) into the Rut constructor. When not using a list array (numeric indexes), then use the `num` and `vd` keys for the RUT Number and Verification Digit in your data source, respectively:
+> 
+> ```php
+> $rut = [
+>     'num' => 18765432, 
+>     'vd' => 1,
+> ];
+> ```
+
+#### RUT Column Formatting
+
+By default, the RUT is formatted [using your configuration](#default-rut-format). If you wish to format the state using a different format, you may use the `formatAsRaw()`, `formatAsBasic()` and `formatAsStrict()` methods.
+
+```php
+use Filament\Tables\Table;
+use Laragear\Rut\Filament\Tables\Columns\RutColumn;
+
+public static function table(Table $table)
+{
+    $table->columns([
+        RutColumn::make('rut')->formatAsRaw(),
+    ]);
+}
+```
+
+### Filament RUT input
+
+For RUT inputs, you may use the `Laragear\Rut\Filament\Forms\Components\RutInput` class, which is based from the native `Filament\Forms\Components\TextInput` class.
+
+The Input only accepts numbers and `k|K`. While the user uses the input, the RUT gets automatically formatted strictly, and on the frontend a RUT pattern is enforced at input level.
+
+```php
+use Livewire\Form
+use Laragear\Rut\Filament\Forms\Components\RutInput;
+
+public static function form(Form $form): Form
+{
+    return $form->schema([
+        RutInput::make('rut')->required(),
+    ]);
+}
+```
+
 ## Configuration
 
 This package works flawlessly out of the box, but you may want to change how a `Rut` is formatted as a string using the global configuration. You can publish it using Artisan:
@@ -724,6 +823,7 @@ return [
     'format' => RutFormat::Strict,
     'json_format' => null,
     'uppercase' => true,
+    'synthesizer' => true,
 ];
 ```
 
@@ -766,11 +866,14 @@ Alternatively, you can override the configuration by using a callback to create 
 ```php
 use Laragear\Rut\Rut;
 
-Rut::$jsonFormat = function (Rut $rut) {
-    return ['num' => $rut->num, 'vd' => $rut->vd];
+public function boot()
+{
+    Rut::$jsonFormat = function (Rut $rut) {
+        return ['num' => $rut->num, 'vd' => $rut->vd];
+    }
+    
+    Rut::parse('5.138.171-8')->toJson(); // "{"num":5138171,"vd":"8"}"
 }
-
-Rut::parse('5.138.171-8')->toJson(); // "{"num":5138171,"vd":"8"}"
 ```
 
 ### Verification Digit Case
@@ -800,6 +903,16 @@ $rut->toJson(); // "12.351.839-k"
 > [!TIP]
 > 
 > This doesn't affect database rules, as the verification digit is normalized automatically in the database query.
+
+### Register synthesizer
+
+```php
+return [
+    'synthesizer' => true,
+]
+```
+
+This controls if the [Livewire Synthesizer](#livewire--filament) should be automatically registered or not. Any _falsy_ value will disable it so you may register your own.
 
 ## PhpStorm stubs
 
