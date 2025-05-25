@@ -30,7 +30,6 @@ JS;
                 'pattern' => '^[0-9]{1,3}(?:\.[0-9]{3})*-[0-9K]$',
             ])
             ->placeholder('18.765.432-1')
-            ->rules('rut|between:7,13')
-        ;
+            ->rules('rut|between:7,13');
     }
 }
