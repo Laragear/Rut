@@ -11,9 +11,19 @@ use Laragear\Rut\Generator;
 use Laragear\Rut\Rut;
 use Laragear\Rut\RutFormat;
 use Laragear\Rut\RutServiceProvider;
+use Orchestra\Testbench\Attributes\DefineEnvironment;
 
 class ServiceProviderTest extends TestCase
 {
+    protected function tearDown(): void
+    {
+        parent::tearDown();
+
+        Rut::$format = RutFormat::Strict;
+        Rut::$uppercase = true;
+        Rut::$jsonFormat = null;
+    }
+
     public function test_merges_config(): void
     {
         static::assertSame(
@@ -75,7 +85,7 @@ class ServiceProviderTest extends TestCase
         );
     }
 
-    protected function useCustomRutDefaults($app)
+    protected function useCustomRutDefaults($app): void
     {
         $app->make('config')->set([
             'rut.format' => RutFormat::Raw,
@@ -84,22 +94,11 @@ class ServiceProviderTest extends TestCase
         ]);
     }
 
-    /**
-     * @define-env useCustomRutDefaults
-     */
+    #[DefineEnvironment('useCustomRutDefaults')]
     public function test_boots_rut_defaults(): void
     {
         static::assertFalse(Rut::$uppercase);
         static::assertSame(RutFormat::Raw, Rut::$format);
         static::assertSame(RutFormat::Basic, Rut::$jsonFormat);
-    }
-
-    protected function tearDown(): void
-    {
-        parent::tearDown();
-
-        Rut::$format = RutFormat::Strict;
-        Rut::$uppercase = true;
-        Rut::$jsonFormat = null;
     }
 }

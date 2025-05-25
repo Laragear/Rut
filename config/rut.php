@@ -44,4 +44,19 @@ return [
     */
 
     'uppercase' => true,
+
+    /*
+    |--------------------------------------------------------------------------
+    | Livewire Synthesizer
+    |--------------------------------------------------------------------------
+    |
+    | When using Livewire, this library will register a Synthesizer to handle
+    | serialization of Rut instances back-and-forth the frontend, otherwise
+    | it won't work. You may disable it if you want to register your own.
+    |
+    | @see https://livewire.laravel.com/docs/synthesizers
+    |
+    */
+
+    'synthesizer' => true,
 ];
