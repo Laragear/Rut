@@ -6,7 +6,6 @@ use Illuminate\Database\Connection;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Schema\ColumnDefinition;
 use Illuminate\Database\Schema\Grammars\Grammar;
-
 use function tap;
 
 class RutBlueprintMacrosTest extends TestCase

@@ -15,6 +15,7 @@ use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
 
+use function class_exists;
 use function count;
 use function is_iterable;
 
@@ -170,6 +171,10 @@ class RutServiceProvider extends ServiceProvider
             $this->publishes([static::CONFIG => $this->app->configPath('rut.php')], 'config');
             $this->publishes([static::LANG => $this->app->langPath('vendor/rut')], 'translations');
             $this->publishes([static::STUBS => $this->app->basePath('.stubs/rut.php')], 'phpstorm');
+        }
+
+        if (class_exists(\Livewire\Livewire::class) && $config->get('rut.synthesizer')) {
+            \Livewire\Livewire::propertySynthesizer(Livewire\Synthesizers\RutSynth::class);
         }
     }
 }
