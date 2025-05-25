@@ -742,7 +742,7 @@ Hiding the Primary Key, which is the RUT Number, won't make hide the RUT propert
 
 ## Livewire & Filament
 
-This library comes with some utilities if your application is using [Filament](https://filamentphp.com/), or just [Livewire](https://livewire.laravel.com).
+This library comes with some utilities if your application is using [Filament](https://filamentphp.com/), or just [Livewire](https://livewire.laravel.com). 
 
 ### RUT Synthesizer
 
@@ -795,9 +795,9 @@ public static function table(Table $table)
 ```
 
 > [!TIP]
->
+> 
 > When using `fromRutArray()`, the array is [_spread_](https://wiki.php.net/rfc/spread_operator_for_array) into the Rut constructor. When not using a list array (numeric indexes), then use the `num` and `vd` keys for the RUT Number and Verification Digit in your data source, respectively:
->
+> 
 > ```php
 > $rut = [
 >     'num' => 18765432, 
