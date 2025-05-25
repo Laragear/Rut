@@ -9,7 +9,6 @@ use Laragear\Rut\HasRut;
 use Laragear\Rut\Rut;
 use Laragear\Rut\RutFormat;
 use Tests\TestCase;
-
 use function array_merge;
 
 class RutColumnTest extends TestCase
@@ -30,8 +29,7 @@ class RutColumnTest extends TestCase
 
     protected function model(array $attributes = ['rut_num' => 18765432, 'rut_vd' => 1]): Model
     {
-        return new class($attributes) extends Model
-        {
+        return new class($attributes) extends Model {
             use HasRut;
             protected $guarded = [];
         };
@@ -63,10 +61,9 @@ class RutColumnTest extends TestCase
     {
         $column = (new RutColumn('rut'))->configure()->fromRutArray();
 
-        $column->record(new class extends Model
-        {
+        $column->record(new class extends Model {
             public $attributes = [
-                'rut' => [18765432, 1],
+                'rut' => [18765432, 1]
             ];
         });
 
@@ -77,10 +74,9 @@ class RutColumnTest extends TestCase
     {
         $column = (new RutColumn('rut'))->configure()->fromRutArray();
 
-        $column->record(new class extends Model
-        {
+        $column->record(new class extends Model {
             public $attributes = [
-                'rut' => ['num' => 18765432, 'vd' => 1],
+                'rut' => ['num' => 18765432, 'vd' => 1]
             ];
         });
 
@@ -91,8 +87,7 @@ class RutColumnTest extends TestCase
     {
         $column = (new RutColumn('rut'))->configure()->fromRutNumber();
 
-        $column->record(new class extends Model
-        {
+        $column->record(new class extends Model {
             public $attributes = [
                 'rut' => 50537182,
             ];

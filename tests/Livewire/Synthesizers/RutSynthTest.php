@@ -4,8 +4,10 @@ namespace Tests\Livewire\Synthesizers;
 
 use Laragear\Rut\Livewire\Synthesizers\RutSynth;
 use Laragear\Rut\Rut;
+use Livewire\LivewireServiceProvider;
 use Livewire\Mechanisms\HandleComponents\ComponentContext;
 use Tests\TestCase;
+use function array_merge;
 
 class RutSynthTest extends TestCase
 {

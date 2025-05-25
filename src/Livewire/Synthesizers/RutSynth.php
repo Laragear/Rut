@@ -20,7 +20,7 @@ class RutSynth extends Synth
     public const DEFAULT_KEY = 'rut';
 
     /**
-     * The default key to use for serialization.
+     * The default key to use for serialization
      */
     public static $key = self::DEFAULT_KEY;
 
@@ -37,7 +37,7 @@ class RutSynth extends Synth
      */
     public function hydrate(int|string|null $value): ?Rut
     {
-        if (! $value) {
+        if (!$value) {
             return null;
         }
 
