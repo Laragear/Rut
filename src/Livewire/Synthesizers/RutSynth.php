@@ -22,7 +22,12 @@ class RutSynth extends Synth
     /**
      * The default key to use for serialization.
      */
-    public static $key = self::DEFAULT_KEY;
+    public static string $key = self::DEFAULT_KEY;
+
+    /**
+     * Sets how the RUT should be dehydrated on the frontend.
+     */
+    public static ?RutFormat $format = null;
 
     /**
      * Matches the data object from the backend.
@@ -55,6 +60,6 @@ class RutSynth extends Synth
      */
     public function dehydrate(?Rut $target): array
     {
-        return [$target?->format(RutFormat::Raw), []];
+        return [$target?->format(static::$format), []];
     }
 }

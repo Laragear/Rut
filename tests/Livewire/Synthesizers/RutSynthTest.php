@@ -4,6 +4,7 @@ namespace Tests\Livewire\Synthesizers;
 
 use Laragear\Rut\Livewire\Synthesizers\RutSynth;
 use Laragear\Rut\Rut;
+use Laragear\Rut\RutFormat;
 use Livewire\Mechanisms\HandleComponents\ComponentContext;
 use Tests\TestCase;
 
@@ -13,7 +14,9 @@ class RutSynthTest extends TestCase
     {
         parent::setUp();
 
+        Rut::$format = RutFormat::DEFAULT;
         RutSynth::$key = RutSynth::DEFAULT_KEY;
+        RutSynth::$format = null;
     }
 
     public function test_uses_default_key(): void
@@ -51,8 +54,21 @@ class RutSynthTest extends TestCase
         static::assertEquals($synth->hydrate(143281450), new Rut(14328145, 0));
     }
 
-    public function test_dehydrates_to_raw_string(): void
+    public function test_dehydrates_to_default_format(): void
     {
+        Rut::$format = RutFormat::Basic;
+
+        $synth = new RutSynth(new ComponentContext(null), 'test');
+
+        static::assertSame([null, []], $synth->dehydrate(null));
+        static::assertSame(['14328145-0', []], $synth->dehydrate(new Rut(14328145, 0)));
+    }
+
+    public function test_dehydrates_to_custom_format(): void
+    {
+        Rut::$format = RutFormat::DEFAULT;
+        RutSynth::$format = RutFormat::Raw;
+
         $synth = new RutSynth(new ComponentContext(null), 'test');
 
         static::assertSame([null, []], $synth->dehydrate(null));
