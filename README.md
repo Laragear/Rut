@@ -759,6 +759,21 @@ public function boot()
 }
 ```
 
+By default, the Synthesizer will _dehydrate_ the input value using the [default RUT format](#default-rut-format) set in your application. This means that if a RUT input only contains numbers, after dehydration, the value will be returned using the RUT format of your app.
+
+If you wish to dehydrate using a different format, usually to match the format on the frontend, you may set the `$format` static property to the `RutFormat` of your choice. This will only apply to dehydration.
+
+```php
+use Laragear\Rut\Livewire\Synthesizers\RutSynth;
+use Laragear\Rut\RutFormat;
+
+public function boot()
+{
+    RutSynth::$key = 'my-rut-key';
+    RutSynth::$format = RutFormat::Raw;
+}
+```
+
 ### Filament RUT Column
 
 If you may wish to show a column of RUT inside a Filament Table, you may use the `Laragear\Rut\Filament\Tables\Columns\RutColumn` class. It's based on the native `Filament\Tables\Columns\TextColumn` class, so it supports all its features.
