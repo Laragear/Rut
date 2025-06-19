@@ -359,10 +359,8 @@ class RutScope implements Scope
     {
         return $builder->where(static function (Builder $builder): void {
             $builder->where([
-                // @phpstan-ignore-next-line
-                [$builder->getModel()->getQualifiedRutNumColumn(), '>=', Rut::COMPANY_BASE],
-                // @phpstan-ignore-next-line
-                [$builder->getModel()->getQualifiedRutNumColumn(), '<', Rut::MAX],
+                [$builder->getModel()->getQualifiedRutNumColumn(), '>=', Rut::COMPANY_BASE], // @phpstan-ignore-line
+                [$builder->getModel()->getQualifiedRutNumColumn(), '<', Rut::MAX], // @phpstan-ignore-line
             ]);
         }, null, null, $boolean);
     }
@@ -373,5 +371,46 @@ class RutScope implements Scope
     public static function orWhereRutIsTemporal(Builder $builder): Builder
     {
         return static::whereRutIsTemporal($builder, 'or');
+    }
+
+    /**
+     * Filters the query by RUTs that contain the given number.
+     */
+    public static function whereRutLike(
+        Builder $builder,
+        string $search,
+        string $boolean = 'and',
+        bool $not = false,
+    ): Builder {
+        if ($not) {
+            $boolean .= ' not';
+        }
+
+        // @phpstan-ignore-next-line
+        return $builder->where($builder->getModel()->getQualifiedRutNumColumn(), 'like', "%$search%", $boolean);
+    }
+
+    /**
+     * Filter the query by RUTs that contain the given number or the next condition.
+     */
+    public static function orWhereRutLike(Builder $builder, string $search, bool $not = false): Builder
+    {
+        return static::whereRutLike($builder, $search, 'or', $not);
+    }
+
+    /**
+     * Filter the query by RUTs that does not contain the given numbers.
+     */
+    public static function whereRutNotLike(Builder $builder, string $search, string $boolean = 'and'): Builder
+    {
+        return static::whereRutLike($builder, $search, $boolean, true);
+    }
+
+    /**
+     * Filter the query by RUTs that doesn't contain the given number or the next condition.
+     */
+    public static function orWhereRutNotLike(Builder $builder, string $search, bool $not = false): Builder
+    {
+        return static::whereRutLike($builder, $search, 'or', true);
     }
 }
