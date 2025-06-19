@@ -500,6 +500,70 @@ class HasRutTest extends TestCase
         static::assertCount(2, DummyModel::whereKey(1)->orWhereRutIsTemporal()->get());
     }
 
+    public function test_where_rut_like(): void
+    {
+        $rut = '27451610-0';
+
+        static::assertCount(0, DummyModel::whereRutLike('745161')->get());
+
+        DummyModel::forceCreate([
+            'name' => $rut,
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ]);
+
+        static::assertCount(1, DummyModel::whereRutLike('745161')->get());
+    }
+
+    public function test_or_where_rut_like(): void
+    {
+        $rut = '27451610-0';
+
+        static::assertCount(1, DummyModel::whereKey(1)->orWhereRutLike('745161')->get());
+
+        DummyModel::forceCreate([
+            'name' => $rut,
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ]);
+
+        static::assertCount(2, DummyModel::whereKey(1)->orWhereRutLike('745161')->get());
+    }
+
+    public function test_where_rut_not_like(): void
+    {
+        $rut = '27451610-0';
+
+        static::assertCount(3, DummyModel::whereRutNotLike('745161')->get());
+
+        DummyModel::forceCreate([
+            'name' => $rut,
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ]);
+
+        static::assertCount(3, DummyModel::whereRutNotLike('745161')->get());
+    }
+
+    public function test_or_where_rut_not_like(): void
+    {
+        $rut = '27451610-0';
+
+        static::assertCount(3, DummyModel::whereKey(1)->orWhereRutNotLike('745161')->get());
+
+        DummyModel::forceCreate([
+            'name' => $rut,
+            'email' => "$rut@email.com",
+            'password' => '123456',
+            'rut' => $rut,
+        ]);
+
+        static::assertCount(3, DummyModel::whereKey(1)->orWhereRutNotLike('745161')->get());
+    }
+
     public function test_error_or_where_rut_not_in_invalid_rut(): void
     {
         $this->expectException(EmptyRutException::class);
