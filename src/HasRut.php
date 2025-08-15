@@ -4,9 +4,6 @@ declare(strict_types=1);
 
 namespace Laragear\Rut;
 
-use RuntimeException;
-use function array_key_first;
-use function defined;
 use function is_string;
 
 /**

@@ -17,6 +17,7 @@ use ReflectionClass;
 use ReflectionMethod as Method;
 use RuntimeException;
 use SplFixedArray;
+
 use function count;
 use function get_class;
 use function is_countable;
@@ -159,7 +160,7 @@ class RutScope implements Scope
         }
 
         return $builder->where(
-        // @phpstan-ignore-next-line
+            // @phpstan-ignore-next-line
             $builder->getModel()->getQualifiedRutNumColumn(),
             $not ? '!=' : '=',
             Rut::split($rut)[0],

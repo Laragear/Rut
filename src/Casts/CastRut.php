@@ -8,6 +8,7 @@ use InvalidArgumentException;
 use Laragear\Rut\Rut;
 use Laragear\Rut\RutIn;
 use ValueError;
+
 use function is_string;
 
 class CastRut implements CastsAttributes
@@ -23,7 +24,7 @@ class CastRut implements CastsAttributes
 
         if (isset($attributes[$config->num])) {
             if ($config->vd) {
-                if (!isset($attributes[$config->vd])) {
+                if (! isset($attributes[$config->vd])) {
                     throw new ValueError("The RUT Verification Digit is required for the [$key] key.");
                 }
 
@@ -62,7 +63,6 @@ class CastRut implements CastsAttributes
         return $array;
     }
 
-
     /**
      * Finds the configuration for the RUT attribute of the given key.
      */
@@ -71,7 +71,7 @@ class CastRut implements CastsAttributes
         /** @var \Laragear\Rut\RutIn|string|null $rut */
         $rut = $model->ruts()[$key] ?? null; // @phpstan-ignore-line
 
-        if (!$rut) {
+        if (! $rut) {
             throw new InvalidArgumentException("No RUT set for the [$key] attribute.");
         }
 
