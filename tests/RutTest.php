@@ -7,11 +7,14 @@ use Laragear\Rut\Exceptions\InvalidRutException;
 use Laragear\Rut\Generator;
 use Laragear\Rut\Rut;
 use Laragear\Rut\RutFormat;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function json_encode;
 use function serialize;
+use function strlen;
 use function unserialize;
+use function vsprintf;
 
 class RutTest extends TestCase
 {
@@ -323,12 +326,28 @@ class RutTest extends TestCase
         static::assertSame([99637702, '4'], Rut::split('996377024'));
     }
 
-    public function test_split_throws_exception_if_invalid_string(): void
+    public static function providesInvalidRuts(): array
+    {
+        return [
+            ['0'],
+            ['12'],
+            ['123'],
+            ['1234'],
+            ['12345'],
+            ['123456'],
+            ['1234567'],
+        ];
+    }
+
+    #[DataProvider('providesInvalidRuts')]
+    public function test_split_throws_exception_if_invalid_string(string $characters): void
     {
         $this->expectException(EmptyRutException::class);
-        $this->expectExceptionMessage('The RUT needs at least 7 valid characters, 1 given.');
+        $this->expectExceptionMessage(
+            vsprintf('The RUT needs at least 2 valid characters, %s given.', [strlen($characters)])
+        );
 
-        Rut::split('0');
+        Rut::split($characters);
     }
 
     public function test_math_vd_from_number(): void

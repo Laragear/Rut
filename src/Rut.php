@@ -66,6 +66,16 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     public const TEMPORAL_BASE = 100000000;
 
     /**
+     * The minimum RUT to consider valid. Defaults to "100.000".
+     */
+    public static int $min = self::MIN;
+
+    /**
+     * The maximum RUT to consider valid. Defaults to "200.000.000".
+     */
+    public static int $max = self::MAX;
+
+    /**
      * The default string format for the RUT.
      */
     public static RutFormat $format = RutFormat::DEFAULT;
@@ -345,8 +355,8 @@ class Rut implements JsonSerializable, Stringable, Jsonable
             }
         }
 
-        return $num >= static::MIN
-            && $num <= static::MAX
+        return $num >= static::$min
+            && $num <= static::$max
             && strtoupper((string) $vd) === static::getVd($num);
     }
 
@@ -371,7 +381,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
 
         if (! isset($rut[1])) {
             throw new Exceptions\EmptyRutException(
-                'The RUT needs at least 7 valid characters, '.strlen($string).' given.'
+                'The RUT to split needs at least 2 valid characters, '.strlen($string).' given.'
             );
         }
 
@@ -381,6 +391,7 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     /**
      * Returns the Verification Digit from a RUT number.
      *
+     * @param  int  $num
      * @return "1"|"2"|"3"|"4"|"5"|"6"|"7"|"8"|"9"|"0"|"K"
      */
     public static function getVd(int $num): string

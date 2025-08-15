@@ -4,7 +4,10 @@ declare(strict_types=1);
 
 namespace Laragear\Rut;
 
+use RuntimeException;
+use function array_key_first;
 use function defined;
+use function is_string;
 
 /**
  * @method \Illuminate\Database\Eloquent\Collection|static[]|static|null findRut(iterable|int|string|\Illuminate\Contracts\Support\Arrayable|\Laragear\Rut\Rut $rut, array|string $columns = ['*'])
@@ -35,8 +38,6 @@ use function defined;
  * @method \Illuminate\Database\Eloquent\Builder<static> orWhereRutLike(string $search, bool $not = false)
  * @method \Illuminate\Database\Eloquent\Builder<static> whereRutNotLike(string $search, string $boolean = 'and')
  * @method \Illuminate\Database\Eloquent\Builder<static> orWhereRutNotLike(string $search)
- *
- * @property-read \Laragear\Rut\Rut $rut
  */
 trait HasRut
 {
@@ -57,56 +58,33 @@ trait HasRut
      */
     public function initializeHasRut(): void
     {
-        $this->mergeCasts(['rut' => Casts\CastRut::class]);
-
-        if ($this->shouldAppendRut()) {
-            $this->append('rut');
-
-            if ($this->shouldShowPrimaryKeyIfIsRutNum()) {
-                $this->makeHidden($this->getRutVdColumn());
-            } else {
-                $this->makeHidden($this->getRutNumColumn(), $this->getRutVdColumn());
+        foreach ($this->ruts() as $attribute => $rut) {
+            if (is_string($rut)) {
+                [$attribute, $rut] = [$rut, RutIn::fromString($rut)];
             }
+
+            $this->mergeCasts([$attribute => Casts\CastRut::class]);
+
+            if ($rut->isAppendable) {
+                $this->append($attribute);
+            }
+
+            // If the visibility is not set, it's hiding columns except when is the primary key.
+            $rut->isShowingColumns ?? $this->getKeyName() === $attribute
+                ? $this->makeVisible($rut->num, $rut->vd)
+                : $this->makeHidden($rut->num, $rut->vd);
         }
     }
 
     /**
-     * If the `rut` key should be appended, while hiding the underlying RUT columns.
+     * Returns the attributes that should receive a RUT, mapped to the corresponding column.
+     *
+     * @return (\Laragear\Rut\RutIn|string)[]
      */
-    public function shouldAppendRut(): bool
+    public function ruts(): array
     {
-        return true;
-    }
-
-    /**
-     * If the primary key of the model should be hidden if it's the RUT Num.
-     */
-    public function shouldShowPrimaryKeyIfIsRutNum(): bool
-    {
-        return $this->getKeyName() === $this->getRutNumColumn();
-    }
-
-    /**
-     * Get the name of the "rut number" column.
-     */
-    public function getRutNumColumn(): string
-    {
-        return defined(static::class.'::RUT_NUM') ? static::RUT_NUM : 'rut_num';
-    }
-
-    /**
-     * Get the name of the "rut verification digit" column.
-     */
-    public function getRutVdColumn(): string
-    {
-        return defined(static::class.'::RUT_VD') ? static::RUT_VD : 'rut_vd';
-    }
-
-    /**
-     * Get the fully qualified "rut number" column.
-     */
-    public function getQualifiedRutNumColumn(): string
-    {
-        return $this->qualifyColumn($this->getRutNumColumn());
+        return [
+            'rut',
+        ];
     }
 }

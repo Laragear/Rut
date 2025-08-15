@@ -12,14 +12,16 @@ use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Scope;
 use Illuminate\Support\Collection as BaseCollection;
 use Laragear\Rut\Rut;
+use Laragear\Rut\RutIn;
 use ReflectionClass;
 use ReflectionMethod as Method;
+use RuntimeException;
 use SplFixedArray;
-
 use function count;
 use function get_class;
 use function is_countable;
 use function is_iterable;
+use function vsprintf;
 
 /**
  * @internal
@@ -157,7 +159,7 @@ class RutScope implements Scope
         }
 
         return $builder->where(
-            // @phpstan-ignore-next-line
+        // @phpstan-ignore-next-line
             $builder->getModel()->getQualifiedRutNumColumn(),
             $not ? '!=' : '=',
             Rut::split($rut)[0],
@@ -209,14 +211,35 @@ class RutScope implements Scope
             return Rut::split($rut)[0];
         });
 
-        // @phpstan-ignore-next-line
-        return $builder->whereIn(
-            // @phpstan-ignore-next-line
-            $builder->getModel()->getQualifiedRutNumColumn(),
-            $ruts,
-            $boolean,
-            $not,
-        );
+        [$model, $attributes] = static::getModelAndRutAttributes($builder);
+
+        foreach ($attributes as $rut) {
+            $builder->whereIn($model->qualifyColumn($rut->num), $ruts, $boolean, $not); // @phpstan-ignore-line
+            // Let it find a record even if the first query does not match.
+            $boolean = 'or';
+        }
+
+        return $builder;
+    }
+
+    /**
+     * Returns the model and the collection of queryable RUT attributes.
+     *
+     * @return array{\Illuminate\Database\Eloquent\Model, \Illuminate\Support\Collection<string, \Laragear\Rut\RutIn>}
+     */
+    protected static function getModelAndRutAttributes(Builder $query): array
+    {
+        $model = $query->getModel();
+
+        $attributes = BaseCollection::make($model->ruts())->filter(static function (RutIn $in): bool {
+            return $in->isQueryable;
+        });
+
+        if ($attributes->isEmpty()) {
+            throw new RuntimeException(vsprintf('No queryable RUTS found for model [%s].', [get_class($model)]));
+        }
+
+        return [$model, $attributes];
     }
 
     /**
@@ -248,8 +271,13 @@ class RutScope implements Scope
      */
     public static function whereRutIsPerson(Builder $builder, string $boolean = 'and'): Builder
     {
-        // @phpstan-ignore-next-line
-        return $builder->where($builder->getModel()->getQualifiedRutNumColumn(), '<', Rut::INVESTOR_BASE, $boolean);
+        [$model, $attributes] = static::getModelAndRutAttributes($builder);
+
+        foreach ($attributes as $rut) {
+            $builder->where($model->qualifyColumn($rut->num), '<', Rut::INVESTOR_BASE, $boolean);
+        }
+
+        return $builder;
     }
 
     /**
@@ -266,12 +294,14 @@ class RutScope implements Scope
     public static function whereRutIsInvestor(Builder $builder, string $boolean = 'and'): Builder
     {
         return $builder->where(static function (Builder $builder): void {
-            $builder->where([
-                // @phpstan-ignore-next-line
-                [$builder->getModel()->getQualifiedRutNumColumn(), '>=', Rut::INVESTOR_BASE],
-                // @phpstan-ignore-next-line
-                [$builder->getModel()->getQualifiedRutNumColumn(), '<', Rut::INVESTMENT_COMPANY_BASE],
-            ]);
+            [$model, $attributes] = static::getModelAndRutAttributes($builder);
+
+            foreach ($attributes as $rut) {
+                $builder->where(
+                    [$model->qualifyColumn($rut->num), '>=', Rut::INVESTOR_BASE],
+                    [$model->qualifyColumn($rut->num), '<', Rut::INVESTMENT_COMPANY_BASE],
+                );
+            }
         }, null, null, $boolean);
     }
 
@@ -289,12 +319,14 @@ class RutScope implements Scope
     public static function whereRutIsInvestmentCompany(Builder $builder, string $boolean = 'and'): Builder
     {
         return $builder->where(static function (Builder $builder): void {
-            $builder->where([
-                // @phpstan-ignore-next-line
-                [$builder->getModel()->getQualifiedRutNumColumn(), '>=', Rut::INVESTMENT_COMPANY_BASE],
-                // @phpstan-ignore-next-line
-                [$builder->getModel()->getQualifiedRutNumColumn(), '<', Rut::CONTINGENCY_BASE],
-            ]);
+            [$model, $attributes] = static::getModelAndRutAttributes($builder);
+
+            foreach ($attributes as $rut) {
+                $builder->where(
+                    [$model->qualifyColumn($rut->num), '>=', Rut::INVESTMENT_COMPANY_BASE],
+                    [$model->qualifyColumn($rut->num), '<', Rut::CONTINGENCY_BASE],
+                );
+            }
         }, null, null, $boolean);
     }
 
@@ -312,12 +344,14 @@ class RutScope implements Scope
     public static function whereRutIsContingency(Builder $builder, string $boolean = 'and'): Builder
     {
         return $builder->where(static function (Builder $builder): void {
-            $builder->where([
-                // @phpstan-ignore-next-line
-                [$builder->getModel()->getQualifiedRutNumColumn(), '>=', Rut::CONTINGENCY_BASE],
-                // @phpstan-ignore-next-line
-                [$builder->getModel()->getQualifiedRutNumColumn(), '<', Rut::COMPANY_BASE],
-            ]);
+            [$model, $attributes] = static::getModelAndRutAttributes($builder);
+
+            foreach ($attributes as $rut) {
+                $builder->where(
+                    [$model->qualifyColumn($rut->num), '>=', Rut::CONTINGENCY_BASE],
+                    [$model->qualifyColumn($rut->num), '<', Rut::COMPANY_BASE],
+                );
+            }
         }, null, null, $boolean);
     }
 
@@ -335,12 +369,14 @@ class RutScope implements Scope
     public static function whereRutIsCompany(Builder $builder, string $boolean = 'and'): Builder
     {
         return $builder->where(static function (Builder $builder): void {
-            $builder->where([
-                // @phpstan-ignore-next-line
-                [$builder->getModel()->getQualifiedRutNumColumn(), '>=', Rut::COMPANY_BASE],
-                // @phpstan-ignore-next-line
-                [$builder->getModel()->getQualifiedRutNumColumn(), '<', Rut::TEMPORAL_BASE],
-            ]);
+            [$model, $attributes] = static::getModelAndRutAttributes($builder);
+
+            foreach ($attributes as $rut) {
+                $builder->where(
+                    [$model->qualifyColumn($rut->num), '>=', Rut::COMPANY_BASE],
+                    [$model->qualifyColumn($rut->num), '<', Rut::TEMPORAL_BASE],
+                );
+            }
         }, null, null, $boolean);
     }
 
@@ -358,10 +394,14 @@ class RutScope implements Scope
     public static function whereRutIsTemporal(Builder $builder, string $boolean = 'and'): Builder
     {
         return $builder->where(static function (Builder $builder): void {
-            $builder->where([
-                [$builder->getModel()->getQualifiedRutNumColumn(), '>=', Rut::COMPANY_BASE], // @phpstan-ignore-line
-                [$builder->getModel()->getQualifiedRutNumColumn(), '<', Rut::MAX], // @phpstan-ignore-line
-            ]);
+            [$model, $attributes] = static::getModelAndRutAttributes($builder);
+
+            foreach ($attributes as $rut) {
+                $builder->where(
+                    [$model->qualifyColumn($rut->num), '>=', Rut::COMPANY_BASE],
+                    [$model->qualifyColumn($rut->num), '<', Rut::MAX],
+                );
+            }
         }, null, null, $boolean);
     }
 
@@ -386,8 +426,13 @@ class RutScope implements Scope
             $boolean .= ' not';
         }
 
-        // @phpstan-ignore-next-line
-        return $builder->where($builder->getModel()->getQualifiedRutNumColumn(), 'like', "%$search%", $boolean);
+        [$model, $attributes] = static::getModelAndRutAttributes($builder);
+
+        foreach ($attributes as $rut) {
+            $builder->where($model->qualifyColumn($rut->num), 'like', "%$search%", $boolean);
+        }
+
+        return $builder;
     }
 
     /**
@@ -409,8 +454,8 @@ class RutScope implements Scope
     /**
      * Filter the query by RUTs that doesn't contain the given number or the next condition.
      */
-    public static function orWhereRutNotLike(Builder $builder, string $search, bool $not = false): Builder
+    public static function orWhereRutNotLike(Builder $builder, string $search, bool $not = true): Builder
     {
-        return static::whereRutLike($builder, $search, 'or', true);
+        return static::whereRutLike($builder, $search, 'or', $not);
     }
 }

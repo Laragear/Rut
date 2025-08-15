@@ -580,9 +580,7 @@ $children = $request->rut('children');
 
 ## RUT traits for Eloquent Models
 
-This package contains the `HasRut` trait to use in Laravel Eloquent Models with tables that have separate RUT Number and RUT Verification digit. 
-
-This trait conveniently adds a RUT Scope to a model that has a RUT in its columns, and the `rut` property which returns a `Rut` instance.
+This package includes the `Laragear\Rut\HasRut` trait to handle RUTs in your Eloquent Model, no matter how it treats your RUT. It includes [local scopes](#included-local-scopes), and it will automatically [cast](https://laravel.com/docs/eloquent-mutators#attribute-casting) the `rut` attribute to a `Laragear\Rut\Rut` instance.
 
 ```php
 <?php
@@ -592,15 +590,28 @@ namespace App\Models;
 use Laragear\Rut\HasRut;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
+/**
+ * @property \Laragear\Rut\Rut $rut 
+ */
 class User extends Authenticatable
 {
     use HasRut;
     
     // ...
 }
+
+$user = User::find(1);
+
+echo $user->rut; // "20.490.006-K"
 ```
 
-With that, you will have access to convenient RUT queries shorthands:
+By default, it assumes your model uses the `rut` attribute, and both `rut_num` and `rut_vd` columns to store the RUT Number and Verification Digit, respectively. This is the most common case, but can be changed.
+
+### Included Local Scopes
+
+This trait also adds a multiple RUT [local scopes](https://laravel.com/docs/12.x/eloquent#local-scopes) to a model that has a RUT in its columns, and the `rut` property which returns a `Rut` instance.
+
+When using the `Laragear\Rut\HasRut` trait in your model, you will have access to convenient RUT local scopes:
 
 | Method name             | Description                                                                          |
 |-------------------------|--------------------------------------------------------------------------------------|
@@ -627,9 +638,9 @@ With that, you will have access to convenient RUT queries shorthands:
 
 > [!IMPORTANT]
 > 
-> These RUT queries work over the RUT Number for convenience, as the RUT Verification Digit should be verified only on persistence.
+> These RUT scopes work over the RUT Number column for convenience, as the RUT Verification Digit should be verified only on persistence.
 
-These scopes can be used in your queries easily:
+These scopes can be used in your queries easily as with any local scope:
 
 ```php
 use App\Models\User;
@@ -637,28 +648,87 @@ use App\Models\User;
 $user = User::whereRut('20490006-K')->where('is_active', true)->find();
 ```
 
-The `rut` property is dynamically created from the RUT Number and RUT Verification Digit columns, which uses a [Cast](https://laravel.com/docs/eloquent-mutators#attribute-casting) underneath.
+These scopes will query all the _queryable_ ruts of your model, if [you have set more than one](#setting-more-than-one-rut-attribute);
+
+### Setting more than one RUT attribute
+
+If your model is using more than one RUT attribute, you may override the `ruts()` method of your model. It should return an array of `Laragear\Rut\RutIn` instances for each attribute, and configure how these attributes should be treated.
 
 ```php
-echo $user->rut; // "20490006-K"
-```
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Laragear\Rut\HasRut;use Laragear\Rut\RutIn;
 
-#### Setting the RUT columns
-
-By convention, the trait uses `rut_num` and `rut_vd` as the default columns to retrieve and save the RUT Number and RUT Verification Digit, respectively.
-
-You can easily change it to anything your database is working with for the given Model:
-
-```php
+/**
+ * @property \Laragear\Rut\Rut $rut 
+ * @property \Laragear\Rut\Rut $business_rut 
+ */
 class User extends Authenticatable
 {
     use HasRut;
     
-    protected const RUT_NUM = 'numero_rut';
-    protected const RUT_VD = 'digito_rut';
-    
-    // ...    
+    public function ruts() : array
+    {
+        return [
+            'rut' => RutIn::columns('rut_num', 'rut_vd')->queryable()->append(),
+            'business_rut' => RutIn::columns('business_rut_num'),
+        ]
+    }    
 }
+```
+
+The `columns()` static method expects a RUT Number and RUT Verification Digit columns names, but you may also use only the first if you want the Verification Digit to be calculated on demand.
+
+```php
+use Laragear\Rut\RutIn;
+
+return [
+    'rut' => RutIn::column('rut_num'),
+]
+```
+
+### Excluding RUT from local scope querying
+
+By default, RUTs are not queried through the [included local scopes](#included-local-scopes), even if these are part of the primary key. If you want the RUT to be queryable with the local scopes, you may use the `queryable()` method of the `RutIn` instance.
+
+```php
+use Laragear\Rut\RutIn;
+
+return [
+    'rut' => RutIn::columns('rut_num', 'rut_vd')->queryable(),
+]
+```
+
+When multiple _queryable_ RUT attribute are present, the local scopes will query the relevant columns, unless you don't use the `queryable()` method on these.
+
+```php
+use Laragear\Rut\RutIn;
+
+return [
+    'rut' => RutIn::columns('rut_num', 'rut_vd')->queryable(),
+    'business_rut' => RutIn::columns('business_rut_num'),
+]
+```
+
+### RUT Appending
+
+By default, RUTs are not queried through the [included local scopes](#included-local-scopes), nor appended, but you may set them to do so using the `query()` and `append()` methods.
+
+```php
+use Laragear\Rut\RutIn;
+
+return [
+    'rut' => RutIn::column('rut_num')->queryable()->append(),
+]
+```
+
+Because the RUT attribute is be redundant when the RUT columns are visible, the attribute will automatically hide these from serialization, except when the RUT Number columns is the primary column of your model. If you want to show these columns regardless, you may use `showColumns()`.
+
+```php
+use Laragear\Rut\RutIn;
+
+return [
+    'rut' => RutIn::column('id')->showColumns(),
+]
 ```
 
 #### RUT Appended and columns hidden
