@@ -29,8 +29,8 @@
         "illuminate/support": "11.*|12.*"
     },
     "require-dev": {
-        "orchestra/testbench": "9.*|10.*",
-        "livewire/livewire": "3.*|4.*",
+        "orchestra/testbench": "^9.16|10.*",
+        "livewire/livewire": "3.*|4.*|5.*",
         "filament/forms": "4.*|5.*",
         "filament/tables": "4.*|5.*"
     },
