@@ -53,6 +53,7 @@ jobs:
           - 8.2
           - 8.3
           - 8.4
+          - 8.5
         laravel-constraint:
           - 11.*
           - 12.*
@@ -62,6 +63,8 @@ jobs:
         exclude:
           - php-version: 8.2
             laravel-constraint: 12.*
+          - php-version: 8.5
+            laravel-constraint: 11.*
 
     steps:
       - name: Set up PHP
