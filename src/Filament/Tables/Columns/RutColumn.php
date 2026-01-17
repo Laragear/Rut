@@ -6,6 +6,7 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Arr;
 use Laragear\Rut\Rut;
 use Laragear\Rut\RutFormat;
+use function array_values;
 
 class RutColumn extends TextColumn
 {
@@ -75,7 +76,7 @@ class RutColumn extends TextColumn
             }
 
             $data = match ($column->getFromRutData()) {
-                'array' => new Rut(...Arr::wrap($data)),
+                'array' => new Rut(...array_values(Arr::wrap($data))),
                 'int' => Rut::fromNum($data),
                 default => Rut::parse($data),
             };

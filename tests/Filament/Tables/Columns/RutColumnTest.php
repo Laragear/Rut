@@ -2,14 +2,16 @@
 
 namespace Tests\Filament\Tables\Columns;
 
+use Filament\Tables\Contracts\HasTable;
+use Filament\Tables\Table;
 use Filament\Tables\TablesServiceProvider;
 use Illuminate\Database\Eloquent\Model;
 use Laragear\Rut\Filament\Tables\Columns\RutColumn;
 use Laragear\Rut\HasRut;
 use Laragear\Rut\Rut;
 use Laragear\Rut\RutFormat;
+use Mockery;
 use Tests\TestCase;
-
 use function array_merge;
 
 class RutColumnTest extends TestCase
@@ -37,33 +39,44 @@ class RutColumnTest extends TestCase
         };
     }
 
+    protected function rutColumn(string $name = 'rut')
+    {
+        $hasTable = Mockery::mock(HasTable::class);
+        $hasTable->expects('getTableRecordKey')->andReturn(1)->atLeast()->once();
+
+        $table = Mockery::mock(Table::class);
+        $table->expects('getLivewire')->andReturn($hasTable)->atLeast()->once();
+
+        $column = (new RutColumn($name));
+        $column->table($table);
+        $column->configure();
+
+        return $column;
+    }
+
     public function test_returns_null_if_rut_is_empty(): void
     {
-        $column = (new RutColumn('rut'))->configure();
-
-        static::assertNull($column->record($this->model(['rut_num' => null, 'rut_vd' => 1]))->getState());
-        static::assertNull($column->record($this->model(['rut_num' => 18765432, 'rut_vd' => null]))->getState());
+        static::assertNull(
+            $this->rutColumn()->record($this->model(['rut_num' => 18765432, 'rut_vd' => null]))->getState()
+        );
+        static::assertNull(
+            $this->rutColumn()->record($this->model(['rut_num' => null, 'rut_vd' => 1]))->getState()
+        );
     }
 
     public function test_returns_null_if_the_attribute_is_null(): void
     {
-        $column = (new RutColumn('invalid'))->configure();
-
-        static::assertNull($column->record($this->model())->getState());
+        static::assertNull($this->rutColumn('invalid')->record($this->model())->getState());
     }
 
     public function test_uses_rut_instance_by_default(): void
     {
-        $column = (new RutColumn('rut'))->configure();
-
-        static::assertSame('18.765.432-1', $column->record($this->model())->getState());
+        static::assertSame('18.765.432-1', $this->rutColumn()->record($this->model())->getState());
     }
 
     public function test_uses_from_array_as_list(): void
     {
-        $column = (new RutColumn('rut'))->configure()->fromRutArray();
-
-        $column->record(new class extends Model
+        $column = $this->rutColumn()->fromRutArray()->record(new class() extends Model
         {
             public $attributes = [
                 'rut' => [18765432, 1],
@@ -75,7 +88,7 @@ class RutColumnTest extends TestCase
 
     public function test_uses_from_array_with_keys(): void
     {
-        $column = (new RutColumn('rut'))->configure()->fromRutArray();
+        $column = $this->rutColumn()->fromRutArray();
 
         $column->record(new class extends Model
         {
@@ -89,7 +102,7 @@ class RutColumnTest extends TestCase
 
     public function test_uses_from_rut_number(): void
     {
-        $column = (new RutColumn('rut'))->configure()->fromRutNumber();
+        $column = $this->rutColumn()->fromRutNumber();
 
         $column->record(new class extends Model
         {
@@ -103,14 +116,14 @@ class RutColumnTest extends TestCase
 
     public function test_uses_raw_format(): void
     {
-        $column = (new RutColumn('rut'))->configure()->record($this->model());
+        $column = $this->rutColumn()->record($this->model());
 
         static::assertSame('187654321', $column->formatAsRaw()->getState());
     }
 
     public function test_uses_basic_format(): void
     {
-        $column = (new RutColumn('rut'))->configure()->record($this->model());
+        $column = $this->rutColumn()->record($this->model());
 
         static::assertSame('18765432-1', $column->formatAsBasic()->getState());
     }
@@ -119,7 +132,7 @@ class RutColumnTest extends TestCase
     {
         Rut::$format = RutFormat::Raw;
 
-        $column = (new RutColumn('rut'))->configure()->record($this->model());
+        $column = $this->rutColumn()->record($this->model());
 
         static::assertSame('18.765.432-1', $column->formatAsStrict()->getState());
     }
