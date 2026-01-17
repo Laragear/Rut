@@ -12,6 +12,7 @@ use Laragear\Rut\Rut;
 use Laragear\Rut\RutFormat;
 use Mockery;
 use Tests\TestCase;
+
 use function array_merge;
 
 class RutColumnTest extends TestCase

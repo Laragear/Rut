@@ -6,6 +6,7 @@ use Filament\Tables\Columns\TextColumn;
 use Illuminate\Support\Arr;
 use Laragear\Rut\Rut;
 use Laragear\Rut\RutFormat;
+
 use function array_values;
 
 class RutColumn extends TextColumn
