@@ -22,7 +22,7 @@ class ValidatesRut
      *
      * This list is "flipped" for faster checks. To un-flip it, use the "dummies()" static method.
      *
-     * @const string[]
+     * @const array<int,true>
      */
     public const DUMMY_RUTS = [
         177777 => true,
@@ -56,7 +56,7 @@ class ValidatesRut
     /**
      * Active list of dummy RUTs as [RUT number => true].
      *
-     * @var array<string,true>
+     * @var array<int,true>
      */
     protected static array $dummies = self::DUMMY_RUTS;
 
@@ -74,6 +74,7 @@ class ValidatesRut
      */
     public static function dummies(): Collection
     {
+        // @phpstan-ignore-next-line
         return Collection::make(static::$dummies)->map(static function (true $value, int $num): Rut {
             return Rut::fromNum($num);
         })->values();
