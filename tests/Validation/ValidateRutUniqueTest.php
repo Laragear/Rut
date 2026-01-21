@@ -2,7 +2,6 @@
 
 namespace Tests\Validation;
 
-use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Laragear\Rut\Rut;
