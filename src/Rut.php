@@ -313,7 +313,9 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     public static function parse(self|string|int|null $rut): static
     {
         // No need to parse a Rut that is already a Rut object.
-        return $rut instanceof static ? $rut : new static(...static::split($rut));
+        return $rut instanceof static
+            ? new static($rut->num, $rut->vd)
+            : new static(...static::split($rut));
     }
 
     /**
