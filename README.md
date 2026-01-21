@@ -211,8 +211,6 @@ php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="t
 This checks if the RUT being passed is a valid RUT string. This automatically **cleans the RUT** from anything except numbers and the verification digit. Only then it checks if the resulting RUT is mathematically valid.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -237,8 +235,6 @@ This may come handy in situations when the user presses a wrong button into an R
 The rule also accepts an `array` of RUTs. In that case, `rut` will succeed if all the RUTs are valid. This may come in handy when a user is registering a lot of people into your application.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -265,8 +261,6 @@ This works the same as `rut`, but it will validate RUTs that are also using the 
 It will return `false` even if there is one misplaced character or an invalid one.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -289,8 +283,6 @@ echo $validator->passes(); // false
 This rule also accepts an `array` of RUTs. In that case, `rut_strict` will return true if all the RUTs are properly formatted and valid.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -311,8 +303,6 @@ For this to work you need to set the table to look for, the *RUT number* column 
 This rule automatically validates the RUT before doing the query.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -329,8 +319,6 @@ Since this also checks if the RUT is valid (not strict), it will fail if it's no
 To customize the query, you can use the `Rule` class of Laravel with the method `rutExists`. Note that you can input the number and verification digit columns, or both, if you don't want to let the rule guess them, as it may incorrectly guess when using a wildcard.
  
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -360,8 +348,6 @@ This validation rule checks if only the number of the RUT exists, without taking
 This rule automatically validates the RUT before doing the query.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -376,8 +362,6 @@ echo $validator->passes(); // false
 You can customize the underlying query using the `numExists`. 
  
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -400,8 +384,6 @@ This works the same as the `rut_exists` rule, but instead of checking if the RUT
 This rule automatically validates the RUT before doing the query.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -416,8 +398,6 @@ echo $validator->passes(); // false
 You can also exclude a certain ID or records from the Unique validation. For this, you need to use the `Rule` class.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -448,8 +428,6 @@ This rule will check only if the **number** of the RUT doesn't exists already in
 This rule automatically validates the RUT before doing the query.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -464,8 +442,6 @@ echo $validator->passes(); // false
 You can also exclude a certain ID or records from the Unique validation. For this, you need to use the `Rule` class.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -504,8 +480,6 @@ return [
 With this enabled, dummy RUTs like `22.222.222-2` will be declared as invalid, even if these are mathematically correct, even if it exists or is unique.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -638,8 +612,6 @@ This package contains the `HasRut` trait to use in Laravel Eloquent Models with 
 This trait conveniently adds a RUT Scope to a model that has a RUT in its columns, and the `rut` property which returns a `Rut` instance.
 
 ```php
-<?php
-
 namespace App\Models;
 
 use Laragear\Rut\HasRut;
