@@ -467,7 +467,7 @@ echo $validator->passes(); // false
 
 ### Dummy RUTs Blacklist
 
-It's highly probably you will use dummy RUTs like `11.111.111-1` or `88.888.888-8` while developing your application. While these are totally acceptable and valid, it's safer to _blacklist_ them on production. To do that, set the [`blacklist_dummy_ruts` configuration to true](#blacklist-dummy-ruts). 
+It's highly probable that you will use dummy RUTs like `11.111.111-1` or `88.888.888-8` while developing your application. While these are totally acceptable and valid, it's safer to _blacklist_ them on production. To do that, set the [`blacklist_dummy_ruts` configuration to true](#blacklist-dummy-ruts). 
 
 The best way to do it is to enable the blocklist automatically on production environments: 
 
@@ -477,7 +477,7 @@ return [
 ]
 ```
 
-With this enabled, dummy RUTs like `22.222.222-2` will be declared as invalid, even if these are mathematically correct, even if it exists or is unique.
+With this enabled, dummy RUTs like `22.222.222-2` will be declared as invalid when trying to validating it, even if these are mathematically correct. For example, when checking if the RUT exists, it will be marked as invalid before even hitting the database.
 
 ```php
 use Illuminate\Support\Facades\Validator;
@@ -485,13 +485,13 @@ use Illuminate\Support\Facades\Validator;
 $validator = Validator::make([
     'rut' => '22.222.222-2'
 ], [
-    'rut' => 'rut_strict'
+    'rut' => 'rut_exists:users'
 ]);
 
 echo $validator->passes(); // false
 ```
 
-### Modifying the blacklist
+#### Modifying the blacklist
 
 The blacklist of dummy RUTs resides in [`Laragear\Rut\ValidatesRut::DUMMY_RUTS`](src/ValidatesRut.php). If you're not happy with the default list, you may alter it through the `setDummies()` static method that will replace the entire list with the one you set.
 
@@ -514,7 +514,7 @@ ValidatesRut::setDummies();
 
 > [!IMPORTANT]
 > 
-> When adding dummies, there will be no check for Verification Digit validity. Since the RUT number is extracted, an invalid RUT added will be corrected when retrieved using `dummies()`. 
+> When adding dummies, there will be no check for Verification Digit validity. Since only the RUT number is needed for verification, an invalid RUT added will be corrected when retrieved using `dummies()`. 
 
 ## Database Blueprint helper
 
