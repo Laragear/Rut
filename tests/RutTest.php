@@ -266,6 +266,16 @@ class RutTest extends TestCase
         static::assertTrue($rut->isEqual(unserialize($serialized)));
     }
 
+    public function test_parses_instance_creating_new_instance(): void
+    {
+        $first = new Rut(99637702, 4);
+
+        $second = Rut::parse($first);
+
+        static::assertEquals($first, $second);
+        static::assertNotSame($first, $second);
+    }
+
     public function test_parses_string(): void
     {
         $rut = Rut::parse('996377024');
