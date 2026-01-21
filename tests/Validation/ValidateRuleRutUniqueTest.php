@@ -3,9 +3,13 @@
 namespace Tests\Validation;
 
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laragear\Rut\Rut;
+use Laragear\Rut\ValidatesRut;
+use Orchestra\Testbench\Attributes\WithConfig;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\PreparesDatabase;
 use Tests\TestCase;
 
@@ -101,5 +105,23 @@ class ValidateRuleRutUniqueTest extends TestCase
         ]);
 
         static::assertEquals('The rut has already been taken.', $validator->getMessageBag()->first('rut'));
+    }
+
+    public static function providesDummyRut(): array
+    {
+        return ValidatesRut::dummies()->map(Arr::wrap(...))->toArray();
+    }
+
+    #[WithConfig('rut.blacklist_dummy_ruts', true)]
+    #[DataProvider('providesDummyRut')]
+    public function test_validation_rule_fails_if_blacklisted(Rut $dummyRut): void
+    {
+        $validator = Validator::make([
+            'rut' => $dummyRut->format(),
+        ], [
+            'rut' => Rule::rutUnique('testing.users', 'rut_num', 'rut_vd'),
+        ]);
+
+        static::assertTrue($validator->fails());
     }
 }

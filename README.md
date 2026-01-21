@@ -211,8 +211,6 @@ php artisan vendor:publish --provider="Laragear\Rut\RutServiceProvider" --tag="t
 This checks if the RUT being passed is a valid RUT string. This automatically **cleans the RUT** from anything except numbers and the verification digit. Only then it checks if the resulting RUT is mathematically valid.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -237,8 +235,6 @@ This may come handy in situations when the user presses a wrong button into an R
 The rule also accepts an `array` of RUTs. In that case, `rut` will succeed if all the RUTs are valid. This may come in handy when a user is registering a lot of people into your application.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -265,8 +261,6 @@ This works the same as `rut`, but it will validate RUTs that are also using the 
 It will return `false` even if there is one misplaced character or an invalid one.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -289,8 +283,6 @@ echo $validator->passes(); // false
 This rule also accepts an `array` of RUTs. In that case, `rut_strict` will return true if all the RUTs are properly formatted and valid.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -311,8 +303,6 @@ For this to work you need to set the table to look for, the *RUT number* column 
 This rule automatically validates the RUT before doing the query.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -329,8 +319,6 @@ Since this also checks if the RUT is valid (not strict), it will fail if it's no
 To customize the query, you can use the `Rule` class of Laravel with the method `rutExists`. Note that you can input the number and verification digit columns, or both, if you don't want to let the rule guess them, as it may incorrectly guess when using a wildcard.
  
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -360,8 +348,6 @@ This validation rule checks if only the number of the RUT exists, without taking
 This rule automatically validates the RUT before doing the query.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -376,8 +362,6 @@ echo $validator->passes(); // false
 You can customize the underlying query using the `numExists`. 
  
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -400,8 +384,6 @@ This works the same as the `rut_exists` rule, but instead of checking if the RUT
 This rule automatically validates the RUT before doing the query.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -416,8 +398,6 @@ echo $validator->passes(); // false
 You can also exclude a certain ID or records from the Unique validation. For this, you need to use the `Rule` class.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -448,8 +428,6 @@ This rule will check only if the **number** of the RUT doesn't exists already in
 This rule automatically validates the RUT before doing the query.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 
 $validator = Validator::make([
@@ -464,8 +442,6 @@ echo $validator->passes(); // false
 You can also exclude a certain ID or records from the Unique validation. For this, you need to use the `Rule` class.
 
 ```php
-<?php
-
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 
@@ -488,6 +464,57 @@ echo $validator->passes(); // false
 > [!CAUTION]
 >
 > **You should never pass any user controlled request input into the ignore method. Instead, you should only pass a system generated unique ID such as an auto-incrementing ID or UUID from an Eloquent model instance. Otherwise, your application will be vulnerable to an SQL injection attack.**
+
+### Dummy RUTs Blacklist
+
+It's highly probably you will use dummy RUTs like `11.111.111-1` or `88.888.888-8` while developing your application. While these are totally acceptable and valid, it's safer to _blacklist_ them on production. To do that, set the [`blacklist_dummy_ruts` configuration to true](#blacklist-dummy-ruts). 
+
+The best way to do it is to enable the blocklist automatically on production environments: 
+
+```php
+return [
+    'blacklist_dummy_ruts' => env('APP_ENV') === 'production'
+]
+```
+
+With this enabled, dummy RUTs like `22.222.222-2` will be declared as invalid, even if these are mathematically correct, even if it exists or is unique.
+
+```php
+use Illuminate\Support\Facades\Validator;
+
+$validator = Validator::make([
+    'rut' => '22.222.222-2'
+], [
+    'rut' => 'rut_strict'
+]);
+
+echo $validator->passes(); // false
+```
+
+### Modifying the blacklist
+
+The blacklist of dummy RUTs resides in [`Laragear\Rut\ValidatesRut::DUMMY_RUTS`](src/ValidatesRut.php). If you're not happy with the default list, you may alter it through the `setDummies()` static method that will replace the entire list with the one you set.
+
+```php
+use Laragear\Rut\ValidatesRut;
+
+ValidatesRut::setDummies([
+    '24.000.000-8',
+    // ...
+]);
+```
+
+If you want to go back to the original list, just call `setDummies()` without parameters.
+
+```php
+use Laragear\Rut\ValidatesRut;
+
+ValidatesRut::setDummies();
+```
+
+> [!IMPORTANT]
+> 
+> When adding dummies, there will be no check for Verification Digit validity. Since the RUT number is extracted, an invalid RUT added will be corrected when retrieved using `dummies()`. 
 
 ## Database Blueprint helper
 
@@ -585,8 +612,6 @@ This package contains the `HasRut` trait to use in Laravel Eloquent Models with 
 This trait conveniently adds a RUT Scope to a model that has a RUT in its columns, and the `rut` property which returns a `Rut` instance.
 
 ```php
-<?php
-
 namespace App\Models;
 
 use Laragear\Rut\HasRut;
@@ -909,6 +934,7 @@ use Laragear\Rut\RutFormat;
 return [
     'format' => RutFormat::Strict,
     'json_format' => null,
+    'blacklist_dummy_ruts' => false,
     'uppercase' => true,
     'synthesizer' => true,
 ];
@@ -962,6 +988,24 @@ public function boot()
     Rut::parse('5.138.171-8')->toJson(); // "{"num":5138171,"vd":"8"}"
 }
 ```
+
+### Blacklist dummy RUTs
+
+```php
+return [
+    'blacklist_dummy_ruts' => false,
+];
+```
+
+When developing, you may use dummy RUTs like `11.111.111-1` or `76.000.000-0` to create fake data in the database. If this may seem like a problem on production, you may always blacklist these RUT's.
+
+```php
+return [
+    'blacklist_dummy_ruts' => env('APP_ENV') === 'production',
+];
+```
+
+Additionally, you may [change the blacklist](#modifying-the-blacklist) to add, replace, or remove RUTs that should be considered _dummy_. 
 
 ### Verification Digit Case
 
