@@ -2,7 +2,12 @@
 
 namespace Tests\Validation;
 
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use Laragear\Rut\Rut;
+use Laragear\Rut\ValidatesRut;
+use Orchestra\Testbench\Attributes\WithConfig;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\TestCase;
 
 class ValidateRutStrictTest extends TestCase
@@ -90,6 +95,24 @@ class ValidateRutStrictTest extends TestCase
     {
         $validator = Validator::make([
             'rut' => ['14.328.145-0', '19.743.721-9', ''],
+        ], [
+            'rut' => 'rut_strict',
+        ]);
+
+        static::assertTrue($validator->fails());
+    }
+
+    public static function providesDummyRut(): array
+    {
+        return ValidatesRut::dummies()->map(Arr::wrap(...))->toArray();
+    }
+
+    #[WithConfig('rut.blacklist_dummy_ruts', true)]
+    #[DataProvider('providesDummyRut')]
+    public function test_rut_strict_fails_if_blacklisted(Rut $dummyRut): void
+    {
+        $validator = Validator::make([
+            'rut' => $dummyRut->formatStrict(),
         ], [
             'rut' => 'rut_strict',
         ]);

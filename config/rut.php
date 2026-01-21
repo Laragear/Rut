@@ -34,6 +34,20 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Blacklist Dummy Ruts
+    |--------------------------------------------------------------------------
+    |
+    |
+    | To avoid dummy RUTs being used in production environments, you can enable
+    | a "blacklist". This blacklist will take effect when using the validation
+    | rules like "num_unique" or "rut", not the RUT validation itself.
+    |
+    */
+
+    'blacklist_dummy_ruts' => false, // env('APP_ENV') === 'production'
+
+    /*
+    |--------------------------------------------------------------------------
     | Verification Digit case
     |--------------------------------------------------------------------------
     |

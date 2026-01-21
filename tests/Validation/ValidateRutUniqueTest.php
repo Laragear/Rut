@@ -2,7 +2,13 @@
 
 namespace Tests\Validation;
 
+use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
+use Laragear\Rut\Rut;
+use Laragear\Rut\ValidatesRut;
+use Orchestra\Testbench\Attributes\WithConfig;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\PreparesDatabase;
 use Tests\TestCase;
 
@@ -58,6 +64,33 @@ class ValidateRutUniqueTest extends TestCase
     {
         $validator = Validator::make([
             'rut' => '18.765.432-1',
+        ], [
+            'rut' => 'rut_unique:testing.users,rut_num,rut_vd',
+        ]);
+
+        static::assertTrue($validator->fails());
+    }
+
+    public static function providesDummyRut(): array
+    {
+        return ValidatesRut::dummies()->map(Arr::wrap(...))->toArray();
+    }
+
+    #[WithConfig('rut.blacklist_dummy_ruts', true)]
+    #[DataProvider('providesDummyRut')]
+    public function test_unique_fails_if_blacklisted(Rut $dummyRut): void
+    {
+        User::make()->forceFill([
+            'id' => 4,
+            'name' => 'Jonathan',
+            'email' => 'jonathan.doe@email.com',
+            'password' => '123456',
+            'rut_num' => $dummyRut->num,
+            'rut_vd' => $dummyRut->vd,
+        ])->save();
+
+        $validator = Validator::make([
+            'rut' => $dummyRut->format(),
         ], [
             'rut' => 'rut_unique:testing.users,rut_num,rut_vd',
         ]);

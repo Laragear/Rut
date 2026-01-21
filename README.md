@@ -489,6 +489,59 @@ echo $validator->passes(); // false
 >
 > **You should never pass any user controlled request input into the ignore method. Instead, you should only pass a system generated unique ID such as an auto-incrementing ID or UUID from an Eloquent model instance. Otherwise, your application will be vulnerable to an SQL injection attack.**
 
+### Dummy RUTs Blacklist
+
+It's highly probably you will use dummy RUTs like `11.111.111-1` or `88.888.888-8` while developing your application. While these are totally acceptable and valid, it's safer to _blacklist_ them on production. To do that, set the [`blacklist_dummy_ruts` configuration to true](#blacklist-dummy-ruts). 
+
+The best way to do it is to enable the blocklist automatically on production environments: 
+
+```php
+return [
+    'blacklist_dummy_ruts' => env('APP_ENV') === 'production'
+]
+```
+
+With this enabled, dummy RUTs like `22.222.222-2` will be declared as invalid, even if these are mathematically correct, even if it exists or is unique.
+
+```php
+<?php
+
+use Illuminate\Support\Facades\Validator;
+
+$validator = Validator::make([
+    'rut' => '22.222.222-2'
+], [
+    'rut' => 'rut_strict'
+]);
+
+echo $validator->passes(); // false
+```
+
+### Modifying the blacklist
+
+The blacklist of dummy RUTs resides in [`Laragear\Rut\ValidatesRut::DUMMY_RUTS`](src/ValidatesRut.php). If you're not happy with the default list, you may alter it through the `setDummies()` static method that will replace the entire list with the one you set.
+
+```php
+use Laragear\Rut\ValidatesRut;
+
+ValidatesRut::setDummies([
+    '24.000.000-8',
+    // ...
+]);
+```
+
+If you want to go back to the original list, just call `setDummies()` without parameters.
+
+```php
+use Laragear\Rut\ValidatesRut;
+
+ValidatesRut::setDummies();
+```
+
+> [!IMPORTANT]
+> 
+> When adding dummies, there will be no check for Verification Digit validity. Since the RUT number is extracted, an invalid RUT added will be corrected when retrieved using `dummies()`. 
+
 ## Database Blueprint helper
 
 If you're creating your database from the ground up, you don't need to manually create the RUT columns. Just use the `rut()` or `rutNullable()` helpers in the Blueprint:
@@ -909,6 +962,7 @@ use Laragear\Rut\RutFormat;
 return [
     'format' => RutFormat::Strict,
     'json_format' => null,
+    'blacklist_dummy_ruts' => false,
     'uppercase' => true,
     'synthesizer' => true,
 ];
@@ -962,6 +1016,24 @@ public function boot()
     Rut::parse('5.138.171-8')->toJson(); // "{"num":5138171,"vd":"8"}"
 }
 ```
+
+### Blacklist dummy RUTs
+
+```php
+return [
+    'blacklist_dummy_ruts' => false,
+];
+```
+
+When developing, you may use dummy RUTs like `11.111.111-1` or `76.000.000-0` to create fake data in the database. If this may seem like a problem on production, you may always blacklist these RUT's.
+
+```php
+return [
+    'blacklist_dummy_ruts' => env('APP_ENV') === 'production',
+];
+```
+
+Additionally, you may [change the blacklist](#modifying-the-blacklist) to add, replace, or remove RUTs that should be considered _dummy_. 
 
 ### Verification Digit Case
 

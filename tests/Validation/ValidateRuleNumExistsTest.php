@@ -4,9 +4,13 @@ namespace Tests\Validation;
 
 use ArgumentCountError;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laragear\Rut\Rut;
+use Laragear\Rut\ValidatesRut;
+use Orchestra\Testbench\Attributes\WithConfig;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\PreparesDatabase;
 use Tests\TestCase;
 
@@ -129,6 +133,33 @@ class ValidateRuleNumExistsTest extends TestCase
             'rut' => $this->randomRut()->format(),
         ], [
             'rut' => Rule::numExists('testing.users', 'absent_num'),
+        ]);
+
+        static::assertTrue($validator->fails());
+    }
+
+    public static function providesDummyRut(): array
+    {
+        return ValidatesRut::dummies()->map(Arr::wrap(...))->toArray();
+    }
+
+    #[WithConfig('rut.blacklist_dummy_ruts', true)]
+    #[DataProvider('providesDummyRut')]
+    public function test_validation_rule_num_exists_fails_if_blacklisted(Rut $dummyRut): void
+    {
+        User::make()->forceFill([
+            'id' => 4,
+            'name' => 'Jonathan',
+            'email' => 'jonathan.doe@email.com',
+            'password' => '123456',
+            'rut_num' => $dummyRut->num,
+            'rut_vd' => $dummyRut->vd,
+        ])->save();
+
+        $validator = Validator::make([
+            'rut' => $dummyRut->format(),
+        ], [
+            'rut' => Rule::numExists('testing.users', 'rut_num'),
         ]);
 
         static::assertTrue($validator->fails());

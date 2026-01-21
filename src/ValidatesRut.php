@@ -6,9 +6,12 @@ namespace Laragear\Rut;
 
 use Illuminate\Database\Query\Builder;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Enumerable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
+use function array_map;
 
 /**
  * @internal
@@ -16,16 +19,121 @@ use Illuminate\Validation\Validator;
 class ValidatesRut
 {
     /**
+     * List of development (dummy) RUTs numbers.
+     *
+     * This list is "flipped" for faster checks. To un-flip it, use the "dummies()" static method.
+     *
+     * @const string[]
+     */
+    public const DUMMY_RUTS = [
+        177777 => true,
+        233333 => true,
+        466666 => true,
+        522222 => true,
+        699999 => true,
+        755555 => true,
+        811111 => true,
+        988888 => true,
+        1777777 => true,
+        2333333 => true,
+        4666666 => true,
+        5222222 => true,
+        6999999 => true,
+        7555555 => true,
+        8111111 => true,
+        9888888 => true,
+        11111111 => true,
+        22222222 => true,
+        33333333 => true,
+        44444444 => true,
+        55555555 => true,
+        66666666 => true,
+        76000000 => true,
+        77777777 => true,
+        88888888 => true,
+        99999999 => true,
+    ];
+
+    /**
+     * Active list of dummy RUTs as [RUT number => true].
+     *
+     * @var array<string,true>
+     */
+    protected static array $dummies = self::DUMMY_RUTS;
+
+    /**
+     * Should the validation rules blacklist dummy ruts
+     *
+     * @var bool
+     */
+    public static bool $blacklistDummyRuts = false;
+
+    /**
+     * Return a list of Dummy RUTs for development.
+     *
+     * @return \Illuminate\Support\Collection<int, \Laragear\Rut\Rut>
+     */
+    public static function dummies(): Collection
+    {
+        return Collection::make(static::$dummies)->map(static function (true $value, int $num): Rut {
+            return Rut::fromNum($num);
+        })->values();
+    }
+
+    /**
+     * Sets the list of dummy RUTs to blocklist.
+     */
+    public static function setDummies(Enumerable|array|null $dummies = null): void
+    {
+        static::$dummies = null === $dummies ? self::DUMMY_RUTS : static::parseDummies($dummies);
+    }
+
+    /**
+     * Parse the dummies list into an optimized lookup list.
+     *
+     * @param  \Illuminate\Support\Enumerable<int, \Laragear\Rut\Rut|string|int>|array<\Laragear\Rut\Rut|string|int> $list
+     * @return array<int, true>
+     */
+    protected static function parseDummies(Enumerable|array $list): array
+    {
+        return Collection::make($list)->mapWithKeys(static function (Rut|string|int $value): array {
+            return [Rut::parse($value)->num => true];
+        })->toArray();
+    }
+
+    /**
+     * Check if the RUT is blacklisted.
+     */
+    protected static function isBlacklisted(Rut $rut): bool
+    {
+        return static::$blacklistDummyRuts && isset(static::$dummies[$rut->num]);
+    }
+
+    /**
+     * Returns the RUT instance or `null` if it's not valid.
+     */
+    protected static function parse(mixed $rut): ?Rut
+    {
+        try {
+            $rut = Rut::parse($rut);
+        } catch (Exceptions\RutException) {
+            return null;
+        }
+
+        if (static::isBlacklisted($rut) || $rut->isInvalid()) {
+            return null;
+        }
+
+        return $rut;
+    }
+
+    /**
      * Returns if the RUTs are valid.
      */
     public static function validateRut(string $attribute, mixed $value): bool
     {
         foreach (Arr::wrap($value) as $rut) {
-            try {
-                if (Rut::parse($rut)->isInvalid()) {
-                    return false;
-                }
-            } catch (Exceptions\RutException) {
+            if (!static::parse($rut)) {
                 return false;
             }
         }
@@ -39,11 +147,9 @@ class ValidatesRut
     public static function validateRutStrict(string $attribute, mixed $value): bool
     {
         foreach (Arr::wrap($value) as $rut) {
-            try {
-                if (Rut::parse($rut)->validate()->format(RutFormat::Strict) !== $rut) {
-                    return false;
-                }
-            } catch (Exceptions\RutException) {
+            $instance = static::parse($rut);
+
+            if (!$instance || RutFormat::Strict->format($instance) !== $rut) {
                 return false;
             }
         }
@@ -62,9 +168,7 @@ class ValidatesRut
     ): bool {
         $validator->requireParameterCount(1, $parameters, 'num_exists');
 
-        try {
-            $rut = Rut::parse($value)->validate();
-        } catch (Exceptions\RutException) {
+        if (! $rut = static::parse($value)) {
             return false;
         }
 
@@ -86,9 +190,7 @@ class ValidatesRut
     ): bool {
         $validator->requireParameterCount(1, $parameters, 'num_unique');
 
-        try {
-            $rut = Rut::parse($value)->validate();
-        } catch (Exceptions\RutException) {
+        if (! $rut = static::parse($value)) {
             return false;
         }
 
@@ -106,9 +208,7 @@ class ValidatesRut
     {
         $validator->requireParameterCount(1, $parameters, 'rut_exists');
 
-        $rut = Rut::parse($value);
-
-        if ($rut->isInvalid()) {
+        if (! $rut = static::parse($value)) {
             return false;
         }
 
@@ -122,9 +222,7 @@ class ValidatesRut
     {
         $validator->requireParameterCount(1, $parameters, 'rut_unique');
 
-        $rut = Rut::parse($value);
-
-        if ($rut->isInvalid()) {
+        if (! $rut = static::parse($value)) {
             return false;
         }
 

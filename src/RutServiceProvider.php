@@ -14,7 +14,6 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Collection;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Validation\Rule;
-
 use function class_exists;
 use function count;
 use function is_iterable;
@@ -176,5 +175,7 @@ class RutServiceProvider extends ServiceProvider
         if (class_exists(\Livewire\Livewire::class) && $config->get('rut.synthesizer')) {
             \Livewire\Livewire::propertySynthesizer(Livewire\Synthesizers\RutSynth::class); // @phpstan-ignore-line
         }
+
+        ValidatesRut::$blacklistDummyRuts = $config->get('rut.blacklist_dummy_ruts', false);
     }
 }

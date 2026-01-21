@@ -4,9 +4,13 @@ namespace Tests\Validation;
 
 use ArgumentCountError;
 use Illuminate\Foundation\Auth\User;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
 use Laragear\Rut\Rut;
+use Laragear\Rut\ValidatesRut;
+use Orchestra\Testbench\Attributes\WithConfig;
+use PHPUnit\Framework\Attributes\DataProvider;
 use Tests\PreparesDatabase;
 use Tests\TestCase;
 
@@ -101,5 +105,23 @@ class ValidateRuleNumUniqueTest extends TestCase
         ]);
 
         static::assertFalse($validator->fails());
+    }
+
+    public static function providesDummyRut(): array
+    {
+        return ValidatesRut::dummies()->map(Arr::wrap(...))->toArray();
+    }
+
+    #[WithConfig('rut.blacklist_dummy_ruts', true)]
+    #[DataProvider('providesDummyRut')]
+    public function test_validation_rule_num_unique_fails_if_blacklisted(Rut $dummyRut): void
+    {
+        $validator = Validator::make([
+            'rut' => $dummyRut->format(),
+        ], [
+            'rut' => Rule::numUnique('testing.users', 'rut_num'),
+        ]);
+
+        static::assertTrue($validator->fails());
     }
 }
