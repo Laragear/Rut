@@ -117,7 +117,6 @@ class ValidateRutTest extends TestCase
         static::assertTrue($validator->fails());
     }
 
-
     public static function providesDummyRut(): array
     {
         return ValidatesRut::dummies()->map(Arr::wrap(...))->toArray();

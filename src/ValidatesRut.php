@@ -11,7 +11,6 @@ use Illuminate\Support\Enumerable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
-use function array_map;
 
 /**
  * @internal
@@ -62,7 +61,7 @@ class ValidatesRut
     protected static array $dummies = self::DUMMY_RUTS;
 
     /**
-     * Should the validation rules blacklist dummy ruts
+     * Should the validation rules blacklist dummy ruts.
      *
      * @var bool
      */
@@ -91,7 +90,7 @@ class ValidatesRut
     /**
      * Parse the dummies list into an optimized lookup list.
      *
-     * @param  \Illuminate\Support\Enumerable<int, \Laragear\Rut\Rut|string|int>|array<\Laragear\Rut\Rut|string|int> $list
+     * @param  \Illuminate\Support\Enumerable<int, \Laragear\Rut\Rut|string|int>|array<\Laragear\Rut\Rut|string|int>  $list
      * @return array<int, true>
      */
     protected static function parseDummies(Enumerable|array $list): array
@@ -133,7 +132,7 @@ class ValidatesRut
     public static function validateRut(string $attribute, mixed $value): bool
     {
         foreach (Arr::wrap($value) as $rut) {
-            if (!static::parse($rut)) {
+            if (! static::parse($rut)) {
                 return false;
             }
         }
@@ -149,7 +148,7 @@ class ValidatesRut
         foreach (Arr::wrap($value) as $rut) {
             $instance = static::parse($rut);
 
-            if (!$instance || RutFormat::Strict->format($instance) !== $rut) {
+            if (! $instance || RutFormat::Strict->format($instance) !== $rut) {
                 return false;
             }
         }

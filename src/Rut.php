@@ -12,7 +12,6 @@ use JsonSerializable;
 use Stringable;
 
 use function array_reverse;
-use function is_iterable;
 use function json_encode;
 use function max;
 use function preg_filter;
