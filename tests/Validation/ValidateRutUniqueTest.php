@@ -80,15 +80,6 @@ class ValidateRutUniqueTest extends TestCase
     #[DataProvider('providesDummyRut')]
     public function test_unique_fails_if_blacklisted(Rut $dummyRut): void
     {
-        User::make()->forceFill([
-            'id' => 4,
-            'name' => 'Jonathan',
-            'email' => 'jonathan.doe@email.com',
-            'password' => '123456',
-            'rut_num' => $dummyRut->num,
-            'rut_vd' => $dummyRut->vd,
-        ])->save();
-
         $validator = Validator::make([
             'rut' => $dummyRut->format(),
         ], [
