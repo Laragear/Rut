@@ -3,6 +3,7 @@
 namespace Tests\Filament;
 
 use Tests\TestCase as PackageTestCase;
+
 use function array_merge;
 use function class_exists;
 
