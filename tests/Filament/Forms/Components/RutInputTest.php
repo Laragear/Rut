@@ -4,7 +4,7 @@ namespace Tests\Filament\Forms\Components;
 
 use Laragear\Rut\Filament\Forms\Components\RutInput;
 use PHPUnit\Framework\Attributes\DataProvider;
-use Tests\TestCase;
+use Tests\Filament\TestCase;
 
 class RutInputTest extends TestCase
 {

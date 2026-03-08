@@ -13,7 +13,7 @@ enum RutFormat
      *
      * @var \Laragear\Rut\RutFormat
      */
-    public const DEFAULT = self::Strict;
+    public const RutFormat DEFAULT = self::Strict;
 
     /**
      * Sets RUT representation with only its characters.

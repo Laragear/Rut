@@ -17,7 +17,7 @@ class RutSynth extends Synth
      *
      * @const string
      */
-    public const DEFAULT_KEY = 'rut';
+    public const string DEFAULT_KEY = 'rut';
 
     /**
      * The default key to use for serialization.

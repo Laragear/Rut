@@ -7,6 +7,7 @@ namespace Laragear\Rut;
 use Illuminate\Support\Collection;
 use LogicException;
 
+use function array_values;
 use function max;
 use function rand;
 
@@ -15,22 +16,22 @@ class Generator
     /**
      * The default number of iterations.
      */
-    protected const ITERATIONS = 15;
+    protected const int ITERATIONS = 15;
 
     // Boundaries for all types of RUT.
-    protected const BOUNDARY_NONE = [Rut::MIN, Rut::MAX];
+    protected const array BOUNDARY_NONE = [Rut::MIN, Rut::MAX];
     // Boundaries for people RUTs.
-    protected const BOUNDARY_PEOPLE = [Rut::MIN, Rut::INVESTOR_BASE - 1];
+    protected const array BOUNDARY_PEOPLE = [Rut::MIN, Rut::INVESTOR_BASE - 1];
     // Boundaries for investor RUTs.
-    protected const BOUNDARY_INVESTOR = [Rut::INVESTOR_BASE, Rut::INVESTMENT_COMPANY_BASE - 1];
+    protected const array BOUNDARY_INVESTOR = [Rut::INVESTOR_BASE, Rut::INVESTMENT_COMPANY_BASE - 1];
     // Boundaries for investment companies RUTs.
-    protected const BOUNDARY_INVESTMENT_COMPANY = [Rut::INVESTMENT_COMPANY_BASE, Rut::CONTINGENCY_BASE - 1];
+    protected const array BOUNDARY_INVESTMENT_COMPANY = [Rut::INVESTMENT_COMPANY_BASE, Rut::CONTINGENCY_BASE - 1];
     // Boundaries for contingency RUTs.
-    protected const BOUNDARY_CONTINGENCY = [Rut::CONTINGENCY_BASE, Rut::COMPANY_BASE - 1];
+    protected const array BOUNDARY_CONTINGENCY = [Rut::CONTINGENCY_BASE, Rut::COMPANY_BASE - 1];
     // Boundaries for company RUTs.
-    protected const BOUNDARY_COMPANIES = [Rut::COMPANY_BASE, Rut::TEMPORAL_BASE - 1];
+    protected const array BOUNDARY_COMPANIES = [Rut::COMPANY_BASE, Rut::TEMPORAL_BASE - 1];
     // Boundaries for temporal RUTs.
-    protected const BOUNDARY_TEMPORAL = [Rut::TEMPORAL_BASE, Rut::MAX];
+    protected const array BOUNDARY_TEMPORAL = [Rut::TEMPORAL_BASE, Rut::MAX];
 
     /**
      * Create a new Generator instance.
@@ -156,24 +157,20 @@ class Generator
 
         static::validateIterationsUnderBoundaries($iterations, $min, $max);
 
-        $ruts = Collection::times($iterations, static function () use ($min, $max): Rut {
-            return new Rut($num = rand($min, $max), Rut::getVd($num));
-        });
+        $results = [];
 
-        // When forcing unique RUTs to avoid collisions, we'll reject duplicates
-        // RUTs from the collection, get the remaining RUTs to make, and recall
-        // this function for the remaining items, merge, and check this again.
-        /** @codeCoverageIgnoreStart  */
-        if ($unique) {
-            do {
-                $ruts = $ruts->unique();
+        while (count($results) < $iterations) {
+            $num = random_int($min, $max);
 
-                $ruts = $ruts->merge(static::generate($iterations - $ruts->count(), false, $min, $max));
-            } while ($ruts->count() < $iterations);
+            if ($unique) {
+                // Using the number as a key provides O(1) uniqueness check
+                $results[$num] = new Rut($num, Rut::getVd($num));
+            } else {
+                $results[] = new Rut($num, Rut::getVd($num));
+            }
         }
-        /** @codeCoverageIgnoreEnd  */
 
-        return $ruts;
+        return Collection::make(array_values($results));
     }
 
     /**

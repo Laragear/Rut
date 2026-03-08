@@ -14,7 +14,7 @@ class RutInput extends TextInput
      *
      * @see https://unminify.com/ To unminify the script and make proper edits.
      */
-    protected const JAVASCRIPT = <<<'JS'
+    protected const string JAVASCRIPT = <<<'JS'
 e=>{let r=String(e).toUpperCase().replace(/[^0-9K]|(?!\d)[K](?=.*\d)/g,'').replace(/K+$/,'K');return r.length<2?0===Number(r)?'0':r:Number(r.slice(0,-1)).toLocaleString('es-CL').replace(/\./g,'.')+'-'+r.slice(-1)};
 JS;
 

@@ -24,16 +24,16 @@ use function is_iterable;
  */
 class RutServiceProvider extends ServiceProvider
 {
-    public const CONFIG = __DIR__.'/../config/rut.php';
-    public const LANG = __DIR__.'/../lang';
-    public const STUBS = __DIR__.'/../.stubs/stubs';
+    public const string CONFIG = __DIR__.'/../config/rut.php';
+    public const string LANG = __DIR__.'/../lang';
+    public const string STUBS = __DIR__.'/../.stubs/stubs';
 
     /**
      * Rules to register into the validator.
      *
-     * @var array
+     * @var array<string[]>
      */
-    public const RULES = [
+    public const array RULES = [
         ['rut', 'validateRut', 'rut::validation.rut'],
         ['rut_strict', 'validateRutStrict', 'rut::validation.strict'],
         ['rut_exists', 'validateRutExists', 'rut::validation.exists'],

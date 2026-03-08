@@ -11,7 +11,7 @@ use Laragear\Rut\HasRut;
 use Laragear\Rut\Rut;
 use Laragear\Rut\RutFormat;
 use Mockery;
-use Tests\TestCase;
+use Tests\Filament\TestCase;
 
 use function array_merge;
 

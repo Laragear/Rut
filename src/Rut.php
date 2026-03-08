@@ -27,43 +27,43 @@ class Rut implements JsonSerializable, Stringable, Jsonable
     /**
      * The minimum RUT number to be considered valid.
      */
-    public const MIN = 100000;
+    public const int MIN = 100000;
 
     /**
      * The maximum RUT number to be considered valid.
      */
-    public const MAX = 200000000;
+    public const int MAX = 200000000;
 
     /**
      * Where to draw the line between person and investor RUTs.
      *
      * @see https://www.sii.cl/documentos/resoluciones/2000b/reso5412.htm
      */
-    public const INVESTOR_BASE = 46000000;
+    public const int INVESTOR_BASE = 46000000;
 
     /**
      * Where to draw the line between investor and investment companies RUTs.
      *
      * @see https://www.sii.cl/documentos/resoluciones/2000b/reso5412.htm
      */
-    public const INVESTMENT_COMPANY_BASE = 47000000;
+    public const int INVESTMENT_COMPANY_BASE = 47000000;
 
     /**
      * Where to draw the line between investment companies and contingency RUTs.
      *
      * @see https://www.sii.cl/documentos/resoluciones/2000b/reso5412.htm
      */
-    public const CONTINGENCY_BASE = 48000000;
+    public const int CONTINGENCY_BASE = 48000000;
 
     /**
      * Where to draw the line between person and company RUTs.
      */
-    public const COMPANY_BASE = 60000000;
+    public const int COMPANY_BASE = 60000000;
 
     /**
      * Where to separate between company and temporal RUTs.
      */
-    public const TEMPORAL_BASE = 100000000;
+    public const int TEMPORAL_BASE = 100000000;
 
     /**
      * The default string format for the RUT.
