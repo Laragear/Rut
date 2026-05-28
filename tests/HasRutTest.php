@@ -2,6 +2,7 @@
 
 namespace Tests;
 
+use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Foundation\Auth\User;
@@ -10,6 +11,9 @@ use Laragear\Rut\Facades\Generator;
 use Laragear\Rut\HasRut;
 use Laragear\Rut\Rut;
 use Laragear\Rut\RutFormat;
+use Laragear\Rut\Scopes\RutScope;
+use Mockery;
+use Mockery\MockInterface;
 
 class HasRutTest extends TestCase
 {
@@ -50,6 +54,17 @@ class HasRutTest extends TestCase
         static::assertTrue($model->newQuery()->hasMacro('orWhereRutIsPerson'));
         static::assertTrue($model->newQuery()->hasMacro('whereRutIsCompany'));
         static::assertTrue($model->newQuery()->hasMacro('orWhereRutIsCompany'));
+    }
+
+    public function test_added_builder_methods_never_pass_null(): void
+    {
+        /** @var \Illuminate\Database\Eloquent\Builder&\Mockery\MockInterface $builder */
+        $builder = $this->mock(EloquentBuilder::class, function (MockInterface $mock): void {
+            $mock->expects('macro')->with(null, Mockery::type('array'))->never();
+            $mock->expects('macro')->with(Mockery::type('string'), Mockery::type('array'))->atLeast()->once();
+        });
+
+        (new RutScope())->extend($builder);
     }
 
     public function test_model_finds_by_rut(): void
