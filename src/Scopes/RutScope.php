@@ -64,7 +64,8 @@ class RutScope implements Scope
             })
             ->map(static function (Method $method): string {
                 return $method->getName();
-            });
+            })
+            ->values();
     }
 
     /**
