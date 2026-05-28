@@ -11,6 +11,7 @@ use Illuminate\Support\Enumerable;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Validator;
+use function config;
 
 /**
  * @internal
@@ -24,7 +25,7 @@ class ValidatesRut
      *
      * @const array<int,true>
      */
-    public const DUMMY_RUTS = [
+    public const array DUMMY_RUTS = [
         177777 => true,
         233333 => true,
         466666 => true,
@@ -59,13 +60,6 @@ class ValidatesRut
      * @var array<int,true>
      */
     protected static array $dummies = self::DUMMY_RUTS;
-
-    /**
-     * Should the validation rules blacklist dummy ruts.
-     *
-     * @var bool
-     */
-    public static bool $blacklistDummyRuts = false;
 
     /**
      * Return a list of Dummy RUTs for development.
@@ -106,7 +100,7 @@ class ValidatesRut
      */
     protected static function isBlacklisted(Rut $rut): bool
     {
-        return static::$blacklistDummyRuts && isset(static::$dummies[$rut->num]);
+        return config('rut.blacklist_dummy_ruts', false) && isset(static::$dummies[$rut->num]);
     }
 
     /**

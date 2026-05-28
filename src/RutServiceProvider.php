@@ -176,7 +176,5 @@ class RutServiceProvider extends ServiceProvider
         if (class_exists(\Livewire\Livewire::class) && $config->get('rut.synthesizer')) {
             \Livewire\Livewire::propertySynthesizer(Livewire\Synthesizers\RutSynth::class); // @phpstan-ignore-line
         }
-
-        ValidatesRut::$blacklistDummyRuts = $config->get('rut.blacklist_dummy_ruts', false);
     }
 }

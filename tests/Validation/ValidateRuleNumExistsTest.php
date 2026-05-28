@@ -143,6 +143,28 @@ class ValidateRuleNumExistsTest extends TestCase
         return ValidatesRut::dummies()->map(Arr::wrap(...))->toArray();
     }
 
+    #[WithConfig('rut.blacklist_dummy_ruts', false)]
+    #[DataProvider('providesDummyRut')]
+    public function test_validation_rule_num_exists_passes_when_not_blacklisted(Rut $dummyRut): void
+    {
+        User::make()->forceFill([
+            'id' => 4,
+            'name' => 'Jonathan',
+            'email' => 'jonathan.doe@email.com',
+            'password' => '123456',
+            'rut_num' => $dummyRut->num,
+            'rut_vd' => $dummyRut->vd,
+        ])->save();
+
+        $validator = Validator::make([
+            'rut' => $dummyRut->format(),
+        ], [
+            'rut' => Rule::numExists('testing.users', 'rut_num'),
+        ]);
+
+        static::assertFalse($validator->fails());
+    }
+
     #[WithConfig('rut.blacklist_dummy_ruts', true)]
     #[DataProvider('providesDummyRut')]
     public function test_validation_rule_num_exists_fails_if_blacklisted(Rut $dummyRut): void
