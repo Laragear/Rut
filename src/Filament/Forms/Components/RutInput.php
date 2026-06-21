@@ -45,7 +45,7 @@ JS;
             ->minLength(7)
             ->maxLength(13)
             ->extraInputAttributes([
-                'pattern' => '^[0-9]{1,3}(?:\.[0-9]{3})*-[0-9K]$',
+                'pattern' => '^[0-9]{1,3}(?:\.[0-9]{3})*-[0-9kK]$',
             ])
             ->placeholder('18.765.432-1')
             ->rules('rut|between:7,13');
