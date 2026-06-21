@@ -32,7 +32,7 @@ class RutInput extends TextInput
      *
      * @see https://unminify.com/ To unminify the script and make proper edits.
      */
-    protected const string JAVASCRIPT = <<<'JS'
+    protected const JAVASCRIPT = <<<'JS'
 e=>{let t=String(e).toUpperCase().replace(/[^0-9K]/g,"");return 0===t.length?"":1===t.length?"*":"9".repeat(t.length-1).replace(/\B(?=(\d{3})+(?!\d))/g,".")+"-*"};
 JS;
 
