@@ -73,6 +73,8 @@ class RutServiceProvider extends ServiceProvider
     protected function registerRules(): void
     {
         $this->callAfterResolving('validator', static function (Factory $validator, Application $app): void {
+            ValidatesRut::$blacklistDummyRuts = $app->make('config')->get('rut.blacklist_dummy_ruts', false);
+
             $translator = $app->make('translator');
 
             foreach (static::RULES as [$rule, $extension, $key]) {
@@ -176,7 +178,5 @@ class RutServiceProvider extends ServiceProvider
         if (class_exists(\Livewire\Livewire::class) && $config->get('rut.synthesizer')) {
             \Livewire\Livewire::propertySynthesizer(Livewire\Synthesizers\RutSynth::class); // @phpstan-ignore-line
         }
-
-        ValidatesRut::$blacklistDummyRuts = $config->get('rut.blacklist_dummy_ruts', false);
     }
 }
