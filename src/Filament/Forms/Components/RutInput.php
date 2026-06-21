@@ -12,10 +12,28 @@ class RutInput extends TextInput
      *
      * @const string
      *
+     * @example "(e) => {
+     *      // 1. Strip everything except numbers and 'K' to find the true length
+     *      let r = String(e).toUpperCase().replace(/[^0-9K]/g, '');
+     *
+     *      // 2. Handle empty or single-character states
+     *      if (r.length === 0) return '';
+     *      if (r.length === 1) return '*'; // '*' allows a number or 'K'
+     *
+     *      // 3. Generate a string of '9's representing the body of the RUT
+     *      let bodyMask = '9'.repeat(r.length - 1);
+     *
+     *      // 4. Inject literal dots into the string of '9's
+     *      let formattedBodyMask = bodyMask.replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+     *
+     *      // 5. Append the literal hyphen and the final wildcard
+     *      return formattedBodyMask + '-*';
+     * }"
+     *
      * @see https://unminify.com/ To unminify the script and make proper edits.
      */
     protected const JAVASCRIPT = <<<'JS'
-e=>{let r=String(e).toUpperCase().replace(/[^0-9K]|(?!\d)[K](?=.*\d)/g,'').replace(/K+$/,'K');return r.length<2?0===Number(r)?'0':r:Number(r.slice(0,-1)).toLocaleString('es-CL').replace(/\./g,'.')+'-'+r.slice(-1)};
+e=>{let t=String(e).toUpperCase().replace(/[^0-9K]/g,'');return 0===t.length?'':1===t.length?'*':'9'.repeat(t.length-1).replace(/\B(?=(\d{3})+(?!\d))/g,'.')+'-*'};
 JS;
 
     protected function setUp(): void
