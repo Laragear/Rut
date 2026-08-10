@@ -1,19 +1,13 @@
 ---
 name: laragear-rut-validation
-description: Validate Chilean RUT inputs in Laravel applications.
+description: Validate Chilean RUT in Laravel applications.
 ---
 
-## Laragear RUT Validation
+Use this skill when validating or checking Chilean RUTs in Requests, Form Requests, APIs, HTTP Controllers.
 
-### When to use this skill
+## Validate a RUT in a Request Input
 
-Use this skill when validating or checking Chilean RUTs in Requests, Form Requests, APIs, or controllers.
-
-### Features
-
-#### Request Validation
-
-Validate RUT inputs with the automatic rut rule.
+Validate RUT inputs with the automatic `rut` rule.
 
 ```php
 use Illuminate\Http\Request;
@@ -21,26 +15,54 @@ use Illuminate\Http\Request;
 public function save(Request $request)
 {
     $request->validate([
-        'rut' => 'required|rut|unique:contacts,rut',
+        'rut' => 'required|rut',
     ]);
     
     // ...
 }
 ```
 
-#### Object validation
+To check if a RUT does not exist in the database (unique), or already exists, use `rut_unique` and `rut_exists` respectively.
 
-Outside the request lifecycle, use the `check()` method to check if a RUT string is correct or not.
+```php
+$request->validate([
+    'rut' => 'required|rut_exists:users',
+]);
+```
+
+When using unique/exists rules, the input name will be used as base for the column (e.g. `user_rut` → `user_rut_num` & `user_rut_vd`). Use a second parameter to alter the column name:
+
+```php
+$request->validate([
+    'assistant_rut' => 'required|rut_exists:assistants,rut',
+]);
+```
+
+## Validate a string or instance
+
+Use the `check()` static method of the `Laragear\Rut\Rut` class to check if a RUT string or integer is a valid Chilean RUT:
 
 ```php
 use Laragear\Rut\Rut;
 
-if (Rut::check('invalid-rut')) {
-    return 'The RUT is invalid';
+if (Rut::check('22.222.222-2')) {
+    return 'The RUT is valid and you can proceed';
 }
 ```
 
-#### Type validation
+You may use the `isValid()` and `isInvalid()` methods of the `Rut` instance to the same effect:
+
+```php
+use Laragear\Rut\Rut;
+
+$rut = Rut::parse('22.222.222-2');
+
+if ($rut->isValid())
+    return 'The RUT is valid and you can proceed';
+}
+```
+
+### Type validation
 
 With a `Laragear\Rut\Rut` instance use `is{Type}()` to check if a RUT is part of a RUT boundary type:
 
@@ -55,9 +77,9 @@ With a `Laragear\Rut\Rut` instance use `is{Type}()` to check if a RUT is part of
 ```php
 use Laragear\Rut\Rut;
 
-$rut = Rut::parse($input);
+$rut = Rut::parse('76.987.654-3');
 
-if (! $rut->isPerson()) {
-    return 'Only RUT for Natural People are accepted.';
+if ($rut->isPerson()) {
+    return 'This app is only for natural people.';
 }
 ```
