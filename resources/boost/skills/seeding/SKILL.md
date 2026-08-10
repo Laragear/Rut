@@ -1,19 +1,13 @@
 ---
 name: laragear-rut-seeding
-description: Generate valid Chilean RUTs for model factories and database seeders.
+description: Generate valid Chilean RUTs for model factories and database seeders
 ---
 
-## Laragear RUT Seeding and Testing
+Use this skill when generating mock or fake RUTs for database seeders, tests, factory definitions, or when generating fake data that requires also a fake RUT. Do not use in controllers, views, or jobs, unless the user explicitly requires it.
 
-### When to use this skill
+# Generate random RUT
 
-Use this skill when generating mock RUTs for database seeders, tests, or factory definitions.
-
-### Features
-
-#### Random RUT Generation
-
-Generate mathematically correct, randomized Chilean RUTs.
+Generate mathematically correct, randomized Chilean RUTs with the `Generator` class facade.
 
 ```php
 use Laragear\Rut\Facades\Generator;
@@ -21,16 +15,49 @@ use Laragear\Rut\Facades\Generator;
 $rut = Generator::makeOne();
 ```
 
-#### Targeted RUT Generation
-
-Generate valid company or natural person RUT ranges dynamically.
+For targeted RUT generation (person, investors, investment companies, contingency, businesses, temporal, or definitive), use the apropiate builder method and use `makeOne()` for a single result, or `make($number)` for many.
 
 ```php
 use Laragear\Rut\Facades\Generator;
     
-// Generate a company RUT (> 50,000,000)
+// Generate a company RUT (> 50.000.000-*)
 $companyRut = Generator::asCompanies()->makeOne();
 
-// Generate 100 natural person RUTs (< 50,000,000) without duplicates.
-$personRut = Generator::asPeople()->unique()->make(100);
+// Generate 100 natural person RUTs (< 50,000,000) without duplicates on the request/command lifecicle.
+$manyPeopleRuts = Generator::asPeople()->make(100);
+```
+
+Generate RUT constrained by numbers with `between()`.
+
+```php
+use Laragear\Rut\Facades\Generator;
+    
+$ruts = Generator::between(10_000_000, 30_000_000)->make(500);
+```
+
+Use `unique()` in the generator when RUT column of the model uses `unique()` or `primary()` indexes. This will avoid reusing the same RUT accidentally on generation, ensuring the database ingestion does not error because of PRIMARY/UNIQUE constraints.  
+
+```php
+use Laragear\Rut\Facades\Generator;
+    
+$ruts = Generator::unique()->make(100);
+```
+
+## On Model Factories
+
+When a Model factory requires a RUT, set the rut attribute with the generator instance:
+
+```php
+use Illuminate\Support\Facades\Hash;
+use Laragear\Rut\Facades\Generator;
+
+public function definition()
+{
+    return [
+        'name' => $this->faker->name,
+        'rut' => Generator::asPeople()->makeOne(),
+        'email' => $this->faker->email,
+        'password' => static::$password ?? Hash::make('secret'),
+    ];
+}
 ```
