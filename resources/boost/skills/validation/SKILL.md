@@ -1,9 +1,7 @@
 ---
 name: laragear-rut-validation
-description: Validate Chilean RUT in Laravel applications.
+description: Use this skill when validating or checking Chilean RUTs in Requests, Form Requests, APIs, HTTP Controllers.
 ---
-
-Use this skill when validating or checking Chilean RUTs in Requests, Form Requests, APIs, HTTP Controllers.
 
 ## Validate a RUT in a Request Input
 
@@ -34,7 +32,7 @@ When using unique/exists rules, the input name will be used as base for the colu
 
 ```php
 $request->validate([
-    'assistant_rut' => 'required|rut_exists:assistants,rut',
+    'assistant_rut' => 'required|rut_exists:assistants,rut', // Check if the RUT exist in the "rut" column of the "assistants" table.
 ]);
 ```
 
