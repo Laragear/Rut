@@ -23,7 +23,7 @@ class RutAttribute extends Attribute
 
                 return [
                     $attribute.'_num' => $value?->num,
-                    $attribute.'_vd' => $value?->vd
+                    $attribute.'_vd' => $value?->vd,
                 ];
             }
         )
