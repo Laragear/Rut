@@ -1,13 +1,13 @@
 ---
 name: laragear-rut-seeding
-description: Generate valid Chilean RUTs for model factories and database seeders
+description: Use this skill when generating mock or fake RUTs for database seeders, tests, factory definitions, or when generating fake data that requires also a fake RUT. Do not use in controllers, views, or jobs, unless the user explicitly requires it.
 ---
 
-Use this skill when generating mock or fake RUTs for database seeders, tests, factory definitions, or when generating fake data that requires also a fake RUT. Do not use in controllers, views, or jobs, unless the user explicitly requires it.
+Generate mathematically correct, randomized Chilean RUTs with the `Generator` class facade.
 
 # Generate random RUT
 
-Generate mathematically correct, randomized Chilean RUTs with the `Generator` class facade.
+Use `makeOne` to create a single random RUT.
 
 ```php
 use Laragear\Rut\Facades\Generator;

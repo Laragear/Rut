@@ -771,6 +771,63 @@ Hiding the Primary Key, which is the RUT Number, won't make hide the RUT propert
 }
 ```
 
+### Dealing with multiple RUT
+
+If you have multiple RUT in your model, like `issuer` and `receiver`, the `HasRut` trait won't help. Instead, resort to use the `RutAttribute` with the base name of the attribute. If you have non-conventional columns, you can use two arguments for the RUT number and RUT verification digit.
+
+```php
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+new class extends Migration {
+    public function up()
+    {
+        Schema::table('document', function (Blueprint $table) {
+            // ...
+            
+            $table->rut('issuer'); // Creates "issuer_num" and "issuer_vd"
+            
+            $table->unsignedInteger('seller_rut_number'); // Only stores the RUT number
+        });
+    }
+}
+
+use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Model;
+use Laragear\Rut\Eloquent\RutAttribute;
+use Laragear\Rut\Rut;
+
+/**
+ * @property Rut $issuer 
+ * @property Rut $seller
+ */
+class Document extends Model
+{
+    // ...
+    
+    protected function issuer(): Attribute
+    {
+        // Automatically creates a get/set for "issuer_num" and "issuer_vd"
+        return RutAttribute::for('issuer');
+    }
+    
+    protected function seller(): Attribute
+    {
+        // Creates a RUT get/set for "seller" using the "seller_rut_number" as base for the RUT 
+        return RutAttribute::forNum('seller_rut_number');
+    } 
+}
+```
+
+The `for()` method also accepts a second argument to set the RUT Verification Digit. If you do, ensure the first argument also matches the column holding the RUT Number:
+
+```php
+use Laragear\Rut\Eloquent\RutAttribute;
+
+RutAttribute::for('issuer_number', 'issuer_verification_digit');
+```
+
 ## Livewire & Filament
 
 This library comes with some utilities if your application is using [Filament](https://filamentphp.com/), or just [Livewire](https://livewire.laravel.com). 
