@@ -58,7 +58,7 @@ class RutAttributeTest extends TestCase
 
         static::assertSame([
             'test_num' => 11_111_111,
-            'test_vd' => '1'
+            'test_vd' => '1',
         ], $result);
     }
 
