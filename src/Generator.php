@@ -9,7 +9,6 @@ use LogicException;
 
 use function array_values;
 use function max;
-use function rand;
 
 class Generator
 {
