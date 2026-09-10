@@ -1,6 +1,6 @@
 ---
 name: laragear-rut-eloquent
-description: Use this skill when creating migrations for Models that require one or many RUT columns, and query these models by their RUT. Do not use it outside Eloquent Models, or on external APIs.
+description: "Use this skill when creating migrations for Models that require one or many RUT columns, and query these models by their RUT. Do not use it outside Eloquent Models, or on external APIs."
 ---
 
 A Model with a RUT requires a special RUT column and a trait to operate. Models also can support multiple RUTs, but must be tackled using an especial Attribute for each one.  
