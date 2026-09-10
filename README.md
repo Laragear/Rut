@@ -977,6 +977,12 @@ Hiding the Primary Key, which is the RUT Number, won't make hide the RUT propert
 }
 ```
 
+## Static RUT
+
+Some RUT are considered "reserved", hardcoded into the RUT ecosystem because these represent the government institutions, or are used for especial integrations.
+
+You can check these reserved RUT in [`StaticRut`](src/Enums/StaticRut.php), each with its own description.
+
 ## Configuration
 
 This package works flawlessly out of the box, but you may want to change how a `Rut` is formatted as a string using the global configuration. You can publish it using Artisan:
