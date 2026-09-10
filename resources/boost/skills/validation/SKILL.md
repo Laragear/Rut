@@ -1,6 +1,6 @@
 ---
 name: laragear-rut-validation
-description: Use this skill when validating or checking Chilean RUTs in Requests, Form Requests, APIs, HTTP Controllers.
+description: "Use this skill when validating or checking Chilean RUTs in Requests, Form Requests, APIs, HTTP Controllers."
 ---
 
 ## Validate a RUT in a Request Input
@@ -64,8 +64,8 @@ if ($rut->isValid())
 
 With a `Laragear\Rut\Rut` instance use `is{Type}()` to check if a RUT is part of a RUT boundary type:
 
-- `isPerson()`,
-- `isInvestor()`,
+- `isPerson()`
+- `isInvestor()`
 - `isInvestmentCompany()`
 - `isContingency()`
 - `isCompany()`

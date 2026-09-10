@@ -1,6 +1,6 @@
 ---
-name: laragear-rut-seeding
-description: Use this skill when generating mock or fake RUTs for database seeders, tests, factory definitions, or when generating fake data that requires also a fake RUT. Do not use in controllers, views, or jobs, unless the user explicitly requires it.
+name: laragear-rut-generation
+description: "Use this skill when generating mock or fake RUTs for database seeders, tests, factory definitions, or when generating fake data that requires also a fake RUT. Do not use in controllers, views, or jobs, unless the user explicitly requires it."
 ---
 
 Generate mathematically correct, randomized Chilean RUTs with the `Generator` class facade.
